@@ -49,6 +49,7 @@ export default async function ArticlesPage({
       "id, slug, title, subtitle, topic, cover_image, published_at, source_count, avg_confidence, tags"
     )
     .eq("status", "published")
+    .eq("lang", "en")
     .order("published_at", { ascending: false });
 
   if (topic && topic !== "all") {
