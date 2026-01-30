@@ -1,23 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf9f6;
-  --foreground: #1a1a2e;
-  --accent: #e07a3a;
-  --accent-light: #f4a261;
-  --malta-blue: #0077b6;
-  --malta-gold: #d4a843;
-  --malta-stone: #e8dcc8;
+  --background: #ffffff;
+  --foreground: #2d3436;
+  --accent: #f9c931;
+  --accent-hover: #e6b800;
+  --malta-blue: #085c98;
+  --malta-blue-light: #118acb;
+  --malta-gold: #f9c931;
+  --malta-stone: #ecf3f7;
+  --malta-dark: #1a2332;
+  --malta-charcoal: #3a4346;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
-  --color-accent-light: var(--accent-light);
+  --color-accent-hover: var(--accent-hover);
   --color-malta-blue: var(--malta-blue);
+  --color-malta-blue-light: var(--malta-blue-light);
   --color-malta-gold: var(--malta-gold);
   --color-malta-stone: var(--malta-stone);
+  --color-malta-dark: var(--malta-dark);
+  --color-malta-charcoal: var(--malta-charcoal);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -25,5 +31,46 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), 'Nunito Sans', Arial, Helvetica, sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Premium card hover effects */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Image overlay gradient */
+.img-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+  transition: opacity 0.3s ease;
+}
+.img-overlay:hover::after {
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.05) 100%);
+}
+
+/* Section divider wave */
+.wave-divider {
+  position: relative;
+}
+.wave-divider::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: var(--background);
+  clip-path: ellipse(55% 100% at 50% 100%);
 }
