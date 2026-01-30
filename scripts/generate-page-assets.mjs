@@ -15,15 +15,29 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || 'primal-turbine-478412-k9';
-const MODEL = 'gemini-3-pro-image-preview';
+const MODEL_ID = 'gemini-3-pro-image-preview'; // NanoBanana Pro
 const LOCATION = 'global';
 const OUTPUT_DIR = path.join(__dirname, '..', 'public', 'images', 'monika', 'page');
 
 // Compressed reference image
 const REF_IMAGE_PATH = path.join(__dirname, '..', 'public', 'images', 'monika', 'monika-master-ref.jpg');
 
+export async function retryWithBackoff(fn, retries = 5, initialDelay = 30000) {
+    let delay = initialDelay;
+    for (let i = 0; i < retries; i++) {
+        try { return await fn(); } catch (error) {
+            if (error.noRetry) throw error; // Fast fail
+            if (i === retries - 1) throw error;
+            console.log(`  ⏳ Retry in ${delay / 1000}s... (${i + 1}/${retries}) - ${error.message.substring(0, 100)}`);
+            await new Promise(r => setTimeout(r, delay));
+            delay = Math.min(delay * 1.5, 120000);
+        }
+    }
+}
+
 async function getAccessToken() {
     const credsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+    if (!credsJson) throw new Error('GOOGLE_APPLICATION_CREDENTIALS_JSON is missing');
     let credentials;
     try { credentials = JSON.parse(credsJson); } catch { credentials = JSON.parse(Buffer.from(credsJson, 'base64').toString('utf8')); }
     const auth = new GoogleAuth({ credentials, scopes: ['https://www.googleapis.com/auth/cloud-platform'] });
@@ -32,23 +46,11 @@ async function getAccessToken() {
     return token.token;
 }
 
-async function retryWithBackoff(fn, retries = 5, initialDelay = 30000) {
-    let delay = initialDelay;
-    for (let i = 0; i < retries; i++) {
-        try { return await fn(); } catch (error) {
-            if (i === retries - 1) throw error;
-            console.log(`  ⏳ Retry in ${delay/1000}s... (${i+1}/${retries}) - ${error.message}`);
-            await new Promise(r => setTimeout(r, delay));
-            delay = Math.min(delay * 1.5, 120000);
-        }
-    }
-}
-
-async function generateWithReference(prompt, refImageB64, aspect = '16:9') {
+export async function generateWithReference(prompt, refImageB64, aspect = '16:9') {
     const accessToken = await getAccessToken();
-    const endpoint = `https://aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL}:generateContent`;
+    const endpoint = `https://aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL_ID}:generateContent`;
 
-    console.log(`  Model: ${MODEL} @ ${LOCATION}`);
+    console.log(`  Model: ${MODEL_ID} @ ${LOCATION} (Vertex AI direct)`);
 
     const body = {
         contents: [{
@@ -77,7 +79,7 @@ async function generateWithReference(prompt, refImageB64, aspect = '16:9') {
 
     if (!response.ok) {
         const err = await response.text();
-        throw new Error(`${response.status} - ${err.substring(0, 200)}`);
+        throw new Error(`Vertex AI Error: ${response.status} - ${err.substring(0, 200)}`);
     }
 
     const result = await response.json();
@@ -192,10 +194,10 @@ async function main() {
     for (const scene of scenes) {
         console.log(`\n🎬 Generating: ${scene.name} (${scene.aspect})...`);
         try {
-            const imageBuffer = await retryWithBackoff(() => 
+            const imageBuffer = await retryWithBackoff(() =>
                 generateWithReference(scene.prompt, refImageB64, scene.aspect)
             );
-            
+
             if (imageBuffer) {
                 const filepath = path.join(OUTPUT_DIR, `${scene.name}.png`);
                 fs.writeFileSync(filepath, imageBuffer);
@@ -206,10 +208,16 @@ async function main() {
         } catch (e) {
             console.error(`❌ Error generating ${scene.name}: ${e.message}`);
         }
-        
+
         console.log('  ⏳ Cooldown (30s)...');
         await new Promise(r => setTimeout(r, 30000));
     }
 }
 
-main();
+
+
+// Only run main if this file is executed directly
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    main();
+}
