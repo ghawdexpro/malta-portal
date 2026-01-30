@@ -24,15 +24,23 @@ export const revalidate = 300;
 
 const TOPICS = [
   { key: "all", label: "All Topics" },
+  { key: "valletta", label: "Valletta" },
+  { key: "mdina", label: "Mdina" },
+  { key: "gozo", label: "Gozo" },
+  { key: "birgu", label: "Birgu" },
+  { key: "cuisine", label: "Cuisine" },
   { key: "restaurants", label: "Restaurants" },
+  { key: "sightseeing", label: "Sightseeing" },
+  { key: "history", label: "History" },
+  { key: "caravaggio", label: "Caravaggio" },
+  { key: "wine", label: "Wine" },
+  { key: "fortifications", label: "Forts" },
   { key: "beaches", label: "Beaches" },
   { key: "transport", label: "Transport" },
   { key: "accommodation", label: "Stay" },
   { key: "prices", label: "Prices" },
-  { key: "sightseeing", label: "Sightseeing" },
   { key: "events", label: "Events" },
   { key: "tips", label: "Tips" },
-  { key: "gozo", label: "Gozo" },
 ];
 
 export default async function ArticlesPage({
@@ -56,7 +64,7 @@ export default async function ArticlesPage({
     query = query.eq("topic", topic);
   }
 
-  const { data: articles } = await query.limit(30);
+  const { data: articles } = await query.limit(50);
 
   return (
     <div>

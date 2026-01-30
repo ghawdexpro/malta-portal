@@ -93,12 +93,17 @@ export default function RootLayout({
               >
                 Admin
               </Link>
-              <Link
-                href="/pl"
-                className="rounded-full border border-white/30 px-3 py-1 text-xs text-white/60 hover:border-malta-gold hover:text-malta-gold transition-all"
-              >
-                PL
-              </Link>
+              <div className="flex items-center rounded-full border border-white/30 overflow-hidden">
+                <span className="px-3 py-1 text-xs font-bold bg-malta-gold text-malta-dark">
+                  EN
+                </span>
+                <Link
+                  href="/pl"
+                  className="px-3 py-1 text-xs font-semibold text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                >
+                  PL
+                </Link>
+              </div>
             </div>
           </div>
         </nav>

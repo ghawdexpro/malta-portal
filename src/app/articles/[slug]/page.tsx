@@ -1,126 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createServiceClient } from "@/lib/supabase";
+import { getClipsForTopic } from "@/lib/maklowicz-clips";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
 
 type Props = { params: Promise<{ slug: string }> };
-
-// Maklowicz video clips mapped to article topics — marketing gold
-const MAKLOWICZ_CLIPS: Record<
-  string,
-  { youtube_id: string; timestamp: number; label: string; quote: string }[]
-> = {
-  restaurants: [
-    {
-      youtube_id: "0XsoarB0dhQ",
-      timestamp: 922,
-      label: "Maklowicz explores Valletta's restaurants",
-      quote: "Kuchnia maltańska to najlepszy sposób, żeby zrozumieć historię tej wyspy.",
-    },
-    {
-      youtube_id: "4lWogQhHrwA",
-      timestamp: 1964,
-      label: "Maklowicz tastes fenek (rabbit) in Rabat",
-      quote: "Królik po maltańsku to nie tylko danie — to akt buntu i smak wolności.",
-    },
-  ],
-  beaches: [
-    {
-      youtube_id: "-twfeQBhjcY",
-      timestamp: 1048,
-      label: "Maklowicz sails to Gozo & Comino",
-      quote: "Na Gozo czas płynie inaczej — wolniej, spokojniej, tak jak powinien.",
-    },
-  ],
-  sightseeing: [
-    {
-      youtube_id: "0XsoarB0dhQ",
-      timestamp: 40,
-      label: "Maklowicz discovers Valletta's history",
-      quote: "Malta to miejsce, gdzie historia napisana jest w kamieniu.",
-    },
-    {
-      youtube_id: "0XsoarB0dhQ",
-      timestamp: 1867,
-      label: "Inside St John's Co-Cathedral with Caravaggio",
-      quote: "Caravaggio uciekał przed wyrokiem śmierci, a na Malcie stworzył dzieło, które przetrwało wieki.",
-    },
-    {
-      youtube_id: "4lWogQhHrwA",
-      timestamp: 926,
-      label: "Maklowicz enters Mdina — The Silent City",
-      quote: "Mdina to miasto, które odmawia bycia głośnym — i właśnie dlatego mówi tak wiele.",
-    },
-  ],
-  transport: [
-    {
-      youtube_id: "-twfeQBhjcY",
-      timestamp: 1048,
-      label: "Taking the ferry to Gozo",
-      quote: "Płyniemy na Gozo. Nie jest to specjalnie wycieńczający rejs, bo trwa około 25 minut.",
-    },
-  ],
-  accommodation: [
-    {
-      youtube_id: "4lWogQhHrwA",
-      timestamp: 926,
-      label: "Maklowicz stays in a Mdina palazzo",
-      quote: "Mdina nocą to najpiękniejsze pożegnanie, jakie Malta może zaoferować.",
-    },
-  ],
-  gozo: [
-    {
-      youtube_id: "-twfeQBhjcY",
-      timestamp: 1048,
-      label: "Maklowicz arrives on Gozo",
-      quote: "Na Gozo czas płynie inaczej — wolniej, spokojniej, tak jak powinien.",
-    },
-    {
-      youtube_id: "-twfeQBhjcY",
-      timestamp: 1364,
-      label: "Exploring the Citadella fortress",
-      quote: "Z Cytadeli widać całe Gozo jak na dłoni.",
-    },
-    {
-      youtube_id: "-twfeQBhjcY",
-      timestamp: 1567,
-      label: "Gozitan food & Victoria market",
-      quote: "Gozo to wyspa, gdzie jedzenie nadal smakuje tak, jak powinno — prosto, uczciwie, z serca.",
-    },
-  ],
-  events: [
-    {
-      youtube_id: "4lWogQhHrwA",
-      timestamp: 2570,
-      label: "Maklowicz experiences Mdina at night",
-      quote: "Mdina nocą to najpiękniejsze pożegnanie, jakie Malta może zaoferować — cisza, światło i wieczność w kamieniu.",
-    },
-  ],
-  tips: [
-    {
-      youtube_id: "0XsoarB0dhQ",
-      timestamp: 425,
-      label: "Maklowicz's tip: rest at Upper Barrakka",
-      quote: "Rozsądny zwiedzający powinien co jakiś czas przycupnąć, a do tego przycupnięcia wybierać miejsca, w których siedząc również można zwiedzać.",
-    },
-    {
-      youtube_id: "4lWogQhHrwA",
-      timestamp: 335,
-      label: "The essential pastizzi experience",
-      quote: "Pastizzi to najprostsze i najbardziej demokratyczne danie na Malcie — za pięćdziesiąt centów jesteś w raju.",
-    },
-  ],
-  prices: [
-    {
-      youtube_id: "4lWogQhHrwA",
-      timestamp: 335,
-      label: "Pastizzi — Malta's €0.50 street food",
-      quote: "Pastizzi to najprostsze i najbardziej demokratyczne danie na Malcie — za pięćdziesiąt centów jesteś w raju.",
-    },
-  ],
-};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -164,7 +50,7 @@ export default async function ArticlePage({ params }: Props) {
 
   if (!article) notFound();
 
-  const clips = MAKLOWICZ_CLIPS[article.topic] ?? [];
+  const clips = getClipsForTopic(article.topic, "en");
   const shareUrl = `https://malta-portal-production.up.railway.app/articles/${slug}`;
   const shareText = `${article.title} — Malta Travel Portal`;
 
