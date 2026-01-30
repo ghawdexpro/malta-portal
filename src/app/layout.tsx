@@ -76,12 +76,6 @@ export default function RootLayout({
                 Articles
               </Link>
               <Link
-                href="/maklowicz"
-                className="text-white/80 transition-colors hover:text-malta-gold"
-              >
-                Maklowicz
-              </Link>
-              <Link
                 href="/maklowicz/map"
                 className="text-white/80 transition-colors hover:text-malta-gold"
               >
@@ -149,7 +143,7 @@ export default function RootLayout({
                   </li>
                   <li>
                     <Link href="/maklowicz" className="hover:text-white transition-colors">
-                      Maklowicz Malta Guide
+                      Video Guide
                     </Link>
                   </li>
                 </ul>

@@ -68,12 +68,6 @@ export default function PolishLayout({
                 Artykuły
               </Link>
               <Link
-                href="/pl/maklowicz"
-                className="text-white/80 transition-colors hover:text-malta-gold"
-              >
-                Makłowicz
-              </Link>
-              <Link
                 href="/pl/maklowicz/map"
                 className="text-white/80 transition-colors hover:text-malta-gold"
               >
@@ -135,7 +129,7 @@ export default function PolishLayout({
                   </li>
                   <li>
                     <Link href="/pl/maklowicz" className="hover:text-white transition-colors">
-                      Przewodnik Makłowicza
+                      Przewodnik Wideo
                     </Link>
                   </li>
                   <li>
