@@ -39,43 +39,37 @@ const EXPERIENCE_CARDS = [
   {
     title: "Restaurants & Food",
     subtitle: "Where locals really eat",
-    image:
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
+    image: "/images/monika/page/experience_food.png",
     topic: "restaurants",
   },
   {
     title: "Beaches & Swimming",
     subtitle: "Crystal clear waters",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+    image: "/images/monika/page/experience_beach.png",
     topic: "beaches",
   },
   {
     title: "Sightseeing",
     subtitle: "Ancient history awaits",
-    image:
-      "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&q=80",
+    image: "/images/monika/page/experience_sightseeing.png",
     topic: "sightseeing",
   },
   {
     title: "Transport & Getting Around",
     subtitle: "Buses, ferries & tips",
-    image:
-      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80",
+    image: "/images/monika/page/experience_transport.png",
     topic: "transport",
   },
   {
     title: "Accommodation",
     subtitle: "Best places to stay",
-    image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+    image: "/images/monika/page/experience_accommodation.png",
     topic: "accommodation",
   },
   {
     title: "Prices & Budget",
     subtitle: "Real costs from real tourists",
-    image:
-      "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80",
+    image: "/images/monika/page/experience_prices.png",
     topic: "prices",
   },
 ];
@@ -91,8 +85,7 @@ export default async function Home() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1920&q=85')",
+            backgroundImage: "url('/images/monika/page/hero_harbour.png')",
           }}
         />
         {/* Dark gradient overlay */}
@@ -348,7 +341,7 @@ export default async function Home() {
                 href="/maklowicz/map"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white/80 transition-all hover:border-malta-gold hover:text-malta-gold"
               >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
                 Interactive Map
               </Link>
               <a
@@ -357,7 +350,7 @@ export default async function Home() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white/80 transition-all hover:border-malta-gold hover:text-malta-gold"
               >
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                 Watch Episode 1
               </a>
             </div>

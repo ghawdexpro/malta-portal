@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createServiceClient } from "@/lib/supabase";
+import { MAKLOWICZ_PL, STOP_FALLBACK_IMAGES } from "@/lib/maklowicz-pl";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ interface MaklowiczStop {
   day_number: number;
   order_in_day: number;
   cover_image: string | null;
+  article_slug?: string | null;
 }
 
 const DAY_THEMES = [
@@ -95,9 +97,23 @@ export default async function MaklowiczPage() {
     .order("day_number", { ascending: true })
     .order("order_in_day", { ascending: true });
 
+  // Apply Polish translations, fallback images, and article links
+  const translatedStops = (stops as MaklowiczStop[] | null)?.map((stop) => {
+    const pl = MAKLOWICZ_PL[stop.location_name];
+    return {
+      ...stop,
+      location_name: pl?.location_name_pl ?? stop.location_name,
+      description: pl?.description_pl ?? stop.description,
+      episode: pl?.episode_pl ?? stop.episode,
+      cover_image:
+        stop.cover_image ?? STOP_FALLBACK_IMAGES[stop.location_name] ?? null,
+      article_slug: pl?.article_slug ?? null,
+    };
+  });
+
   const days = new Map<number, MaklowiczStop[]>();
-  if (stops) {
-    for (const stop of stops as MaklowiczStop[]) {
+  if (translatedStops) {
+    for (const stop of translatedStops) {
       const existing = days.get(stop.day_number) ?? [];
       existing.push(stop);
       days.set(stop.day_number, existing);
@@ -106,7 +122,7 @@ export default async function MaklowiczPage() {
 
   // Collect all unique food mentions for the hero
   const allFoods = new Set<string>();
-  stops?.forEach((s: MaklowiczStop) => s.food_mentioned?.forEach((f) => allFoods.add(f)));
+  translatedStops?.forEach((s) => s.food_mentioned?.forEach((f) => allFoods.add(f)));
 
   return (
     <div>
@@ -140,7 +156,7 @@ export default async function MaklowiczPage() {
           <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-white/50">
             <span>3 Odcinki</span>
             <span>&#8226;</span>
-            <span>{stops?.length ?? 0} Lokalizacji</span>
+            <span>{translatedStops?.length ?? 0} Lokalizacji</span>
             <span>&#8226;</span>
             <span>{allFoods.size} Wspomnianych Dań</span>
             <span>&#8226;</span>
@@ -373,6 +389,14 @@ export default async function MaklowiczPage() {
                                 >
                                   Otwórz w Mapach &rarr;
                                 </a>
+                              )}
+                              {stop.article_slug && (
+                                <Link
+                                  href={`/pl/articles/${stop.article_slug}`}
+                                  className="text-xs font-semibold text-malta-gold hover:text-amber-600 transition-colors"
+                                >
+                                  Czytaj artykuł &rarr;
+                                </Link>
                               )}
                             </div>
                           </div>
