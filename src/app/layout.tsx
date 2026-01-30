@@ -16,13 +16,31 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Malta Travel Portal | AI-Powered Community Insights",
   description:
-    "Discover Malta through real community experiences. AI-analyzed travel tips, restaurants, beaches, and insider knowledge from thousands of tourists.",
+    "Discover Malta through real community experiences. AI-analyzed travel tips, restaurants, beaches, and insider knowledge from thousands of tourists. Featuring Robert Makłowicz's Malta journey.",
   openGraph: {
-    title: "Malta Travel Portal",
+    title: "Malta Travel Portal — Discover Malta Through Real Eyes",
     description:
-      "AI-powered Malta travel guide built from real community experiences",
+      "AI-powered Malta travel guide built from real community experiences. Featuring Robert Makłowicz's interactive video journey through Valletta, Gozo, and Mdina.",
     locale: "en_US",
+    type: "website",
+    siteName: "Malta Travel Portal",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+        width: 1200,
+        height: 630,
+        alt: "Malta Travel Portal — Valletta harbour view",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Malta Travel Portal — Discover Malta Through Real Eyes",
+    description:
+      "AI-powered Malta travel guide with Robert Makłowicz's interactive video journey.",
+    images: ["https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80"],
+  },
+  metadataBase: new URL("https://malta-portal-production.up.railway.app"),
 };
 
 export default function RootLayout({

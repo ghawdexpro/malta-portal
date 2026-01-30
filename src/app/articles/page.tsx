@@ -1,5 +1,24 @@
 import Link from "next/link";
 import { createServiceClient } from "@/lib/supabase";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Travel Articles | Malta Travel Portal",
+  description:
+    "AI-generated guides from real tourist discussions — restaurants, beaches, transport, prices, sightseeing, events, tips, and Gozo.",
+  openGraph: {
+    title: "Malta Travel Articles — Community-Powered Guides",
+    description:
+      "AI-generated Malta travel guides from real tourist discussions. Restaurants, beaches, transport, prices, and more.",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 
 export const revalidate = 300;
 

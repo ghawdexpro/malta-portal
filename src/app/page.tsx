@@ -278,7 +278,7 @@ export default async function Home() {
       {/* ===== MAKLOWICZ FEATURE BANNER ===== */}
       <section className="relative overflow-hidden py-0">
         <div className="grid md:grid-cols-2">
-          {/* Left: Image */}
+          {/* Left: Image + Quote overlay */}
           <div className="relative min-h-[400px] md:min-h-[500px]">
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -287,47 +287,116 @@ export default async function Home() {
                   "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80')",
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-malta-dark/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-malta-dark/80 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-8">
+              <blockquote className="text-lg italic text-white/90">
+                &ldquo;Kuchnia maltańska to najlepszy sposób, żeby zrozumieć historię tej wyspy — każde danie opowiada o innym zdobywcy.&rdquo;
+              </blockquote>
+              <p className="mt-2 text-sm font-semibold text-malta-gold">
+                — Robert Makłowicz, Episode 260
+              </p>
+            </div>
           </div>
 
           {/* Right: Content */}
           <div className="flex flex-col justify-center bg-malta-dark px-10 py-16 md:px-16">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-malta-gold text-malta-dark font-black text-lg">
+              RM
+            </div>
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-malta-gold">
-              Interactive Guide
+              Interactive Video Guide
             </p>
             <h2 className="mt-4 text-3xl font-extrabold leading-tight text-white md:text-4xl">
-              Follow Robert Maklowicz
+              Follow Robert Makłowicz
               <br />
               Through Malta
             </h2>
             <p className="mt-4 text-base leading-relaxed text-white/60">
               The legendary Polish food and travel creator explored Malta&apos;s
               hidden culinary gems across 3 episodes. Our AI-organized guide lets
-              you follow his journey — with interactive maps, embedded videos,
-              and local restaurant recommendations.
+              you follow his journey — with <strong className="text-white/80">timestamped videos</strong>, original Polish quotes,
+              interactive maps, and local food recommendations.
             </p>
-            <div className="mt-4 text-sm text-white/40">
-              3 Episodes &bull; 16 Locations &bull; Valletta, Birgu, Gozo, Mdina & Rabat
+            <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/40">
+              <span>3 Episodes</span>
+              <span>&bull;</span>
+              <span>16 Locations</span>
+              <span>&bull;</span>
+              <span>Every stop timestamped</span>
             </div>
-            <Link
-              href="/maklowicz"
-              className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-malta-gold px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:bg-accent-hover hover:shadow-lg hover:shadow-malta-gold/30"
-            >
-              Explore the Journey
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/maklowicz"
+                className="inline-flex items-center gap-2 rounded-full bg-malta-gold px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:bg-accent-hover hover:shadow-lg hover:shadow-malta-gold/30"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </Link>
+                Explore the Journey
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </Link>
+              <a
+                href="https://youtube.com/watch?v=0XsoarB0dhQ&t=40"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white/80 transition-all hover:border-malta-gold hover:text-malta-gold"
+              >
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                Watch Episode 1
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== MAKLOWICZ QUOTES TICKER ===== */}
+      <section className="bg-malta-stone py-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-malta-blue">
+            Makłowicz on Malta
+          </p>
+          <div className="mt-6 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                quote: "Malta to miejsce, gdzie historia napisana jest w kamieniu, a każdy zaułek opowiada inną historię.",
+                location: "Valletta",
+                ep: "Ep 260",
+              },
+              {
+                quote: "Na Gozo czas płynie inaczej — wolniej, spokojniej, tak jak powinien.",
+                location: "Gozo",
+                ep: "Ep 261",
+              },
+              {
+                quote: "Mdina to miasto, które odmawia bycia głośnym — i właśnie dlatego mówi tak wiele.",
+                location: "Mdina",
+                ep: "Ep 262",
+              },
+            ].map((item) => (
+              <blockquote
+                key={item.location}
+                className="rounded-2xl bg-white p-6 shadow-sm"
+              >
+                <p className="text-sm italic leading-relaxed text-gray-600">
+                  &ldquo;{item.quote}&rdquo;
+                </p>
+                <div className="mt-4 flex items-center justify-between">
+                  <p className="text-xs font-bold text-malta-dark">
+                    — R. Makłowicz, {item.location}
+                  </p>
+                  <span className="text-xs text-gray-400">{item.ep}</span>
+                </div>
+              </blockquote>
+            ))}
           </div>
         </div>
       </section>
@@ -344,15 +413,23 @@ export default async function Home() {
           <p className="mx-auto mt-4 max-w-lg text-gray-500 leading-relaxed">
             Every article on this portal is generated from real discussions in
             Polish tourist communities. Our AI reads, analyzes, and organizes
-            thousands of posts and comments so you get the most authentic travel
-            advice.
+            thousands of posts and comments — enriched with Robert Makłowicz&apos;s
+            video insights — so you get the most authentic travel advice.
           </p>
-          <Link
-            href="/articles"
-            className="mt-8 inline-block rounded-full bg-malta-blue px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-malta-blue-light hover:shadow-lg"
-          >
-            Start Exploring
-          </Link>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/articles"
+              className="rounded-full bg-malta-blue px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-malta-blue-light hover:shadow-lg"
+            >
+              Start Exploring
+            </Link>
+            <Link
+              href="/maklowicz"
+              className="rounded-full border-2 border-malta-dark/20 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:border-malta-gold hover:text-malta-gold"
+            >
+              Makłowicz Journey
+            </Link>
+          </div>
         </div>
       </section>
     </div>
