@@ -3,13 +3,13 @@ import { createServiceClient } from "@/lib/supabase";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Robert Makłowicz Malta Guide | Malta Travel Portal",
+  title: "Przewodnik Roberta Makłowicza po Malcie | Portal Maltański",
   description:
-    "Follow Robert Makłowicz through Malta — 3 episodes, 16 locations, with timestamped videos, maps, and local food stops.",
+    "Podążaj za Robertem Makłowiczem po Malcie — 3 odcinki, 16 lokalizacji, z wideo z minutami, mapami i przystankami kulinarnymi.",
   openGraph: {
-    title: "Robert Makłowicz — Malta Journey",
+    title: "Robert Makłowicz — Podróż po Malcie",
     description:
-      "The legendary Polish food & travel creator explored Malta across 3 episodes. Follow his journey stop by stop.",
+      "Legendarny polski twórca kulinarno-podróżniczy odkrywał Maltę w 3 odcinkach. Śledź jego podróż krok po kroku.",
     images: [
       {
         url: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80",
@@ -17,12 +17,12 @@ export const metadata: Metadata = {
         height: 630,
       },
     ],
-    siteName: "Malta Travel Portal",
+    siteName: "Portal Maltański",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Robert Makłowicz — Malta Journey",
-    description: "Follow Makłowicz through Malta: 3 episodes, 16 locations, interactive guide.",
+    title: "Robert Makłowicz — Podróż po Malcie",
+    description: "Śledź Makłowicza po Malcie: 3 odcinki, 16 lokalizacji, interaktywny przewodnik.",
     images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80"],
   },
 };
@@ -53,8 +53,8 @@ const DAY_THEMES = [
     text: "text-malta-blue",
     badge: "bg-malta-blue/10 text-malta-blue",
     border: "border-malta-blue/20",
-    title: "Valletta — The Fortress Capital",
-    subtitle: "Exploring the city built by the Knights of St. John",
+    title: "Valletta — Twierdza Stolicy",
+    subtitle: "Odkrywanie miasta zbudowanego przez Kawalerów Maltańskich",
     heroQuote: "Malta to miejsce, gdzie historia napisana jest w kamieniu, a każdy zaułek opowiada inną historię.",
   },
   {
@@ -63,8 +63,8 @@ const DAY_THEMES = [
     text: "text-emerald-600",
     badge: "bg-emerald-600/10 text-emerald-700",
     border: "border-emerald-200",
-    title: "Birgu & Gozo — Islands of Character",
-    subtitle: "Crossing the harbour and sailing to Gozo",
+    title: "Birgu i Gozo — Wyspy Charakteru",
+    subtitle: "Przeprawa przez port i żegluga na Gozo",
     heroQuote: "Na Gozo czas płynie inaczej — wolniej, spokojniej, tak jak powinien.",
   },
   {
@@ -73,8 +73,8 @@ const DAY_THEMES = [
     text: "text-amber-700",
     badge: "bg-amber-100 text-amber-700",
     border: "border-amber-200",
-    title: "Rabat & Mdina — The Silent City",
-    subtitle: "Ancient catacombs, pastizzi, and moonlit streets",
+    title: "Rabat i Mdina — Ciche Miasto",
+    subtitle: "Starożytne katakumby, pastizzi i ulice w świetle księżyca",
     heroQuote: "Mdina to miasto, które odmawia bycia głośnym — i właśnie dlatego mówi tak wiele.",
   },
 ];
@@ -125,24 +125,24 @@ export default async function MaklowiczPage() {
             RM
           </div>
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-malta-gold">
-            Interactive Video Guide
+            Interaktywny Przewodnik Wideo
           </p>
           <h1 className="mt-3 text-4xl font-extrabold leading-tight md:text-6xl">
             Robert Makłowicz
             <br />
-            <span className="text-malta-gold">Malta Journey</span>
+            <span className="text-malta-gold">Podróż po Malcie</span>
           </h1>
           <p className="mx-auto mt-4 max-w-lg text-white/60">
-            The legendary Polish food &amp; travel creator explored Malta across 3
-            episodes. Follow his journey stop by stop — with timestamped videos,
-            original Polish quotes, maps, and food recommendations.
+            Legendarny polski twórca kulinarno-podróżniczy odkrywał Maltę w 3
+            odcinkach. Śledź jego podróż krok po kroku — z wideo z minutami,
+            oryginalnymi polskimi cytatami, mapami i rekomendacjami kulinarnymi.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-white/50">
-            <span>3 Episodes</span>
+            <span>3 Odcinki</span>
             <span>&#8226;</span>
-            <span>{stops?.length ?? 0} Locations</span>
+            <span>{stops?.length ?? 0} Lokalizacji</span>
             <span>&#8226;</span>
-            <span>{allFoods.size} Dishes Mentioned</span>
+            <span>{allFoods.size} Wspomnianych Dań</span>
             <span>&#8226;</span>
             <span>Valletta, Birgu, Gozo, Mdina</span>
           </div>
@@ -150,11 +150,11 @@ export default async function MaklowiczPage() {
           {/* Map CTA */}
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="/maklowicz/map"
+              href="/pl/maklowicz/map"
               className="inline-flex items-center gap-2 rounded-full bg-malta-gold px-7 py-3 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:bg-accent-hover hover:shadow-lg hover:shadow-malta-gold/30"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-              Explore Interactive Map
+              Odkryj Mapę Interaktywną
             </Link>
             <a
               href="https://youtube.com/watch?v=0XsoarB0dhQ&t=40"
@@ -163,15 +163,15 @@ export default async function MaklowiczPage() {
               className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-white/80 transition-all hover:border-malta-gold hover:text-malta-gold"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              Watch Episode 1
+              Oglądaj Odcinek 1
             </a>
           </div>
 
           {/* Social share row */}
           <div className="mt-4 flex items-center gap-3">
-            <span className="text-xs font-medium uppercase tracking-wider text-white/30">Share this guide</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-white/30">Udostępnij przewodnik</span>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://malta-portal-production.up.railway.app/maklowicz")}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://malta-portal-production.up.railway.app/pl/maklowicz")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-malta-gold hover:text-malta-dark transition-all"
@@ -179,7 +179,7 @@ export default async function MaklowiczPage() {
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
             </a>
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Robert Makłowicz Malta Journey — Interactive Guide with timestamped videos")}&url=${encodeURIComponent("https://malta-portal-production.up.railway.app/maklowicz")}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Podróż Roberta Makłowicza po Malcie — Interaktywny przewodnik z wideo z minutami")}&url=${encodeURIComponent("https://malta-portal-production.up.railway.app/pl/maklowicz")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-malta-dark hover:text-white transition-all"
@@ -187,7 +187,7 @@ export default async function MaklowiczPage() {
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             </a>
             <a
-              href={`https://api.whatsapp.com/send?text=${encodeURIComponent("Check out this Robert Makłowicz Malta Guide! https://malta-portal-production.up.railway.app/maklowicz")}`}
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent("Sprawdź ten Przewodnik Roberta Makłowicza po Malcie! https://malta-portal-production.up.railway.app/pl/maklowicz")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-emerald-600 hover:text-white transition-all"
@@ -204,7 +204,7 @@ export default async function MaklowiczPage() {
           <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-malta-stone/50 p-20 text-center">
             <div className="text-6xl">&#127909;</div>
             <p className="mt-6 text-xl font-bold text-gray-400">
-              Journey data coming soon
+              Dane podróży wkrótce
             </p>
           </div>
         ) : (
@@ -222,7 +222,7 @@ export default async function MaklowiczPage() {
                     >
                       <div className="text-center">
                         <div className="text-xs font-bold uppercase tracking-wider opacity-70">
-                          Day
+                          Dzień
                         </div>
                         <div className="text-2xl font-black">{dayNum}</div>
                       </div>
@@ -266,7 +266,7 @@ export default async function MaklowiczPage() {
                       </div>
                       <div className="bg-malta-dark p-4 text-center">
                         <p className="text-sm text-white/70">
-                          Full episode — click any stop below to jump to that moment
+                          Pełny odcinek — kliknij dowolny przystanek poniżej, aby przeskoczyć do tego momentu
                         </p>
                       </div>
                     </div>
@@ -361,7 +361,7 @@ export default async function MaklowiczPage() {
                                   rel="noopener noreferrer"
                                   className="text-xs font-semibold text-malta-blue hover:text-malta-blue-light transition-colors"
                                 >
-                                  Watch this moment &rarr;
+                                  Oglądaj ten moment &rarr;
                                 </a>
                               )}
                               {stop.lat && stop.lng && (
@@ -371,7 +371,7 @@ export default async function MaklowiczPage() {
                                   rel="noopener noreferrer"
                                   className="text-xs font-semibold text-gray-400 hover:text-malta-blue transition-colors"
                                 >
-                                  Open in Maps &rarr;
+                                  Otwórz w Mapach &rarr;
                                 </a>
                               )}
                             </div>
@@ -390,10 +390,10 @@ export default async function MaklowiczPage() {
         {allFoods.size > 0 && (
           <section className="mt-20 rounded-2xl bg-malta-stone p-8 md:p-10">
             <h3 className="text-xl font-extrabold text-malta-dark">
-              Makłowicz&apos;s Malta Food Guide
+              Przewodnik Kulinarny Makłowicza po Malcie
             </h3>
             <p className="mt-2 text-sm text-gray-500">
-              Every dish mentioned across all 3 episodes
+              Każde danie wspomniane we wszystkich 3 odcinkach
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {Array.from(allFoods)
@@ -413,39 +413,39 @@ export default async function MaklowiczPage() {
         {/* CTA to articles */}
         <section className="mt-16 text-center">
           <p className="text-sm font-semibold uppercase tracking-wider text-malta-blue">
-            Continue Exploring
+            Dalej Odkrywaj
           </p>
           <h3 className="mt-2 text-2xl font-extrabold text-malta-dark">
-            Read Our Community-Powered Articles
+            Czytaj Nasze Artykuły Społeczności
           </h3>
           <p className="mx-auto mt-3 max-w-md text-sm text-gray-500">
-            Dive deeper into every topic Makłowicz covered — restaurants, sightseeing,
-            Gozo, and more — with insights from hundreds of tourists.
+            Zagłęb się w każdy temat, który poruszył Makłowicz — restauracje, zwiedzanie,
+            Gozo i więcej — ze spostrzeżeniami od setek turystów.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-4">
             <Link
-              href="/articles?topic=restaurants"
+              href="/pl/articles?topic=restaurants"
               className="rounded-full bg-malta-blue px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-malta-blue-light"
             >
-              Restaurants
+              Restauracje
             </Link>
             <Link
-              href="/articles?topic=sightseeing"
+              href="/pl/articles?topic=sightseeing"
               className="rounded-full bg-malta-blue px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-malta-blue-light"
             >
-              Sightseeing
+              Zwiedzanie
             </Link>
             <Link
-              href="/articles?topic=gozo"
+              href="/pl/articles?topic=gozo"
               className="rounded-full bg-malta-blue px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-malta-blue-light"
             >
-              Gozo Guide
+              Przewodnik Gozo
             </Link>
             <Link
-              href="/articles"
+              href="/pl/articles"
               className="rounded-full border-2 border-malta-dark/20 px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:border-malta-gold hover:text-malta-gold"
             >
-              All Articles
+              Wszystkie Artykuły
             </Link>
           </div>
         </section>

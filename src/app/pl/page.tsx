@@ -37,43 +37,43 @@ async function getLatestArticles() {
 
 const EXPERIENCE_CARDS = [
   {
-    title: "Restaurants & Food",
-    subtitle: "Where locals really eat",
+    title: "Restauracje i Jedzenie",
+    subtitle: "Gdzie naprawdę jedzą miejscowi",
     image:
       "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
     topic: "restaurants",
   },
   {
-    title: "Beaches & Swimming",
-    subtitle: "Crystal clear waters",
+    title: "Plaże i Pływanie",
+    subtitle: "Krystalicznie czyste wody",
     image:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
     topic: "beaches",
   },
   {
-    title: "Sightseeing",
-    subtitle: "Ancient history awaits",
+    title: "Zwiedzanie",
+    subtitle: "Starożytna historia czeka",
     image:
       "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&q=80",
     topic: "sightseeing",
   },
   {
-    title: "Transport & Getting Around",
-    subtitle: "Buses, ferries & tips",
+    title: "Transport i Dojazd",
+    subtitle: "Autobusy, promy i porady",
     image:
       "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80",
     topic: "transport",
   },
   {
-    title: "Accommodation",
-    subtitle: "Best places to stay",
+    title: "Noclegi",
+    subtitle: "Najlepsze miejsca na nocleg",
     image:
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
     topic: "accommodation",
   },
   {
-    title: "Prices & Budget",
-    subtitle: "Real costs from real tourists",
+    title: "Ceny i Budżet",
+    subtitle: "Prawdziwe koszty od prawdziwych turystów",
     image:
       "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80",
     topic: "prices",
@@ -101,29 +101,29 @@ export default async function Home() {
         {/* Hero content */}
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-malta-gold">
-            AI-Powered Travel Intelligence
+            Inteligencja Podróżnicza AI
           </p>
           <h1 className="max-w-4xl text-5xl font-extrabold leading-[1.1] tracking-tight md:text-7xl">
-            Discover Malta
+            Odkryj Maltę
             <br />
-            <span className="text-malta-gold">Through Real Eyes</span>
+            <span className="text-malta-gold">Oczami Prawdziwych Ludzi</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-            Insights from thousands of real tourist experiences — analyzed by AI,
-            curated from Polish community discussions.
+            Wiedza z tysięcy prawdziwych doświadczeń turystycznych — analizowana przez AI,
+            zebrana z polskich społeczności internetowych.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Link
-              href="/articles"
+              href="/pl/articles"
               className="rounded-full bg-malta-gold px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:bg-accent-hover hover:shadow-lg hover:shadow-malta-gold/30"
             >
-              Explore Articles
+              Przeglądaj Artykuły
             </Link>
             <Link
-              href="/maklowicz"
+              href="/pl/maklowicz"
               className="rounded-full border-2 border-white/40 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:border-malta-gold hover:text-malta-gold"
             >
-              Maklowicz Guide
+              Przewodnik Makłowicza
             </Link>
           </div>
         </div>
@@ -138,17 +138,17 @@ export default async function Home() {
           {[
             {
               value: stats.posts,
-              label: "Community Posts",
+              label: "Posty Społeczności",
               color: "text-malta-blue",
             },
             {
               value: stats.articles,
-              label: "AI Articles",
+              label: "Artykuły AI",
               color: "text-malta-gold",
             },
             {
               value: stats.stops,
-              label: "Maklowicz Stops",
+              label: "Przystanki Makłowicza",
               color: "text-malta-charcoal",
             },
           ].map((stat, i) => (
@@ -171,14 +171,14 @@ export default async function Home() {
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-malta-blue">
-            Community Knowledge
+            Wiedza Społeczności
           </p>
           <h2 className="mt-2 text-4xl font-extrabold text-malta-dark">
-            What Tourists Actually Say
+            Co Naprawdę Mówią Turyści
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-gray-500">
-            Real insights gathered from Polish tourist communities,
-            analyzed and organized by AI.
+            Prawdziwe spostrzeżenia zebrane z polskich społeczności turystycznych,
+            przeanalizowane i uporządkowane przez AI.
           </p>
         </div>
 
@@ -186,7 +186,7 @@ export default async function Home() {
           {EXPERIENCE_CARDS.map((card) => (
             <Link
               key={card.topic}
-              href={`/articles?topic=${card.topic}`}
+              href={`/pl/articles?topic=${card.topic}`}
               className="card-hover img-overlay group relative flex min-h-[320px] items-end overflow-hidden rounded-2xl"
             >
               <img
@@ -209,17 +209,17 @@ export default async function Home() {
           <div className="flex items-end justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-malta-blue">
-                Latest
+                Najnowsze
               </p>
               <h2 className="mt-2 text-3xl font-extrabold text-malta-dark">
-                AI-Generated Articles
+                Artykuły Generowane przez AI
               </h2>
             </div>
             <Link
-              href="/articles"
+              href="/pl/articles"
               className="text-sm font-semibold text-malta-blue hover:text-malta-blue-light transition-colors"
             >
-              View all &rarr;
+              Zobacz wszystkie &rarr;
             </Link>
           </div>
 
@@ -227,10 +227,10 @@ export default async function Home() {
             <div className="mt-10 rounded-2xl border-2 border-dashed border-gray-300 bg-white p-16 text-center">
               <div className="text-5xl">&#128221;</div>
               <p className="mt-4 text-lg font-semibold text-gray-400">
-                No articles yet
+                Brak artykułów
               </p>
               <p className="mt-1 text-sm text-gray-300">
-                Articles will appear once the AI pipeline processes community data
+                Artykuły pojawią się, gdy system AI przetworzy dane społeczności
               </p>
             </div>
           ) : (
@@ -238,7 +238,7 @@ export default async function Home() {
               {articles.map((article) => (
                 <Link
                   key={article.id}
-                  href={`/articles/${article.slug}`}
+                  href={`/pl/articles/${article.slug}`}
                   className="card-hover group overflow-hidden rounded-2xl bg-white"
                 >
                   {article.cover_image ? (
@@ -265,7 +265,7 @@ export default async function Home() {
                       </p>
                     )}
                     <p className="mt-4 text-xs font-medium text-gray-400">
-                      Based on {article.source_count} community posts
+                      Na podstawie {article.source_count} postów społeczności
                     </p>
                   </div>
                 </Link>
@@ -293,7 +293,7 @@ export default async function Home() {
                 &ldquo;Kuchnia maltańska to najlepszy sposób, żeby zrozumieć historię tej wyspy — każde danie opowiada o innym zdobywcy.&rdquo;
               </blockquote>
               <p className="mt-2 text-sm font-semibold text-malta-gold">
-                — Robert Makłowicz, Episode 260
+                — Robert Makłowicz, Odcinek 260
               </p>
             </div>
           </div>
@@ -304,32 +304,32 @@ export default async function Home() {
               RM
             </div>
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-malta-gold">
-              Interactive Video Guide
+              Interaktywny Przewodnik Wideo
             </p>
             <h2 className="mt-4 text-3xl font-extrabold leading-tight text-white md:text-4xl">
-              Follow Robert Makłowicz
+              Podążaj za Robertem Makłowiczem
               <br />
-              Through Malta
+              Po Malcie
             </h2>
             <p className="mt-4 text-base leading-relaxed text-white/60">
-              The legendary Polish food and travel creator explored Malta&apos;s
-              hidden culinary gems across 3 episodes. Our AI-organized guide lets
-              you follow his journey — with <strong className="text-white/80">timestamped videos</strong>, original Polish quotes,
-              interactive maps, and local food recommendations.
+              Legendarny polski twórca kulinarno-podróżniczy odkrywał ukryte kulinarne
+              perły Malty w 3 odcinkach. Nasz przewodnik zorganizowany przez AI pozwala
+              śledzić jego podróż — z <strong className="text-white/80">wideo z minutami</strong>, oryginalnymi polskimi cytatami,
+              interaktywnymi mapami i rekomendacjami lokalnego jedzenia.
             </p>
             <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/40">
-              <span>3 Episodes</span>
+              <span>3 Odcinki</span>
               <span>&bull;</span>
-              <span>16 Locations</span>
+              <span>16 Lokalizacji</span>
               <span>&bull;</span>
-              <span>Every stop timestamped</span>
+              <span>Każdy przystanek z minutą</span>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/maklowicz"
+                href="/pl/maklowicz"
                 className="inline-flex items-center gap-2 rounded-full bg-malta-gold px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:bg-accent-hover hover:shadow-lg hover:shadow-malta-gold/30"
               >
-                Explore the Journey
+                Odkryj Podróż
                 <svg
                   className="h-4 w-4"
                   fill="none"
@@ -345,11 +345,11 @@ export default async function Home() {
                 </svg>
               </Link>
               <Link
-                href="/maklowicz/map"
+                href="/pl/maklowicz/map"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white/80 transition-all hover:border-malta-gold hover:text-malta-gold"
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                Interactive Map
+                Mapa Interaktywna
               </Link>
               <a
                 href="https://youtube.com/watch?v=0XsoarB0dhQ&t=40"
@@ -358,7 +358,7 @@ export default async function Home() {
                 className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white/80 transition-all hover:border-malta-gold hover:text-malta-gold"
               >
                 <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                Watch Episode 1
+                Oglądaj Odcinek 1
               </a>
             </div>
           </div>
@@ -369,24 +369,24 @@ export default async function Home() {
       <section className="bg-malta-stone py-12">
         <div className="mx-auto max-w-7xl px-6">
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-malta-blue">
-            Makłowicz on Malta
+            Makłowicz o Malcie
           </p>
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             {[
               {
                 quote: "Malta to miejsce, gdzie historia napisana jest w kamieniu, a każdy zaułek opowiada inną historię.",
                 location: "Valletta",
-                ep: "Ep 260",
+                ep: "Odc. 260",
               },
               {
                 quote: "Na Gozo czas płynie inaczej — wolniej, spokojniej, tak jak powinien.",
                 location: "Gozo",
-                ep: "Ep 261",
+                ep: "Odc. 261",
               },
               {
                 quote: "Mdina to miasto, które odmawia bycia głośnym — i właśnie dlatego mówi tak wiele.",
                 location: "Mdina",
-                ep: "Ep 262",
+                ep: "Odc. 262",
               },
             ].map((item) => (
               <blockquote
@@ -412,29 +412,29 @@ export default async function Home() {
       <section className="py-20">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-malta-blue">
-            Powered by Community
+            Napędzane Społecznością
           </p>
           <h2 className="mt-3 text-3xl font-extrabold text-malta-dark">
-            Real People, Real Experiences
+            Prawdziwi Ludzie, Prawdziwe Doświadczenia
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-gray-500 leading-relaxed">
-            Every article on this portal is generated from real discussions in
-            Polish tourist communities. Our AI reads, analyzes, and organizes
-            thousands of posts and comments — enriched with Robert Makłowicz&apos;s
-            video insights — so you get the most authentic travel advice.
+            Każdy artykuł w tym portalu jest generowany z prawdziwych dyskusji
+            w polskich społecznościach turystycznych. Nasze AI czyta, analizuje i porządkuje
+            tysiące postów i komentarzy — wzbogaconych o spostrzeżenia z filmów Roberta Makłowicza
+            — więc dostajesz najbardziej autentyczne porady podróżnicze.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
-              href="/articles"
+              href="/pl/articles"
               className="rounded-full bg-malta-blue px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-malta-blue-light hover:shadow-lg"
             >
-              Start Exploring
+              Zacznij Eksplorować
             </Link>
             <Link
-              href="/maklowicz"
+              href="/pl/maklowicz"
               className="rounded-full border-2 border-malta-dark/20 px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-malta-dark transition-all hover:border-malta-gold hover:text-malta-gold"
             >
-              Makłowicz Journey
+              Podróż Makłowicza
             </Link>
           </div>
         </div>
