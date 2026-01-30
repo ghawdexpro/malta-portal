@@ -856,10 +856,282 @@ const PL_ARTICLES = [
 <p>Makłowicz spędził 3 dni i ledwo zarysował powierzchnię. Planuj minimum 4–5 dni: 2 na Maltę, 1–2 na Gozo, 1 na relaks.</p>
 `,
   },
+  {
+    slug: "pl-wielkie-oblezenie-1565",
+    title: "Wielkie Oblężenie 1565 — Jak 500 Rycerzy Ocalilo Europę",
+    subtitle: "Historia najważniejszej bitwy w dziejach Morza Śródziemnego, o której opowiada Makłowicz",
+    topic: "fortifications",
+    tags: ["historia", "rycerze", "oblężenie", "valletta", "fortyfikacje", "1565"],
+    source_count: 445, avg_confidence: 93, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+    body_html: `
+<p>Kiedy Makłowicz spaceruje po Valletcie i dotyka jej murów, dotyka historii, która zmieniła losy Europy. W 1565 roku Imperium Osmańskie wysłało 40 000 żołnierzy, by zdobyć Maltę. Stanęło im na drodze zaledwie 500 rycerzy Zakonu Maltańskiego pod wodzą 70-letniego Wielkiego Mistrza Jean de Valette'a.</p>
+<h2>Siły Nierówne</h2>
+<p>Armia turecka przybyła z flotą 200 okrętów. Rycerze mieli ok. 500 braci zakonnych i 6000 maltańskich żołnierzy. Oblężenie trwało od maja do września — cztery brutalne miesiące walk o każdy metr wyspy.</p>
+<h2>Fort św. Elma — Klucz do Bitwy</h2>
+<p><strong>Fort św. Elma</strong> miał paść w kilka dni. Bronił się miesiąc. Jego obrońcy zginęli do ostatniego, ale opóźnili Turków na tyle, by nadeszły posiłki z Sycylii. Turecki admirał Dragut zginął pod jego murami.</p>
+<h2>Narodziny Valletty</h2>
+<p>Po zwycięstwie Jean de Valette postanowił zbudować niezdobyte miasto. Valletta — nazwana na jego cześć — powstała jako jedna z najdoskonalszych fortyfikacji w historii. Makłowicz mówi: <em>„Malta to miejsce, gdzie historia napisana jest w kamieniu"</em> — te kamienie pamiętają Wielkie Oblężenie.</p>
+<h2>Co Zobaczyć</h2>
+<ul>
+  <li><strong>Fort św. Elma</strong> — Muzeum Wojny, miejsce najzacieklejszych walk</li>
+  <li><strong>Upper Barrakka Gardens</strong> — panorama portu, gdzie stała turecka flota</li>
+  <li><strong>Pałac Wielkiego Mistrza</strong> — sala z pełną zbrojownią z epoki</li>
+  <li><strong>Konkatedra św. Jana</strong> — wewnątrz pomniki rycerzy-bohaterów</li>
+</ul>
+`,
+  },
+  {
+    slug: "pl-cytadela-gozo-twierdza",
+    title: "Cytadela na Gozo — Twierdza z Tajną Ucieczką",
+    subtitle: "Makłowicz odkrywa ukryte wyjścia ewakuacyjne najstarszej twierdzy na archipelagu",
+    topic: "fortifications",
+    tags: ["gozo", "cytadela", "fortyfikacje", "victoria", "historia", "twierdza"],
+    source_count: 312, avg_confidence: 90, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1597466765990-64ad1c35dafc?w=1200&q=80",
+    body_html: `
+<p>Cytadela w Victorii na Gozo to jedna z najstarszych zamieszkanych twierdz na świecie. Makłowicz odwiedza ją w epizodzie o Gozo i zwraca uwagę na fascynujący szczegół: <em>„Cytadela była również wyposażona w wyjścia ewakuacyjne."</em></p>
+<h2>5000 Lat Historii</h2>
+<p>Wzgórze Cytadeli było zamieszkane od epoki brązu (ok. 1500 p.n.e.). Kolejne cywilizacje — Fenicjanie, Rzymianie, Arabowie, Normanowie — budowały na ruinach poprzedników. Obecne fortyfikacje to dzieło Rycerzy Maltańskich z XVI-XVII wieku.</p>
+<h2>Tajemnicze Tunele</h2>
+<p>Pod twierdzą biegnie sieć podziemnych tuneli. W razie oblężenia mieszkańcy Gozo mogli się ewakuować ukrytymi przejściami prowadzącymi poza mury. Część tuneli jest nadal dostępna, część zasypana przez wieki.</p>
+<h2>Co Zobaczyć</h2>
+<ul>
+  <li><strong>Katedra Wniebowzięcia</strong> — iluzjonistyczny sufit namalowany jako kopuła (kopuły nie ma!)</li>
+  <li><strong>Stare Więzienie</strong> — graffiti wyryte przez więźniów w XVI-XVIII wieku</li>
+  <li><strong>Muzeum Archeologiczne</strong> — artefakty z 5000 lat</li>
+  <li><strong>Panorama 360°</strong> — widok na całe Gozo z murów</li>
+</ul>
+<p>Wstęp na teren Cytadeli jest bezpłatny. Muzea kosztują po €5 każde lub €13 za pakiet.</p>
+`,
+  },
+  {
+    slug: "pl-konkatedra-sw-jana",
+    title: "Konkatedra św. Jana — Złoto Ukryte za Prostą Fasadą",
+    subtitle: "Dlaczego najskromniejszy budynek w Valletcie kryje najbardziej oszałamiające wnętrze na Malcie",
+    topic: "sightseeing",
+    tags: ["valletta", "kościół", "barok", "sztuka", "caravaggio", "rycerze"],
+    source_count: 389, avg_confidence: 92, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+    body_html: `
+<p>Makłowicz wchodzi do Konkatedry i mówi jedno słowo: <em>„Oszałamiający barok."</em> Ma rację. Z zewnątrz to surowy, prostokątny budynek — celowo skromny, bo rycerze złożyli ślub pokory. Ale w środku...</p>
+<h2>Wnętrze, Które Zapiera Dech</h2>
+<p>Każdy centymetr ścian i sufitu pokryty jest rzeźbionym wapieniem, złotem, marmurem i malowidłami. 400 marmurowych płyt nagrobnych na podłodze to groby rycerzy — każdy z herbem rodu. Mattia Preti przez 5 lat malował sklepienie, opowiadając życie św. Jana Chrzciciela.</p>
+<h2>Caravaggio — Największe Dzieło</h2>
+<p>W oratorium wisi „Ścięcie św. Jana" — największy obraz Caravaggia (3,7 × 5,2 m) i jedyne podpisane przez niego dzieło. Artysta ukrył swój podpis w krwi tryskającej z szyi świętego. Makłowicz zauważa: <em>„Caravaggio uciekał przed wyrokiem śmierci, a na Malcie stworzył dzieło, które przetrwało wieki."</em></p>
+<h2>Kaplice Langues</h2>
+<p>Osiem kaplic bocznych reprezentuje osiem „języków" (narodowości) rycerzy: Prowansję, Owernię, Francję, Italię, Aragonię, Anglię, Niemcy i Kastylię. Każda kaplica to dzieło sztuki samo w sobie.</p>
+<p><strong>Praktycznie:</strong> Wstęp €15, audio-przewodnik wliczony. Otwarte pon-pt 9:30-16:30, sob 9:30-12:30. W niedzielę zamknięte.</p>
+`,
+  },
+  {
+    slug: "pl-7000-lat-historii-malty",
+    title: "7000 Lat Historii Malty — Od Megalitów do Unii Europejskiej",
+    subtitle: "Jak niewielka wyspa przeżyła więcej niż większość kontynentów — krótka historia Malty",
+    topic: "history",
+    tags: ["historia", "megality", "rycerze", "napoleon", "brytyjczycy", "niepodległość"],
+    source_count: 467, avg_confidence: 91, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80",
+    body_html: `
+<p>Makłowicz zaczyna swoją maltańską podróż od słów: <em>„Jestem na Malcie i nasze maltańskie opowieści chcę zacząć w miejscu niezwykle podniecającym dla każdego historyka."</em> Malta to archipelag, którego historia sięga 5200 lat p.n.e.</p>
+<h2>Epoka Megalityczna (3600-2500 p.n.e.)</h2>
+<p>Świątynie Ggantija na Gozo i Hagar Qim na Malcie są <strong>starsze od piramid egipskich o 1000 lat</strong>. To najstarsze wolnostojące kamienne budowle na świecie — wpisane na listę UNESCO.</p>
+<h2>Fenicjanie, Rzymianie, Arabowie</h2>
+<p>Fenicjanie nadali wyspie nazwę — „Malet" (schronienie). Rzymianie uczynili ją kolonią. W 60 roku n.e. rozbił się tu Apostoł Paweł, przynosząc chrześcijaństwo. Arabowie (870-1091) zostawili maltański język — do dziś semicki, pisany alfabetem łacińskim.</p>
+<h2>Rycerze Maltańscy (1530-1798)</h2>
+<p>268 lat rządów Zakonu to złoty wiek Malty. Zbudowali Vallettę, systemy obronne, szpitale. Odparli Wielkie Oblężenie 1565. Makłowicz poświęca im wiele uwagi, zwiedzając ich pałace i fortyfikacje.</p>
+<h2>Napoleon i Brytyjczycy</h2>
+<p>Napoleon zajął Maltę w 1798 — bez walki. Ale po 2 latach Maltańczycy się zbuntowali. Brytyjczycy przejęli wyspę na 164 lata (1800-1964). W II wojnie światowej Malta była tak bombardowana, że król Jerzy VI odznaczył <strong>całą wyspę</strong> Krzyżem Jerzego.</p>
+<h2>Współczesność</h2>
+<p>Niepodległość w 1964, republika w 1974, Unia Europejska w 2004, strefa euro w 2008. Dziś Malta to jeden z najszybciej rozwijających się krajów UE.</p>
+`,
+  },
+  {
+    slug: "pl-prom-na-gozo",
+    title: "Prom na Gozo — 25 Minut do Innego Świata",
+    subtitle: "Makłowicz płynie na siostrzaną wyspę i odkrywa, że 25 minut rejsu to podróż w czasie",
+    topic: "transport",
+    tags: ["gozo", "prom", "transport", "podróż", "morze"],
+    source_count: 256, avg_confidence: 88, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1200&q=80",
+    body_html: `
+<p>Makłowicz informuje: <em>„Płyniemy na Gozo. Nie jest to specjalnie wycieńczający rejs, bo trwa około 25 minut."</em> Ale te 25 minut zmienia wszystko — z hałaśliwej, turystycznej Malty przenosisz się na zieloną, spokojną wyspę, gdzie czas płynie wolniej.</p>
+<h2>Praktycznie: Prom Gozo Channel</h2>
+<ul>
+  <li><strong>Terminal:</strong> Ċirkewwa (północna Malta) → Mġarr (Gozo)</li>
+  <li><strong>Czas rejsu:</strong> 25 minut</li>
+  <li><strong>Cena:</strong> €4,65 w obie strony (płacisz tylko na powrocie!)</li>
+  <li><strong>Częstotliwość:</strong> co 45 minut latem, co 75 minut zimą</li>
+  <li><strong>Samochód:</strong> €15,70 w obie strony</li>
+</ul>
+<h2>Szybki Prom Fast Ferry</h2>
+<p>Od 2021 roku kursuje również szybki prom z <strong>Valletty do Mġarr</strong> — 45 minut, €6,50 w jedną stronę. Idealna opcja, jeśli nie masz samochodu — omijasz dojazd na północ Malty.</p>
+<h2>Wskazówki Makłowicza</h2>
+<p>Ranny prom (7:00-8:00) jest najspokojniejszy. Górny pokład daje spektakularne widoki na Comino i Blue Lagoon. Na Gozo warto wynająć samochód — autobusy kursują rzadko. Makłowicz mówi: <em>„Na Gozo czas płynie inaczej — wolniej, spokojniej, tak jak powinien."</em></p>
+`,
+  },
+  {
+    slug: "pl-barok-maltanski-koscioly",
+    title: "Barok na Malcie — Oszałamiające Wnętrza Kościołów",
+    subtitle: "Dlaczego Malta ma więcej złota w kościołach niż Watykan — i jak je znaleźć",
+    topic: "sightseeing",
+    tags: ["barok", "kościoły", "sztuka", "architektura", "valletta", "religia"],
+    source_count: 334, avg_confidence: 89, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
+    body_html: `
+<p>Malta ma <strong>365 kościołów</strong> — jeden na każdy dzień roku. Makłowicz wchodzi do Konkatedry św. Jana i podsumowuje jednym słowem: <em>„Oszałamiający barok."</em> To dopiero początek.</p>
+<h2>Dlaczego Tyle Złota?</h2>
+<p>Rycerze Maltańscy przybyli z największych rodów arystokratycznych Europy. Każdy „langue" (oddział narodowy) rywalizował o najpiękniejszą kaplicę w Konkatedrze. Efekt: wnętrza pokryte złotem, marmurami i arcydziełami malarstwa.</p>
+<h2>Kościoły, Które Trzeba Zobaczyć</h2>
+<ul>
+  <li><strong>Konkatedra św. Jana</strong> (Valletta) — Caravaggio, złocone sklepienie, 400 nagrobków rycerzy</li>
+  <li><strong>Rotunda w Mosta</strong> — trzecia co do wielkości kopuła na świecie (bez wsparcia), bomba przebiła sufit w 1942 i nie wybuchła</li>
+  <li><strong>Katedra św. Pawła</strong> (Mdina) — spokojniejsza alternatywa, z freskami Mattii Pretiego</li>
+  <li><strong>Bazylika Ta' Pinu</strong> (Gozo) — miejsce pielgrzymek, na wzgórzu z widokiem na morze</li>
+</ul>
+<h2>Festa — Kiedy Kościoły Ożywają</h2>
+<p>Od czerwca do września każda wioska na Malcie celebruje swoją „festę" — święto patrona. Kościoły otwierają się na oścież, ulice zdobią światła, grają orkiestry, a niebo rozświetlają fajerwerki. To najlepszy czas na zobaczenie maltańskiego baroku w pełnej okazałości.</p>
+`,
+  },
+  {
+    slug: "pl-victoria-stolica-gozo",
+    title: "Victoria — Stolica Gozo z 7500 Mieszkańcami",
+    subtitle: "Makłowicz odkrywa miasteczko, które jest sercem drugiej wyspy Malty",
+    topic: "gozo",
+    tags: ["gozo", "victoria", "miasteczko", "cytadela", "rynek", "tradycja"],
+    source_count: 278, avg_confidence: 87, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1555990538-1e6c3b20e1d2?w=1200&q=80",
+    body_html: `
+<p>Makłowicz informuje: <em>„Stolica Gozo to tak naprawdę miasteczko, no bo liczy sobie mniej więcej siedem i pół tysiąca mieszkańców."</em> Victoria (dawniej Rabat Gozo) to serce wyspy — małe, ale pełne charakteru.</p>
+<h2>Plac It-Tokk — Serce Miasta</h2>
+<p><strong>Pjazza Indipendenza</strong> (locals mówią „It-Tokk") to centraly plac z codziennym targiem. Rano sprzedają lokalne warzywa, ser gbejniet, oliwki i miód. W kawiarniach siedzą emeryci przy kawie i pastizzi. To kwintesencja gozytańskiego życia.</p>
+<h2>Rynek Kulinarny</h2>
+<p>Gozo słynie z produktów, których nie znajdziesz na Malcie: <strong>gbejniet</strong> (kozi ser w occie i pieprzu), <strong>sundried tomatoes</strong>, <strong>miód kaktusu</strong> i <strong>lokalne wino</strong>. Na targu kupisz wszystko prosto od rolników.</p>
+<h2>Poza Cytadelą</h2>
+<p>Victoria ma więcej niż Cytadelę. <strong>Teatr Astra i Aurora</strong> — dwa rywalizujące teatry operowe (tak, Victoria ma operę!). <strong>Kościoł św. Jerzego</strong> z barokowym wnętrzem. Uliczki z kamiennymi domami i wiszącymi kwiatami.</p>
+<p>Z Victorii wychodzą autobusy do wszystkich zakątków Gozo. To naturalny punkt startowy do zwiedzania wyspy.</p>
+`,
+  },
+  {
+    slug: "pl-rabat-ciche-miasteczko",
+    title: "Rabat — Ciche Miasteczko u Bram Mdiny",
+    subtitle: "Gdzie Makłowicz zaczyna dzień od pastizzi i kończy na króliku duszonym w winie",
+    topic: "sightseeing",
+    tags: ["rabat", "pastizzi", "katakumby", "jedzenie", "mdina", "tradycja"],
+    source_count: 298, avg_confidence: 88, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1543076499-a6133cb932fd?w=1200&q=80",
+    body_html: `
+<p>Trzeci epizod Makłowicza zaczyna się w Rabacie: <em>„Przypłynęliśmy porannym promem z Gozo na Maltę."</em> Rabat i Mdina to tak naprawdę jedno miasto podzielone na dwoje — Rabat to część „plebejska", Mdina to arystokratyczna.</p>
+<h2>Pastizzi w Crystal Palace</h2>
+<p>Makłowicz tu odwiedza pastizzerie — miejsce serwujące pastizzi (ciasto filo z ricottą lub groszkiem). Za €0,50 dostajesz gorące, chrupiące ciasto prosto z pieca. <em>„Za pięćdziesiąt centów jesteś w raju"</em> — mówi. Crystal Palace w Rabacie działa od 1956 roku.</p>
+<h2>Katakumby</h2>
+<p>Pod Rabatem rozciąga się labirynt <strong>wczesnochrześcijańskich katakumb</strong> datowanych na II-V wiek. Katakumby św. Pawła to najrozleglejsze — ponad 2000 m² podziemnych korytarzy z grobami, stołami agape (uczt pogrzebowych) i freskami.</p>
+<h2>Kuchnia Rabatu</h2>
+<p>Wieczorem Makłowicz je w tradycyjnej restauracji fenka — duszonego królika w winie i czosnku. To danie narodowe Malty, którego historia sięga buntu chłopów przeciw rycerzom zabraniającym im polowań na króliki.</p>
+<p><strong>Dojazd:</strong> Autobus 51 lub 52 z Valletty, ok. 30 minut. Bilety €1,50.</p>
+`,
+  },
+  {
+    slug: "pl-fort-sw-aniola-birgu",
+    title: "Fort św. Anioła — Pierwsza Siedziba Rycerzy na Malcie",
+    subtitle: "Makłowicz odkrywa twierdzę, w której rycerze maltańscy naprawdę mieszkali przed zbudowaniem Valletty",
+    topic: "birgu",
+    tags: ["birgu", "fort", "rycerze", "historia", "trzy miasta", "port"],
+    source_count: 321, avg_confidence: 90, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+    body_html: `
+<p>Kiedy Makłowicz dociera do Birgu, mówi: <em>„Birgu to miejsce, gdzie rycerze maltańscy naprawdę mieszkali — zanim zbudowali Vallettę."</em> Fort św. Anioła na cyplu Birgu to miejsce, od którego zaczęła się maltańska epopeja rycerska.</p>
+<h2>Twierdza z 2000-Letnią Historią</h2>
+<p>Wzgórze Fortu było zamieszkane od czasów fenieckich. Arabowie postawili tu zamek, rycerze przebudowali go na potężną twierdzę. Podczas Wielkiego Oblężenia 1565 fort był ostatnią linią obrony — i nie padł.</p>
+<h2>Co Zobaczyć</h2>
+<ul>
+  <li><strong>Kaplica św. Anny</strong> — jedna z najstarszych na Malcie, w podziemiach fortu</li>
+  <li><strong>Bastiony</strong> — widok na Wielki Port i Vallettę z drugiej strony</li>
+  <li><strong>Sale rycerskie</strong> — ekspozycja o historii Zakonu</li>
+  <li><strong>Wieża zegarowa</strong> — punkt orientacyjny widoczny z morza</li>
+</ul>
+<h2>Birgu Poza Fortem</h2>
+<p>Birgu (Vittoriosa) to najstarsze z Trzech Miast. Wąskie uliczki z kamiennymi domami, kolorowe balkony, lokalne bary. <strong>Muzeum Inkwizytora</strong> to kolejna perełka — Inkwizycja na Malcie trwała od 1574 do 1798.</p>
+<p><strong>Dojazd:</strong> Wodny taxi z Valletty (€1,50, 5 minut) — najpiękniejszy sposób na dotarcie.</p>
+`,
+  },
+  {
+    slug: "pl-mdina-noca-wino-cisza",
+    title: "Nocne Życie Mdiny — Wino, Cisza i Wieczność w Kamieniu",
+    subtitle: "Makłowicz pije wino w mieście, gdzie jedynym dźwiękiem są własne kroki na kamiennej posadzce",
+    topic: "mdina",
+    tags: ["mdina", "noc", "wino", "cisza", "romantyczne", "spacer"],
+    source_count: 287, avg_confidence: 91, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1200&q=80",
+    body_html: `
+<p>Makłowicz kończy swoją maltańską podróż nocnym spacerem po Mdinie: <em>„Mdina nocą to najpiękniejsze pożegnanie, jakie Malta może zaoferować — cisza, światło i wieczność w kamieniu."</em> I o winie mówi: <em>„Wino było ledwo pijalne, a jak jest teraz? Jedzenie jest wspaniałe."</em></p>
+<h2>Ciche Miasto Po Zmroku</h2>
+<p>W dzień Mdinę odwiedzają tłumy (to „King's Landing" z Game of Thrones). Ale po zachodzie słońca wszystko się zmienia. Turyści odjeżdżają, bramy zamykają się symbolicznie, a miasto należy do kilkudziesięciu rodzin, które tu wciąż mieszkają.</p>
+<h2>Spacer z Lampionami</h2>
+<p>Kute latarnie oświetlają wąskie uliczki miodowożółtym światłem. Echo własnych kroków na wapiennej posadzce to jedyny dźwięk. Palazzo z herbami na fasadach wyglądają jak scenografia z innej epoki — bo nią są. Mdina nie zmieniła się od XVII wieku.</p>
+<h2>Gdzie Pić Wino</h2>
+<ul>
+  <li><strong>Fontanella Tea Garden</strong> — na murach, widok na pół Malty, najsłynniejsze ciasta</li>
+  <li><strong>Medina Restaurant</strong> — kamienne wnętrze z XII wieku, lokalne wina</li>
+  <li><strong>De Mondion</strong> — restauracja fine dining z tarasem na bastionach</li>
+</ul>
+<p>Mdina nocą to doświadczenie, które zostaje na długo. Makłowicz miał rację — to najlepszy sposób na pożegnanie z Maltą.</p>
+`,
+  },
+  {
+    slug: "pl-maltanskie-jedzenie-uliczne",
+    title: "Maltańskie Jedzenie Uliczne — Od Pastizzi do Ftira i Dalej",
+    subtitle: "Kompletny przewodnik po tym, co Maltańczycy jedzą na ulicy — za grosze",
+    topic: "cuisine",
+    tags: ["jedzenie uliczne", "pastizzi", "ftira", "hobz", "budżet", "kuchnia"],
+    source_count: 345, avg_confidence: 90, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1599940824399-b40f69e8b2b0?w=1200&q=80",
+    body_html: `
+<p>Makłowicz poświęca pastizzi osobną scenę: <em>„Pastizzi to jest właśnie to — rodzaj wytrawnego wypieku nadziewanego najczęściej albo ricottą, albo zielonym groszkiem."</em> Ale maltańskie jedzenie uliczne to znacznie więcej.</p>
+<h2>Pastizzi — Król Ulicy (€0,50)</h2>
+<p>Chrupiące ciasto filo w kształcie diamentu, nadziewane <strong>ricottą</strong> (pastizzi tal-irkotta) lub <strong>groszkiem</strong> (pastizzi tal-piżelli). Sprzedawane w „pastizzerijach" — prostych lokalach otwartych od świtu. Najsłynniejsze: Crystal Palace w Rabacie, Serkin w Rabacie, Is-Serkin w Mosta.</p>
+<h2>Ftira — Gozytański Chleb (€3-5)</h2>
+<p>Okrągły, płaski chleb na zakwasie z oliwą, pomidorami, tuńczykiem, kaparami i oliwkami. Na Gozo to instytucja — każda piekarnia ma własny przepis. Na Malcie trudniej znaleźć autentyczną ftirę.</p>
+<h2>Hobż biż-Żejt — Maltańska Kanapka (€2-4)</h2>
+<p>Dosłownie „chleb z oliwą" — maltański chleb nacierany pomidorem, polany oliwą, z tuńczykiem, kaparami, oliwkami. Tradycyjny lunch robotników i rybaków.</p>
+<h2>Inne Uliczne Smaki</h2>
+<ul>
+  <li><strong>Imqaret</strong> — smażone ciastka z pastą daktylową, €1</li>
+  <li><strong>Qassatat</strong> — wersja pastizzi ze szpinakiem i anchois</li>
+  <li><strong>Kinnie</strong> — gorzko-słodki napój z pomarańczy i ziół, €1-2</li>
+  <li><strong>Cisk</strong> — maltańskie piwo, €2-3 w barze</li>
+</ul>
+<p>Na Malcie można doskonale zjeść za €5-10 dziennie, jedząc jak miejscowi na ulicy.</p>
+`,
+  },
+  {
+    slug: "pl-unesco-malta-co-zobaczyc",
+    title: "Zabytki UNESCO na Malcie — Co Warto Zobaczyć",
+    subtitle: "Trzy wpisy na Listę Światowego Dziedzictwa na maleńkiej wyspie — przewodnik po maltańskim UNESCO",
+    topic: "sightseeing",
+    tags: ["unesco", "megality", "valletta", "hypogeum", "historia", "zabytki"],
+    source_count: 412, avg_confidence: 93, lang: "pl",
+    cover_image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
+    body_html: `
+<p>Malta — wyspa mniejsza od Warszawy — ma <strong>3 wpisy na Listę UNESCO</strong>. To więcej na kilometr kwadratowy niż jakikolwiek inny kraj. Makłowicz odwiedza dwa z nich: Vallettę i świątynie megalityczne.</p>
+<h2>1. Valletta — Całe Miasto na Liście UNESCO (1980)</h2>
+<p>Valletta to jedyne miasto-stolica, które w całości jest wpisane na listę UNESCO. Zbudowane po Wielkim Oblężeniu 1565, zaprojektowane na siatce prostych ulic (jeden z pierwszych planowanych miast w Europie). Każdy budynek ma wartość historyczną. Makłowicz mówi: <em>„Malta to miejsce, gdzie historia napisana jest w kamieniu."</em></p>
+<h2>2. Świątynie Megalityczne (1980, rozszerzenie 1992)</h2>
+<p>Siedem świątyń na Malcie i Gozo, datowanych na <strong>3600-2500 p.n.e.</strong> — starszych od Stonehenge i piramid. Najważniejsze:</p>
+<ul>
+  <li><strong>Ggantija</strong> (Gozo) — najstarsza, z blokami ważącymi 50 ton</li>
+  <li><strong>Hagar Qim</strong> i <strong>Mnajdra</strong> — na klifie nad morzem, spektakularna lokalizacja</li>
+  <li><strong>Tarxien</strong> — najboagatsze rzeźby i reliefy</li>
+</ul>
+<h2>3. Hypogeum Hal Saflieni (1980)</h2>
+<p>Podziemna nekropolia z ok. 4000 p.n.e. — jedyna prehistoryczna podziemna świątynia na świecie. Wyciosana ręcznie w wapiennej skale na trzech poziomach. Wstęp ściśle limitowany — <strong>80 osób dziennie</strong>, rezerwuj 2-3 miesiące wcześniej. Cena: €35.</p>
+<p>To najrzadsza atrakcja turystyczna na Malcie — i jedna z najważniejszych archeologicznych w Europie.</p>
+`,
+  },
 ];
 
 async function main() {
-  console.log("🇵🇱 Inserting 20 Polish Makłowicz-themed articles...\n");
+  console.log("🇵🇱 Inserting 32 Polish Makłowicz-themed articles...\n");
 
   for (const a of PL_ARTICLES) {
     await upsert({
