@@ -6,6 +6,15 @@ export const MONIKA_VOICE_ID = 'TDHOWxVtDS0zj6s4Jgg6'; // Alicia - ASMR Soft-Spo
 export const TEXT_MODEL = 'anthropic/claude-4.5-opus';
 export const IMAGE_MODEL = 'google/gemini-3-pro-image-preview'; // Nanobana Pro via OpenRouter
 
+export type AspectRatioKey = '9:16' | '1:1' | '4:5' | '16:9';
+
+export const ASPECT_RATIOS: Record<AspectRatioKey, { width: number; height: number; label: string; labelEn: string; icon: string; hint: string; hintEn: string }> = {
+  '9:16': { width: 1080, height: 1920, label: 'TikTok / Reels / Shorts', labelEn: 'TikTok / Reels / Shorts', icon: '📱', hint: 'Pionowy format wideo — idealny do krotkich form', hintEn: 'Vertical video — perfect for short-form content' },
+  '1:1':  { width: 1080, height: 1080, label: 'Instagram Feed (kwadrat)', labelEn: 'Instagram Feed (square)', icon: '⬛', hint: 'Kwadratowy post na Instagram', hintEn: 'Square post for Instagram feed' },
+  '4:5':  { width: 1080, height: 1350, label: 'Instagram Feed (portret)', labelEn: 'Instagram Feed (portrait)', icon: '📋', hint: 'Portretowy post — wiecej miejsca na ekranie', hintEn: 'Portrait post — more screen real estate' },
+  '16:9': { width: 1920, height: 1080, label: 'YouTube / Poziomy', labelEn: 'YouTube / Landscape', icon: '🖥️', hint: 'Klasyczny format poziomy', hintEn: 'Classic landscape format' },
+};
+
 export const VOICE_SETTINGS = {
   model_id: 'eleven_flash_v2_5',
   voice_settings: {

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const ASMR_DIR = path.join(process.cwd(), 'public', 'videos', 'asmr');
+const TOPN_DIR = path.join(process.cwd(), 'public', 'videos', 'topn');
 const BEST_DIR = path.join(process.cwd(), 'public', 'images', 'monika', 'asmr-best');
 
 function fileUrl(publicPath: string) {
@@ -77,6 +78,49 @@ export async function GET() {
           if (session) {
             session.finalVideo = fileUrl(`videos/asmr/${entry.name}`);
           }
+        }
+      }
+    }
+
+    // Scan Top N session directories
+    if (fs.existsSync(TOPN_DIR)) {
+      const entries = fs.readdirSync(TOPN_DIR, { withFileTypes: true });
+
+      for (const entry of entries) {
+        if (entry.isDirectory() && entry.name.startsWith('session_topn_')) {
+          const sessionId = entry.name.replace('session_', '');
+          const sessionPath = path.join(TOPN_DIR, entry.name);
+          const files = fs.readdirSync(sessionPath);
+
+          const images = files.filter((f) => f.endsWith('_image.png'))
+            .map((f) => fileUrl(`videos/topn/${entry.name}/${f}`));
+          const audio = files.filter((f) => f.endsWith('_audio.mp3'))
+            .map((f) => fileUrl(`videos/topn/${entry.name}/${f}`));
+          const videos = files.filter((f) => f.endsWith('.mp4') && !f.includes('list'))
+            .map((f) => fileUrl(`videos/topn/${entry.name}/${f}`));
+
+          if (images.length > 0 || audio.length > 0) {
+            const stat = fs.statSync(sessionPath);
+            sessions.push({
+              id: `[Top N] ${sessionId}`,
+              created_at: stat.birthtime.toISOString(),
+              images,
+              audio,
+              videos,
+            });
+          }
+        }
+
+        if (!entry.isDirectory() && entry.name.startsWith('topn_') && entry.name.endsWith('.mp4')) {
+          const filePath = path.join(TOPN_DIR, entry.name);
+          const stat = fs.statSync(filePath);
+          finalVideos.push({
+            url: fileUrl(`videos/topn/${entry.name}`),
+            name: entry.name,
+            size: stat.size,
+            type: 'video',
+            created_at: stat.birthtime.toISOString(),
+          });
         }
       }
     }

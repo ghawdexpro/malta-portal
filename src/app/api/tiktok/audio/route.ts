@@ -8,7 +8,8 @@ const BASE_URL = 'https://api.elevenlabs.io/v1';
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, sessionId, segmentIndex, voiceSettings } = await request.json();
+    const { text, sessionId, segmentIndex, voiceSettings, prefix } = await request.json();
+    const filePrefix = prefix || 'seg';
 
     if (!text || sessionId === undefined || segmentIndex === undefined) {
       return NextResponse.json({ error: 'text, sessionId, segmentIndex required' }, { status: 400 });
@@ -18,12 +19,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'ELEVENLABS_API_KEY not configured' }, { status: 500 });
     }
 
-    const sessionDir = path.join(process.cwd(), 'public', 'videos', 'asmr', `session_${sessionId}`);
+    const subDir = filePrefix === 'rank' ? 'topn' : 'asmr';
+    const sessionDir = path.join(process.cwd(), 'public', 'videos', subDir, `session_${sessionId}`);
     fs.mkdirSync(sessionDir, { recursive: true });
 
     // Find next available take number for this segment
     const existingFiles = fs.readdirSync(sessionDir);
-    const takePattern = new RegExp(`^seg_${segmentIndex}_audio_take(\\d+)\\.mp3$`);
+    const takePattern = new RegExp(`^${filePrefix}_${segmentIndex}_audio_take(\\d+)\\.mp3$`);
     let maxTake = 0;
     for (const f of existingFiles) {
       const match = f.match(takePattern);
@@ -34,9 +36,9 @@ export async function POST(request: NextRequest) {
     const takeNum = maxTake + 1;
 
     // Save as numbered take
-    const audioPath = path.join(sessionDir, `seg_${segmentIndex}_audio_take${takeNum}.mp3`);
+    const audioPath = path.join(sessionDir, `${filePrefix}_${segmentIndex}_audio_take${takeNum}.mp3`);
     // Also save/overwrite as the "current" version
-    const currentPath = path.join(sessionDir, `seg_${segmentIndex}_audio.mp3`);
+    const currentPath = path.join(sessionDir, `${filePrefix}_${segmentIndex}_audio.mp3`);
 
     // Build voice settings from request (with defaults)
     const settings = {
@@ -89,13 +91,13 @@ export async function POST(request: NextRequest) {
       if (match) {
         takes.push({
           take: parseInt(match[1], 10),
-          url: `/api/tiktok/files?path=videos/asmr/session_${sessionId}/${f}`,
+          url: `/api/tiktok/files?path=videos/${subDir}/session_${sessionId}/${f}`,
         });
       }
     }
     takes.sort((a, b) => a.take - b.take);
 
-    const audioUrl = `/api/tiktok/files?path=videos/asmr/session_${sessionId}/seg_${segmentIndex}_audio_take${takeNum}.mp3`;
+    const audioUrl = `/api/tiktok/files?path=videos/${subDir}/session_${sessionId}/${filePrefix}_${segmentIndex}_audio_take${takeNum}.mp3`;
 
     return NextResponse.json({
       audioUrl,

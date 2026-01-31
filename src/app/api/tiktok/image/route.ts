@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { IMAGE_MODEL } from '@/lib/tiktok-config';
+import { IMAGE_MODEL, ASPECT_RATIOS, type AspectRatioKey } from '@/lib/tiktok-config';
 import fs from 'fs';
 import path from 'path';
 
@@ -25,11 +25,14 @@ async function fetchWithRetry(url: string, options: RequestInit, retries = MAX_R
 
 export async function POST(request: NextRequest) {
   try {
-    const { visualPrompt, sessionId, segmentIndex } = await request.json();
+    const { visualPrompt, sessionId, segmentIndex, aspectRatio: ratioKey, prefix } = await request.json();
+    const filePrefix = prefix || 'seg';
 
     if (!visualPrompt || sessionId === undefined || segmentIndex === undefined) {
       return NextResponse.json({ error: 'visualPrompt, sessionId, segmentIndex required' }, { status: 400 });
     }
+
+    const ar = (ratioKey && ASPECT_RATIOS[ratioKey as AspectRatioKey]) || ASPECT_RATIOS['9:16'];
 
     const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
     if (!OPENROUTER_API_KEY) {
@@ -40,15 +43,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Reference image not found' }, { status: 500 });
     }
 
-    const sessionDir = path.join(process.cwd(), 'public', 'videos', 'asmr', `session_${sessionId}`);
+    const subDir = filePrefix === 'rank' ? 'topn' : 'asmr';
+    const sessionDir = path.join(process.cwd(), 'public', 'videos', subDir, `session_${sessionId}`);
     fs.mkdirSync(sessionDir, { recursive: true });
 
-    const imagePath = path.join(sessionDir, `seg_${segmentIndex}_image.png`);
+    const imagePath = path.join(sessionDir, `${filePrefix}_${segmentIndex}_image.png`);
 
     const refImageB64 = fs.readFileSync(REF_IMAGE_PATH).toString('base64');
+
+    const orientationHint = ar.width < ar.height
+      ? `Generate this image in VERTICAL portrait orientation (${ar.width}x${ar.height}, ${ratioKey || '9:16'} aspect ratio).`
+      : ar.width === ar.height
+      ? `Generate this image in SQUARE format (${ar.width}x${ar.height}, 1:1 aspect ratio).`
+      : `Generate this image in HORIZONTAL landscape orientation (${ar.width}x${ar.height}, ${ratioKey || '16:9'} aspect ratio).`;
+
     const fullPrompt = `${visualPrompt}.
         KEEP IDENTICAL: The woman from reference image (Monika).
-        STYLE: Photorealistic 8K, cinematic lighting, shallow depth of field.`;
+        STYLE: Photorealistic 8K, cinematic lighting, shallow depth of field.
+        FRAMING: ${orientationHint}`;
 
     const response = await fetchWithRetry('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -127,7 +139,7 @@ export async function POST(request: NextRequest) {
     }
 
     fs.writeFileSync(imagePath, imageBuffer);
-    const imageUrl = `/api/tiktok/files?path=videos/asmr/session_${sessionId}/seg_${segmentIndex}_image.png`;
+    const imageUrl = `/api/tiktok/files?path=videos/${subDir}/session_${sessionId}/${filePrefix}_${segmentIndex}_image.png`;
 
     return NextResponse.json({ imageUrl, size: imageBuffer.byteLength });
   } catch (error) {

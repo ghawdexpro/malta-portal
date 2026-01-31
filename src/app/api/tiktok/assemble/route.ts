@@ -3,16 +3,21 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
+import { ASPECT_RATIOS, type AspectRatioKey } from '@/lib/tiktok-config';
+import { buildSegmentFilter, type EditorSegment } from '@/lib/ffmpeg-builder';
 
 const execAsync = promisify(exec);
 
 export async function POST(request: NextRequest) {
   try {
-    const { sessionId, segmentCount } = await request.json();
+    const { sessionId, segmentCount, aspectRatio: ratioKey, editorState } = await request.json();
 
     if (!sessionId || !segmentCount) {
       return NextResponse.json({ error: 'sessionId and segmentCount required' }, { status: 400 });
     }
+
+    const ar = (ratioKey && ASPECT_RATIOS[ratioKey as AspectRatioKey]) || ASPECT_RATIOS['9:16'];
+    const { width, height } = ar;
 
     const sessionDir = path.join(process.cwd(), 'public', 'videos', 'asmr', `session_${sessionId}`);
     const outputDir = path.join(process.cwd(), 'public', 'videos', 'asmr');
@@ -23,19 +28,48 @@ export async function POST(request: NextRequest) {
 
     const segmentVideos: string[] = [];
 
-    // Create video segments from image + audio pairs
-    for (let i = 0; i < segmentCount; i++) {
-      const imagePath = path.join(sessionDir, `seg_${i}_image.png`);
-      const audioPath = path.join(sessionDir, `seg_${i}_audio.mp3`);
-      const videoPath = path.join(sessionDir, `seg_${i}.mp4`);
+    if (editorState && Array.isArray(editorState) && editorState.length > 0) {
+      // Editor-enhanced assembly: use editor segments with effects
+      const sorted = [...(editorState as EditorSegment[])].sort((a, b) => a.order - b.order);
 
-      if (!fs.existsSync(imagePath) || !fs.existsSync(audioPath)) {
-        continue; // Skip segments missing assets
+      for (const seg of sorted) {
+        const imagePath = path.join(sessionDir, `seg_${sorted.indexOf(seg)}_image.png`);
+        const audioPath = path.join(sessionDir, `seg_${sorted.indexOf(seg)}_audio.mp3`);
+        const videoPath = path.join(sessionDir, `seg_${seg.order}_edited.mp4`);
+
+        if (!fs.existsSync(imagePath) || !fs.existsSync(audioPath)) {
+          continue;
+        }
+
+        const filter = buildSegmentFilter(seg, width, height);
+        const duration = Math.max(1, (seg.audioDuration || 30) - (seg.trimStart || 0) - (seg.trimEnd || 0));
+
+        const trimArgs = (seg.trimStart || 0) > 0
+          ? `-ss ${seg.trimStart}`
+          : '';
+        const trimEnd = (seg.trimEnd || 0) > 0
+          ? `-to ${(seg.audioDuration || 30) - seg.trimEnd}`
+          : '';
+
+        const cmd = `ffmpeg -y -loop 1 -i "${imagePath}" ${trimArgs} ${trimEnd} -i "${audioPath}" -c:v libx264 -t ${Math.ceil(duration)} -pix_fmt yuv420p -vf "${filter}" -shortest "${videoPath}"`;
+        await execAsync(cmd);
+        segmentVideos.push(videoPath);
       }
+    } else {
+      // Simple assembly (no editor state)
+      for (let i = 0; i < segmentCount; i++) {
+        const imagePath = path.join(sessionDir, `seg_${i}_image.png`);
+        const audioPath = path.join(sessionDir, `seg_${i}_audio.mp3`);
+        const videoPath = path.join(sessionDir, `seg_${i}.mp4`);
 
-      const cmd = `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" -c:v libx264 -t 30 -pix_fmt yuv420p -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" -shortest "${videoPath}"`;
-      await execAsync(cmd);
-      segmentVideos.push(videoPath);
+        if (!fs.existsSync(imagePath) || !fs.existsSync(audioPath)) {
+          continue;
+        }
+
+        const cmd = `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" -c:v libx264 -t 30 -pix_fmt yuv420p -vf "scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2" -shortest "${videoPath}"`;
+        await execAsync(cmd);
+        segmentVideos.push(videoPath);
+      }
     }
 
     if (segmentVideos.length === 0) {

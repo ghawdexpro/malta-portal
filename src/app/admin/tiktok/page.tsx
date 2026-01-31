@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { ASPECT_RATIOS, type AspectRatioKey } from "@/lib/tiktok-config";
+import { TOPN_TEMPLATES, type TopNTemplate, type TopNCount, type TopNItem } from "@/lib/topn-templates";
+import { VideoEditor, type EditorSegmentData } from "@/components/tiktok/VideoEditor";
 
 interface ScriptSegment {
   text: string;
@@ -35,8 +38,8 @@ interface SegmentAssets {
   localSettings?: Partial<VoiceSettings>;
 }
 
-type Tab = "create" | "gallery" | "compose";
-type Step = "topic" | "script" | "audio" | "images" | "assemble" | "done";
+type Tab = "create" | "topn" | "gallery" | "compose";
+type Step = "topic" | "script" | "audio" | "images" | "editor" | "assemble" | "done";
 type Lang = "pl" | "en";
 
 const T = {
@@ -45,7 +48,7 @@ const T = {
     tabCreate: "Nowe wideo",
     tabGallery: "Biblioteka",
     tabCompose: "Kompozytor zdjęć",
-    steps: ["Temat", "Skrypt", "Audio", "Obrazy", "Montaż", "Gotowe"],
+    steps: ["Temat", "Skrypt", "Audio", "Obrazy", "Edytor", "Montaż", "Gotowe"],
     chooseTopic: "Wybierz temat",
     topicSubtitle: "Co Monika pokaże nam dzisiaj na Malcie?",
     topicPlaceholder: "np. Spacer po starym mieście Mdina o zachodzie słońca",
@@ -130,13 +133,37 @@ const T = {
     composeBtn: "Skomponuj obraz",
     downloadImg: "Pobierz",
     saveBest: "Zapisz do najlepszych",
+    aspectRatio: "Format wideo",
+    aspectRatioHint: "Wybierz proporcje obrazu dla platform docelowych",
+    tabTopN: "Top N",
+    topNTitle: "Generator Top N",
+    topNSubtitle: "Twórz filmy z rankingiem Top 3, 5 lub 10",
+    chooseN: "Ile pozycji?",
+    chooseTemplate: "Szablon wizualny",
+    topNTopic: "Temat rankingu",
+    topNTopicPlaceholder: "np. Najlepsze plaże na Malcie",
+    topNTopicHint: "O czym będzie ranking?",
+    generateRanking: "Generuj ranking",
+    generatingRanking: "Generuję ranking...",
+    rankLabel: "Pozycja",
+    topNScriptReview: "Sprawdź ranking",
+    topNEditHint: "Edytuj tytuły, opisy i prompty wizualne",
+    approveRanking: "Zatwierdź ranking →",
+    topNAudio: "Audio dla rankingu",
+    topNAudioSub: "Wygeneruj narrację dla każdej pozycji",
+    topNImages: "Obrazy rankingu",
+    topNImagesSub: "Wygeneruj obrazy dla każdej pozycji",
+    assembleTopN: "Zmontuj Top N",
+    topNAssembleSub: "pozycji w finalne wideo",
+    assembleTopNBtn: "Zmontuj wideo Top N",
+    topNSuggestions: ["Najlepsze plaże Malty", "Top restauracje w Valletcie", "Ukryte miejsca na Gozo", "Najlepsze zachody slonca", "Maltanskie potrawy"],
   },
   en: {
     subtitle: "Monika ASMR Production Studio",
     tabCreate: "New video",
     tabGallery: "Library",
     tabCompose: "Photo composer",
-    steps: ["Topic", "Script", "Audio", "Images", "Assemble", "Done"],
+    steps: ["Topic", "Script", "Audio", "Images", "Editor", "Assemble", "Done"],
     chooseTopic: "Choose a topic",
     topicSubtitle: "What will Monika show us in Malta today?",
     topicPlaceholder: "e.g. Walking through old Mdina at sunset",
@@ -221,6 +248,30 @@ const T = {
     composeBtn: "Compose image",
     downloadImg: "Download",
     saveBest: "Save to best",
+    aspectRatio: "Video format",
+    aspectRatioHint: "Choose aspect ratio for target platforms",
+    tabTopN: "Top N",
+    topNTitle: "Top N Generator",
+    topNSubtitle: "Create ranked Top 3, 5 or 10 videos",
+    chooseN: "How many items?",
+    chooseTemplate: "Visual template",
+    topNTopic: "Ranking topic",
+    topNTopicPlaceholder: "e.g. Best beaches in Malta",
+    topNTopicHint: "What will the ranking be about?",
+    generateRanking: "Generate ranking",
+    generatingRanking: "Generating ranking...",
+    rankLabel: "Rank",
+    topNScriptReview: "Review ranking",
+    topNEditHint: "Edit titles, descriptions and visual prompts",
+    approveRanking: "Approve ranking →",
+    topNAudio: "Ranking audio",
+    topNAudioSub: "Generate voiceover for each item",
+    topNImages: "Ranking images",
+    topNImagesSub: "Generate images for each item",
+    assembleTopN: "Assemble Top N",
+    topNAssembleSub: "items into final video",
+    assembleTopNBtn: "Assemble Top N video",
+    topNSuggestions: ["Best beaches in Malta", "Top restaurants in Valletta", "Hidden gems in Gozo", "Best sunsets", "Maltese dishes to try"],
   },
 };
 
@@ -274,10 +325,11 @@ export default function TikTokCreatorPage() {
 
       <div className="mb-6 flex gap-1 rounded-xl bg-malta-stone/30 p-1">
         {([
-          { id: "create", label: t.tabCreate, icon: "🎬" },
-          { id: "gallery", label: t.tabGallery, icon: "🖼️" },
-          { id: "compose", label: t.tabCompose, icon: "📸" },
-        ] as const).map((tab) => (
+          { id: "create" as Tab, label: t.tabCreate, icon: "🎬" },
+          { id: "topn" as Tab, label: t.tabTopN, icon: "🏆" },
+          { id: "gallery" as Tab, label: t.tabGallery, icon: "🖼️" },
+          { id: "compose" as Tab, label: t.tabCompose, icon: "📸" },
+        ]).map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
@@ -293,6 +345,7 @@ export default function TikTokCreatorPage() {
       </div>
 
       {activeTab === "create" && <CreateVideoTab lang={lang} t={t} />}
+      {activeTab === "topn" && <TopNTab lang={lang} t={t} />}
       {activeTab === "gallery" && <GalleryTab t={t} />}
       {activeTab === "compose" && <PhotoComposerTab t={t} />}
     </div>
@@ -306,6 +359,7 @@ type Translations = typeof T.pl;
 function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
   const [step, setStep] = useState<Step>("topic");
   const [topic, setTopic] = useState("");
+  const [aspectRatio, setAspectRatio] = useState<AspectRatioKey>("9:16");
   const [sessionId] = useState(() => String(Date.now()));
   const [script, setScript] = useState<ScriptSegment[]>([]);
   const [segments, setSegments] = useState<SegmentAssets[]>([]);
@@ -401,6 +455,7 @@ function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
           visualPrompt: segments[index].visual_prompt,
           sessionId,
           segmentIndex: index,
+          aspectRatio,
         }),
       });
       const data = await res.json();
@@ -434,6 +489,8 @@ function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
         body: JSON.stringify({
           sessionId,
           segmentCount: segments.length,
+          aspectRatio,
+          editorState: editorSegments.length > 0 ? editorSegments : undefined,
         }),
       });
       const data = await res.json();
@@ -469,9 +526,28 @@ function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
   const allAudioDone = segments.length > 0 && segments.every((s) => s.audioUrl && s.audioApproved);
   const allImagesDone = segments.length > 0 && segments.every((s) => s.imageUrl && s.imageApproved);
 
-  const STEPS: Step[] = ["topic", "script", "audio", "images", "assemble", "done"];
+  const [editorSegments, setEditorSegments] = useState<EditorSegmentData[]>([]);
+
+  const STEPS: Step[] = ["topic", "script", "audio", "images", "editor", "assemble", "done"];
   const STEP_LABELS = t.steps;
   const stepIdx = STEPS.indexOf(step);
+
+  // Initialize editor segments when entering editor step
+  const enterEditor = () => {
+    const edSegs: EditorSegmentData[] = segments.map((seg, i) => ({
+      id: `seg_${i}`,
+      order: i,
+      text: seg.text,
+      audioUrl: seg.audioUrl || "",
+      imageUrl: seg.imageUrl || "",
+      audioDuration: 5, // Will be refined by audio element
+      trimStart: 0,
+      trimEnd: 0,
+      overlays: [],
+    }));
+    setEditorSegments(edSegs);
+    setStep("editor");
+  };
 
   return (
     <div>
@@ -493,7 +569,7 @@ function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
               </div>
               <span className="mt-1 text-[10px] text-foreground/40">{STEP_LABELS[i]}</span>
             </div>
-            {i < 5 && (
+            {i < STEPS.length - 1 && (
               <div className={`h-0.5 w-6 ${stepIdx > i ? "bg-green-500" : "bg-malta-stone/50"}`} />
             )}
           </div>
@@ -533,6 +609,56 @@ function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
               </button>
             ))}
           </div>
+
+          {/* Aspect Ratio Selector */}
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-foreground/70">{t.aspectRatio}</h3>
+            <p className="mt-0.5 text-xs text-foreground/40">{t.aspectRatioHint}</p>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {(Object.keys(ASPECT_RATIOS) as AspectRatioKey[]).map((key) => {
+                const r = ASPECT_RATIOS[key];
+                const selected = aspectRatio === key;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setAspectRatio(key)}
+                    className={`relative flex flex-col items-center rounded-xl border-2 p-3 transition-all ${
+                      selected
+                        ? "border-malta-blue bg-malta-blue/5 shadow-sm"
+                        : "border-malta-stone/30 hover:border-malta-stone/60"
+                    }`}
+                  >
+                    {/* Visual ratio preview */}
+                    <div className="mb-2 flex items-center justify-center" style={{ width: 48, height: 48 }}>
+                      <div
+                        className={`rounded-sm ${selected ? "bg-malta-blue" : "bg-malta-stone/50"}`}
+                        style={{
+                          width: key === '16:9' ? 48 : key === '1:1' ? 36 : key === '4:5' ? 30 : 27,
+                          height: key === '9:16' ? 48 : key === '1:1' ? 36 : key === '4:5' ? 38 : 27,
+                        }}
+                      />
+                    </div>
+                    <span className="text-lg">{r.icon}</span>
+                    <span className={`mt-1 text-sm font-bold ${selected ? "text-malta-blue" : "text-foreground/70"}`}>
+                      {key}
+                    </span>
+                    <span className="mt-0.5 text-center text-[10px] text-foreground/40">
+                      {lang === "en" ? r.labelEn : r.label}
+                    </span>
+                    <span className="mt-1 text-center text-[9px] text-foreground/30">
+                      {r.width}x{r.height}
+                    </span>
+                    {selected && (
+                      <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-malta-blue text-[10px] text-white">
+                        ✓
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <button
             onClick={generateScript}
             disabled={loading || !topic.trim()}
@@ -757,8 +883,20 @@ function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
           onGenerateImage={generateImage}
           onGenerateAllImages={generateAllImages}
           allImagesDone={allImagesDone}
-          onNext={() => setStep("assemble")}
+          onNext={enterEditor}
           onBack={() => setStep("audio")}
+        />
+      )}
+
+      {/* STEP: Editor */}
+      {step === "editor" && (
+        <VideoEditor
+          segments={editorSegments}
+          onChange={setEditorSegments}
+          onExport={() => setStep("assemble")}
+          onSkip={() => setStep("assemble")}
+          exporting={false}
+          lang={lang}
         />
       )}
 
@@ -816,6 +954,7 @@ function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
               onClick={() => {
                 setStep("topic");
                 setTopic("");
+                setAspectRatio("9:16");
                 setScript([]);
                 setSegments([]);
                 setFinalVideoUrl(null);
@@ -1208,6 +1347,644 @@ function ImageStep({ segments, sessionId, t, onUpdateSegment, onGenerateImage, o
         >
           {t.allApprovedAssemble}
         </button>
+      )}
+    </div>
+  );
+}
+
+/* ─── TOP N TAB ─── */
+
+interface TopNItemAssets extends TopNItem {
+  audioUrl?: string;
+  imageUrl?: string;
+  audioApproved: boolean;
+  imageApproved: boolean;
+  audioLoading: boolean;
+  imageLoading: boolean;
+  takes: AudioTake[];
+  activeTake?: number;
+  localSettings?: Partial<VoiceSettings>;
+}
+
+type TopNStep = "setup" | "script" | "audio" | "images" | "assemble" | "done";
+
+function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
+  const [step, setStep] = useState<TopNStep>("setup");
+  const [topic, setTopic] = useState("");
+  const [topNCount, setTopNCount] = useState<TopNCount>(5);
+  const [template, setTemplate] = useState<TopNTemplate>("countdown");
+  const [aspectRatio, setAspectRatio] = useState<AspectRatioKey>("9:16");
+  const [sessionId] = useState(() => `topn_${Date.now()}`);
+  const [items, setItems] = useState<TopNItemAssets[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
+  const [globalVoice, setGlobalVoice] = useState<VoiceSettings>({
+    stability: 0.25, similarity_boost: 0.85, style: 0.5, speed: 1.0,
+    use_speaker_boost: true, model_id: "eleven_flash_v2_5",
+  });
+
+  const generateScript = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/tiktok/topn-script", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic, n: topNCount, lang }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setItems(
+        (data.items as TopNItem[]).map((item) => ({
+          ...item,
+          audioApproved: false, imageApproved: false,
+          audioLoading: false, imageLoading: false, takes: [],
+        }))
+      );
+      setStep("script");
+    } catch (err) {
+      setError(String(err));
+    }
+    setLoading(false);
+  };
+
+  const updateItem = (rank: number, updates: Partial<TopNItemAssets>) => {
+    setItems((prev) => prev.map((item) => item.rank === rank ? { ...item, ...updates } : item));
+  };
+
+  const generateAudio = async (rank: number) => {
+    const item = items.find((i) => i.rank === rank);
+    if (!item) return;
+    updateItem(rank, { audioLoading: true });
+    try {
+      const merged = { ...globalVoice, ...(item.localSettings || {}) };
+      const res = await fetch("/api/tiktok/audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: item.description,
+          sessionId,
+          segmentIndex: rank,
+          voiceSettings: merged,
+          prefix: "rank",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      updateItem(rank, {
+        audioUrl: data.audioUrl + "&t=" + Date.now(),
+        audioLoading: false,
+        takes: data.takes || [],
+        activeTake: data.take,
+        audioApproved: false,
+      });
+    } catch (err) {
+      setError(`Audio rank ${rank}: ${err}`);
+      updateItem(rank, { audioLoading: false });
+    }
+  };
+
+  const generateAllAudio = async () => {
+    for (const item of items) {
+      if (!item.audioUrl) await generateAudio(item.rank);
+    }
+  };
+
+  const generateImage = async (rank: number) => {
+    const item = items.find((i) => i.rank === rank);
+    if (!item) return;
+    updateItem(rank, { imageLoading: true });
+    try {
+      const res = await fetch("/api/tiktok/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visualPrompt: item.visual_prompt,
+          sessionId,
+          segmentIndex: rank,
+          aspectRatio,
+          prefix: "rank",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      updateItem(rank, { imageUrl: data.imageUrl + "&t=" + Date.now(), imageLoading: false });
+    } catch (err) {
+      setError(`Image rank ${rank}: ${err}`);
+      updateItem(rank, { imageLoading: false });
+    }
+  };
+
+  const generateAllImages = async () => {
+    for (const item of items) {
+      if (!item.imageUrl) {
+        await generateImage(item.rank);
+        await new Promise((r) => setTimeout(r, 8000));
+      }
+    }
+  };
+
+  const assembleVideo = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/tiktok/topn-assemble", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, items, template, aspectRatio }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setFinalVideoUrl(data.videoUrl);
+      setStep("done");
+    } catch (err) {
+      setError(`Assembly: ${err}`);
+    }
+    setLoading(false);
+  };
+
+  const allAudioDone = items.length > 0 && items.every((i) => i.audioUrl && i.audioApproved);
+  const allImagesDone = items.length > 0 && items.every((i) => i.imageUrl && i.imageApproved);
+
+  const STEPS: TopNStep[] = ["setup", "script", "audio", "images", "assemble", "done"];
+  const STEP_LABELS = [
+    lang === "pl" ? "Ustawienia" : "Setup",
+    ...t.steps.slice(1),
+  ];
+  const stepIdx = STEPS.indexOf(step);
+
+  return (
+    <div>
+      {/* Steps indicator */}
+      <div className="mb-6 flex items-center gap-2">
+        {STEPS.map((s, i) => (
+          <div key={s} className="flex items-center gap-2">
+            <div className="flex flex-col items-center">
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                  step === s
+                    ? "bg-malta-blue text-white"
+                    : stepIdx > i
+                    ? "bg-green-500 text-white"
+                    : "bg-malta-stone/50 text-foreground/30"
+                }`}
+              >
+                {stepIdx > i ? "✓" : i + 1}
+              </div>
+              <span className="mt-1 text-[10px] text-foreground/40">{STEP_LABELS[i]}</span>
+            </div>
+            {i < 5 && (
+              <div className={`h-0.5 w-6 ${stepIdx > i ? "bg-green-500" : "bg-malta-stone/50"}`} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {error && (
+        <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+          {error}
+          <button onClick={() => setError(null)} className="ml-2 font-bold">✕</button>
+        </div>
+      )}
+
+      {/* STEP: Setup */}
+      {step === "setup" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-semibold">{t.topNTitle}</h2>
+            <p className="mt-1 text-sm text-foreground/50">{t.topNSubtitle}</p>
+
+            {/* N selector */}
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground/70">{t.chooseN}</h3>
+              <div className="mt-2 flex gap-3">
+                {([3, 5, 10] as TopNCount[]).map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setTopNCount(n)}
+                    className={`flex h-16 w-20 flex-col items-center justify-center rounded-xl border-2 text-lg font-bold transition-all ${
+                      topNCount === n
+                        ? "border-malta-blue bg-malta-blue/5 text-malta-blue shadow-sm"
+                        : "border-malta-stone/30 text-foreground/50 hover:border-malta-stone/60"
+                    }`}
+                  >
+                    Top {n}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Template selector */}
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground/70">{t.chooseTemplate}</h3>
+              <div className="mt-2 grid grid-cols-3 gap-3">
+                {(Object.keys(TOPN_TEMPLATES) as TopNTemplate[]).map((key) => {
+                  const tmpl = TOPN_TEMPLATES[key];
+                  const selected = template === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setTemplate(key)}
+                      className={`relative flex flex-col items-center rounded-xl border-2 p-4 transition-all ${
+                        selected
+                          ? "border-malta-blue bg-malta-blue/5 shadow-sm"
+                          : "border-malta-stone/30 hover:border-malta-stone/60"
+                      }`}
+                    >
+                      <span className="text-2xl">{tmpl.icon}</span>
+                      <span className={`mt-2 text-sm font-bold ${selected ? "text-malta-blue" : "text-foreground/70"}`}>
+                        {lang === "en" ? tmpl.nameEn : tmpl.name}
+                      </span>
+                      <span className="mt-1 text-center text-[10px] text-foreground/40">
+                        {lang === "en" ? tmpl.descriptionEn : tmpl.description}
+                      </span>
+                      {selected && (
+                        <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-malta-blue text-[10px] text-white">
+                          ✓
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Aspect ratio */}
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground/70">{t.aspectRatio}</h3>
+              <div className="mt-2 grid grid-cols-4 gap-2">
+                {(Object.keys(ASPECT_RATIOS) as AspectRatioKey[]).map((key) => {
+                  const r = ASPECT_RATIOS[key];
+                  const selected = aspectRatio === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setAspectRatio(key)}
+                      className={`rounded-lg border-2 px-3 py-2 text-center text-xs font-medium transition-all ${
+                        selected
+                          ? "border-malta-blue bg-malta-blue/5 text-malta-blue"
+                          : "border-malta-stone/30 text-foreground/50 hover:border-malta-stone/60"
+                      }`}
+                    >
+                      {r.icon} {key}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Topic */}
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground/70">{t.topNTopic}</h3>
+              <p className="mt-0.5 text-xs text-foreground/40">{t.topNTopicHint}</p>
+              <input
+                type="text"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder={t.topNTopicPlaceholder}
+                className="mt-2 w-full rounded-lg border border-malta-stone/50 px-4 py-3 text-lg focus:border-malta-blue focus:outline-none"
+                onKeyDown={(e) => e.key === "Enter" && generateScript()}
+              />
+              <div className="mt-2 flex flex-wrap gap-2">
+                {t.topNSuggestions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setTopic(s)}
+                    className="rounded-full bg-malta-stone/30 px-3 py-1 text-sm text-foreground/60 transition-colors hover:bg-malta-stone/50"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={generateScript}
+              disabled={loading || !topic.trim()}
+              className="mt-6 rounded-lg bg-malta-blue px-6 py-3 font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
+            >
+              {loading ? t.generatingRanking : t.generateRanking}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP: Script review */}
+      {step === "script" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t.topNScriptReview}</h2>
+                <p className="mt-1 text-sm text-foreground/50">
+                  {t.topNEditHint} — Top {items.length}: &quot;{topic}&quot;
+                </p>
+              </div>
+              <button onClick={() => { setStep("setup"); setItems([]); }} className="text-sm text-foreground/40 hover:text-foreground/60">
+                {t.back}
+              </button>
+            </div>
+          </div>
+
+          {items.map((item) => (
+            <div key={item.rank} className="rounded-xl bg-white p-5 shadow-sm">
+              <div className="mb-2 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-malta-blue text-sm font-bold text-white">
+                  {item.rank}
+                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-malta-blue/60">
+                  {t.rankLabel} #{item.rank}
+                </span>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-foreground/50">
+                    {lang === "pl" ? "Tytuł" : "Title"}
+                  </label>
+                  <input
+                    type="text"
+                    value={item.title}
+                    onChange={(e) => updateItem(item.rank, { title: e.target.value })}
+                    className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm font-semibold focus:border-malta-blue focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-foreground/50">
+                    {lang === "pl" ? "Opis (narracja)" : "Description (voiceover)"}
+                  </label>
+                  <textarea
+                    value={item.description}
+                    onChange={(e) => updateItem(item.rank, { description: e.target.value })}
+                    rows={3}
+                    className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm focus:border-malta-blue focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-foreground/50">
+                    {t.visualLabel}
+                  </label>
+                  <textarea
+                    value={item.visual_prompt}
+                    onChange={(e) => updateItem(item.rank, { visual_prompt: e.target.value })}
+                    rows={3}
+                    className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm focus:border-malta-blue focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div className="flex gap-3">
+            <button
+              onClick={generateScript}
+              disabled={loading}
+              className="rounded-lg border border-malta-stone/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
+            >
+              {loading ? t.generatingRanking : t.regenerate}
+            </button>
+            <button
+              onClick={() => setStep("audio")}
+              className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
+            >
+              {t.approveRanking}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP: Audio */}
+      {step === "audio" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t.topNAudio}</h2>
+                <p className="mt-1 text-sm text-foreground/50">{t.topNAudioSub}</p>
+              </div>
+              <button onClick={() => setStep("script")} className="text-sm text-foreground/40 hover:text-foreground/60">
+                {t.backToScript}
+              </button>
+            </div>
+            <button
+              onClick={generateAllAudio}
+              disabled={items.some((i) => i.audioLoading)}
+              className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
+            >
+              {t.generateAllAudio}
+            </button>
+          </div>
+
+          {items.map((item) => (
+            <div key={item.rank} className="rounded-xl bg-white p-5 shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-malta-blue text-xs font-bold text-white">
+                      {item.rank}
+                    </div>
+                    <span className="text-sm font-semibold">{item.title}</span>
+                    {item.audioApproved && (
+                      <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                        {t.approved}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-foreground/50">{item.description}</p>
+                </div>
+              </div>
+              <div className="mt-3">
+                {item.audioUrl ? (
+                  <div className="flex items-center gap-3">
+                    <audio controls preload="auto" src={item.audioUrl} className="h-10 flex-1" />
+                    <button
+                      onClick={() => updateItem(item.rank, { audioApproved: true })}
+                      disabled={item.audioApproved}
+                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                        item.audioApproved ? "bg-green-100 text-green-700" : "bg-green-500 text-white hover:bg-green-600"
+                      }`}
+                    >
+                      {item.audioApproved ? "✓" : t.approve}
+                    </button>
+                    <button
+                      onClick={() => generateAudio(item.rank)}
+                      disabled={item.audioLoading}
+                      className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
+                    >
+                      {item.audioLoading ? "..." : t.redo}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => generateAudio(item.rank)}
+                    disabled={item.audioLoading}
+                    className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
+                  >
+                    {item.audioLoading ? t.generatingAudio : t.generateAudio}
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {allAudioDone && (
+            <button
+              onClick={() => setStep("images")}
+              className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
+            >
+              {t.allApprovedImages}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* STEP: Images */}
+      {step === "images" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t.topNImages}</h2>
+                <p className="mt-1 text-sm text-foreground/50">{t.topNImagesSub}</p>
+              </div>
+              <button onClick={() => setStep("audio")} className="text-sm text-foreground/40 hover:text-foreground/60">
+                {t.backToAudio}
+              </button>
+            </div>
+            <button
+              onClick={generateAllImages}
+              disabled={items.some((i) => i.imageLoading)}
+              className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
+            >
+              {t.generateAllImages}
+            </button>
+          </div>
+
+          {items.map((item) => (
+            <div key={item.rank} className="rounded-xl bg-white p-5 shadow-sm">
+              <div className="mb-2 flex items-center gap-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-malta-blue text-xs font-bold text-white">
+                  {item.rank}
+                </div>
+                <span className="text-sm font-semibold">{item.title}</span>
+              </div>
+              <p className="mb-3 text-xs text-foreground/50">{item.visual_prompt}</p>
+
+              {item.imageUrl ? (
+                <div>
+                  <img src={item.imageUrl} alt={item.title} className="w-full rounded-lg" />
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      onClick={() => updateItem(item.rank, { imageApproved: true })}
+                      disabled={item.imageApproved}
+                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                        item.imageApproved ? "bg-green-100 text-green-700" : "bg-green-500 text-white hover:bg-green-600"
+                      }`}
+                    >
+                      {item.imageApproved ? `✓ ${t.approved}` : t.approve}
+                    </button>
+                    <button
+                      onClick={() => { updateItem(item.rank, { imageUrl: undefined, imageApproved: false }); generateImage(item.rank); }}
+                      disabled={item.imageLoading}
+                      className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
+                    >
+                      {t.regenerateImage}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => generateImage(item.rank)}
+                  disabled={item.imageLoading}
+                  className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
+                >
+                  {item.imageLoading ? t.generatingImage : t.generateImage}
+                </button>
+              )}
+            </div>
+          ))}
+
+          {allImagesDone && (
+            <button
+              onClick={() => setStep("assemble")}
+              className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
+            >
+              {t.allApprovedAssemble}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* STEP: Assemble */}
+      {step === "assemble" && (
+        <div className="rounded-xl bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold">{t.assembleTopN}</h2>
+          <p className="mt-1 text-sm text-foreground/50">
+            {items.length} {t.topNAssembleSub}
+          </p>
+          <div className="mt-2 text-xs text-foreground/40">
+            {lang === "en" ? "Template" : "Szablon"}: {TOPN_TEMPLATES[template].icon} {lang === "en" ? TOPN_TEMPLATES[template].nameEn : TOPN_TEMPLATES[template].name}
+            {" · "}{aspectRatio} ({ASPECT_RATIOS[aspectRatio].width}x{ASPECT_RATIOS[aspectRatio].height})
+          </div>
+
+          <div className="mt-4 grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(items.length, 5)}, 1fr)` }}>
+            {items.map((item) => (
+              <div key={item.rank} className="overflow-hidden rounded-lg">
+                {item.imageUrl && (
+                  <div className="relative">
+                    <img src={item.imageUrl} alt={item.title} className="aspect-square w-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-3xl font-black text-white" style={{ textShadow: "2px 2px 8px rgba(0,0,0,0.8)" }}>
+                        {item.rank}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <div className="bg-malta-stone/20 p-1 text-center text-[10px]">{item.title}</div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={assembleVideo}
+            disabled={loading}
+            className="mt-6 rounded-lg bg-malta-blue px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
+          >
+            {loading ? t.assembling : t.assembleTopNBtn}
+          </button>
+        </div>
+      )}
+
+      {/* STEP: Done */}
+      {step === "done" && finalVideoUrl && (
+        <div className="rounded-xl bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-green-700">{t.videoDone}</h2>
+          <p className="mt-1 text-sm text-foreground/50">
+            Top {items.length}: &quot;{topic}&quot;
+          </p>
+          <video controls preload="auto" src={finalVideoUrl} className="mt-4 w-full rounded-lg" />
+          <div className="mt-4 flex gap-3">
+            <a
+              href={finalVideoUrl}
+              download
+              className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80"
+            >
+              {t.download}
+            </a>
+            <button
+              onClick={() => {
+                setStep("setup");
+                setTopic("");
+                setItems([]);
+                setFinalVideoUrl(null);
+              }}
+              className="rounded-lg border border-malta-stone/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-malta-stone/20"
+            >
+              {t.createAnother}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
