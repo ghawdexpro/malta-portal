@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'path param required' }, { status: 400 });
   }
 
-  // Sanitize: only allow files under public/
   const normalizedPath = path.normalize(filePath).replace(/^\/+/, '');
   if (normalizedPath.includes('..')) {
     return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
@@ -31,12 +30,43 @@ export async function GET(request: NextRequest) {
   const ext = path.extname(fullPath).toLowerCase();
   const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
   const stat = fs.statSync(fullPath);
+  const fileSize = stat.size;
+
+  // Support range requests (required for audio/video seeking & duration)
+  const rangeHeader = request.headers.get('range');
+
+  if (rangeHeader) {
+    const match = rangeHeader.match(/bytes=(\d+)-(\d*)/);
+    if (match) {
+      const start = parseInt(match[1], 10);
+      const end = match[2] ? parseInt(match[2], 10) : fileSize - 1;
+      const chunkSize = end - start + 1;
+
+      const fd = fs.openSync(fullPath, 'r');
+      const buffer = Buffer.alloc(chunkSize);
+      fs.readSync(fd, buffer, 0, chunkSize, start);
+      fs.closeSync(fd);
+
+      return new NextResponse(buffer, {
+        status: 206,
+        headers: {
+          'Content-Type': mimeType,
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Content-Length': String(chunkSize),
+          'Accept-Ranges': 'bytes',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      });
+    }
+  }
+
   const fileBuffer = fs.readFileSync(fullPath);
 
   return new NextResponse(fileBuffer, {
     headers: {
       'Content-Type': mimeType,
-      'Content-Length': String(stat.size),
+      'Content-Length': String(fileSize),
+      'Accept-Ranges': 'bytes',
       'Cache-Control': 'public, max-age=3600',
     },
   });

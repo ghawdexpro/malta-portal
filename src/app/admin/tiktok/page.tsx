@@ -45,16 +45,15 @@ export default function TikTokCreatorPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold">TikTok Creator</h1>
         <p className="mt-1 text-foreground/50">
-          Monika ASMR Video Production Studio
+          Studio produkcji ASMR Monika
         </p>
       </div>
 
-      {/* Tabs */}
       <div className="mb-6 flex gap-1 rounded-xl bg-malta-stone/30 p-1">
         {([
-          { id: "create", label: "Create Video", icon: "🎬" },
-          { id: "gallery", label: "Asset Gallery", icon: "🖼️" },
-          { id: "compose", label: "Photo Composer", icon: "📸" },
+          { id: "create", label: "Nowe wideo", icon: "🎬" },
+          { id: "gallery", label: "Biblioteka", icon: "🖼️" },
+          { id: "compose", label: "Kompozytor zdjęć", icon: "📸" },
         ] as const).map((tab) => (
           <button
             key={tab.id}
@@ -89,7 +88,6 @@ function CreateVideoTab() {
   const [error, setError] = useState<string | null>(null);
   const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
 
-  // Step 1: Generate Script
   const generateScript = async () => {
     if (!topic.trim()) return;
     setLoading(true);
@@ -101,7 +99,7 @@ function CreateVideoTab() {
         body: JSON.stringify({ topic }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed");
+      if (!res.ok) throw new Error(data.error || "Błąd");
       setScript(data.script);
       setSegments(
         data.script.map((seg: ScriptSegment) => ({
@@ -120,7 +118,6 @@ function CreateVideoTab() {
     setLoading(false);
   };
 
-  // Step 2: Generate audio for one segment
   const generateAudio = async (index: number) => {
     updateSegment(index, { audioLoading: true });
     try {
@@ -134,8 +131,8 @@ function CreateVideoTab() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed");
-      updateSegment(index, { audioUrl: data.audioUrl + "?t=" + Date.now(), audioLoading: false });
+      if (!res.ok) throw new Error(data.error || "Błąd");
+      updateSegment(index, { audioUrl: data.audioUrl + "&t=" + Date.now(), audioLoading: false });
     } catch (err) {
       setError(`Audio ${index + 1}: ${err}`);
       updateSegment(index, { audioLoading: false });
@@ -150,7 +147,6 @@ function CreateVideoTab() {
     }
   };
 
-  // Step 3: Generate image for one segment
   const generateImage = async (index: number) => {
     updateSegment(index, { imageLoading: true });
     try {
@@ -164,10 +160,10 @@ function CreateVideoTab() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed");
-      updateSegment(index, { imageUrl: data.imageUrl + "?t=" + Date.now(), imageLoading: false });
+      if (!res.ok) throw new Error(data.error || "Błąd");
+      updateSegment(index, { imageUrl: data.imageUrl + "&t=" + Date.now(), imageLoading: false });
     } catch (err) {
-      setError(`Image ${index + 1}: ${err}`);
+      setError(`Obraz ${index + 1}: ${err}`);
       updateSegment(index, { imageLoading: false });
     }
   };
@@ -176,7 +172,6 @@ function CreateVideoTab() {
     for (let i = 0; i < segments.length; i++) {
       if (!segments[i].imageUrl) {
         await generateImage(i);
-        // Brief delay to avoid rate limits
         if (i < segments.length - 1) {
           await new Promise((r) => setTimeout(r, 2000));
         }
@@ -184,7 +179,6 @@ function CreateVideoTab() {
     }
   };
 
-  // Step 4: Assemble
   const assembleVideo = async () => {
     setLoading(true);
     setError(null);
@@ -198,11 +192,11 @@ function CreateVideoTab() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed");
+      if (!res.ok) throw new Error(data.error || "Błąd");
       setFinalVideoUrl(data.videoUrl);
       setStep("done");
     } catch (err) {
-      setError(`Assembly: ${err}`);
+      setError(`Montaż: ${err}`);
     }
     setLoading(false);
   };
@@ -230,53 +224,56 @@ function CreateVideoTab() {
   const allAudioDone = segments.length > 0 && segments.every((s) => s.audioUrl && s.audioApproved);
   const allImagesDone = segments.length > 0 && segments.every((s) => s.imageUrl && s.imageApproved);
 
+  const STEPS: Step[] = ["topic", "script", "audio", "images", "assemble", "done"];
+  const STEP_LABELS = ["Temat", "Skrypt", "Audio", "Obrazy", "Montaż", "Gotowe"];
+  const stepIdx = STEPS.indexOf(step);
+
   return (
     <div>
       {/* Steps indicator */}
       <div className="mb-6 flex items-center gap-2">
-        {(["topic", "script", "audio", "images", "assemble", "done"] as Step[]).map(
-          (s, i) => (
-            <div key={s} className="flex items-center gap-2">
+        {STEPS.map((s, i) => (
+          <div key={s} className="flex items-center gap-2">
+            <div className="flex flex-col items-center">
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
                   step === s
                     ? "bg-malta-blue text-white"
-                    : (["topic", "script", "audio", "images", "assemble", "done"].indexOf(step) > i)
+                    : stepIdx > i
                     ? "bg-green-500 text-white"
                     : "bg-malta-stone/50 text-foreground/30"
                 }`}
               >
-                {(["topic", "script", "audio", "images", "assemble", "done"].indexOf(step) > i) ? "✓" : i + 1}
+                {stepIdx > i ? "✓" : i + 1}
               </div>
-              {i < 5 && (
-                <div className={`h-0.5 w-6 ${(["topic", "script", "audio", "images", "assemble", "done"].indexOf(step) > i) ? "bg-green-500" : "bg-malta-stone/50"}`} />
-              )}
+              <span className="mt-1 text-[10px] text-foreground/40">{STEP_LABELS[i]}</span>
             </div>
-          )
-        )}
+            {i < 5 && (
+              <div className={`h-0.5 w-6 ${stepIdx > i ? "bg-green-500" : "bg-malta-stone/50"}`} />
+            )}
+          </div>
+        ))}
       </div>
 
       {error && (
         <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
           {error}
-          <button onClick={() => setError(null)} className="ml-2 font-bold">
-            ✕
-          </button>
+          <button onClick={() => setError(null)} className="ml-2 font-bold">✕</button>
         </div>
       )}
 
       {/* STEP: Topic */}
       {step === "topic" && (
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold">Choose a Topic</h2>
+          <h2 className="text-xl font-semibold">Wybierz temat</h2>
           <p className="mt-1 text-sm text-foreground/50">
-            What should Monika show us in Malta today?
+            Co Monika pokaże nam dzisiaj na Malcie?
           </p>
           <input
             type="text"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            placeholder="e.g. Spacer po starym mieście Mdina o zachodzie słońca"
+            placeholder="np. Spacer po starym mieście Mdina o zachodzie słońca"
             className="mt-4 w-full rounded-lg border border-malta-stone/50 px-4 py-3 text-lg focus:border-malta-blue focus:outline-none"
             onKeyDown={(e) => e.key === "Enter" && generateScript()}
           />
@@ -302,7 +299,7 @@ function CreateVideoTab() {
             disabled={loading || !topic.trim()}
             className="mt-6 rounded-lg bg-malta-blue px-6 py-3 font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {loading ? "Generating script..." : "Generate Script"}
+            {loading ? "Generuję skrypt..." : "Generuj skrypt"}
           </button>
         </div>
       )}
@@ -313,16 +310,16 @@ function CreateVideoTab() {
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Review Script</h2>
+                <h2 className="text-xl font-semibold">Sprawdź skrypt</h2>
                 <p className="mt-1 text-sm text-foreground/50">
-                  Edit text and visual prompts before generating assets. Topic: &quot;{topic}&quot;
+                  Edytuj tekst i prompty wizualne. Temat: &quot;{topic}&quot;
                 </p>
               </div>
               <button
                 onClick={() => { setStep("topic"); setScript([]); setSegments([]); }}
                 className="text-sm text-foreground/40 hover:text-foreground/60"
               >
-                ← Back
+                ← Wróć
               </button>
             </div>
           </div>
@@ -335,7 +332,7 @@ function CreateVideoTab() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-xs font-medium text-foreground/50">
-                    Polish narration
+                    Narracja po polsku
                   </label>
                   <textarea
                     value={seg.text}
@@ -346,7 +343,7 @@ function CreateVideoTab() {
                 </div>
                 <div>
                   <label className="mb-1 block text-xs font-medium text-foreground/50">
-                    Visual prompt (EN)
+                    Prompt wizualny (EN)
                   </label>
                   <textarea
                     value={seg.visual_prompt}
@@ -365,13 +362,13 @@ function CreateVideoTab() {
               disabled={loading}
               className="rounded-lg border border-malta-stone/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
             >
-              {loading ? "Regenerating..." : "Regenerate Script"}
+              {loading ? "Generuję..." : "Generuj ponownie"}
             </button>
             <button
               onClick={() => setStep("audio")}
               className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              Approve Script →
+              Zatwierdź skrypt →
             </button>
           </div>
         </div>
@@ -383,16 +380,16 @@ function CreateVideoTab() {
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Generate Audio</h2>
+                <h2 className="text-xl font-semibold">Generuj audio</h2>
                 <p className="mt-1 text-sm text-foreground/50">
-                  Generate and approve audio for each segment
+                  Wygeneruj i zatwierdź audio dla każdego segmentu
                 </p>
               </div>
               <button
                 onClick={() => setStep("script")}
                 className="text-sm text-foreground/40 hover:text-foreground/60"
               >
-                ← Back to script
+                ← Wróć do skryptu
               </button>
             </div>
             <button
@@ -400,7 +397,7 @@ function CreateVideoTab() {
               disabled={segments.some((s) => s.audioLoading)}
               className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
             >
-              Generate All Audio
+              Generuj wszystkie audio
             </button>
           </div>
 
@@ -416,7 +413,7 @@ function CreateVideoTab() {
                 <div className="ml-4 flex items-center gap-2">
                   {seg.audioApproved && (
                     <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                      Approved
+                      Zatwierdzone
                     </span>
                   )}
                 </div>
@@ -425,7 +422,7 @@ function CreateVideoTab() {
               <div className="mt-3 flex items-center gap-3">
                 {seg.audioUrl ? (
                   <>
-                    <audio controls src={seg.audioUrl} className="h-10 flex-1" />
+                    <audio controls preload="auto" src={seg.audioUrl} className="h-10 flex-1" />
                     <button
                       onClick={() => updateSegment(i, { audioApproved: true })}
                       disabled={seg.audioApproved}
@@ -435,14 +432,14 @@ function CreateVideoTab() {
                           : "bg-green-500 text-white hover:bg-green-600"
                       }`}
                     >
-                      {seg.audioApproved ? "✓" : "Approve"}
+                      {seg.audioApproved ? "✓" : "Zatwierdź"}
                     </button>
                     <button
                       onClick={() => generateAudio(i)}
                       disabled={seg.audioLoading}
                       className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
                     >
-                      Redo
+                      Ponów
                     </button>
                   </>
                 ) : (
@@ -451,7 +448,7 @@ function CreateVideoTab() {
                     disabled={seg.audioLoading}
                     className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
                   >
-                    {seg.audioLoading ? "Generating..." : "Generate Audio"}
+                    {seg.audioLoading ? "Generuję..." : "Generuj audio"}
                   </button>
                 )}
               </div>
@@ -463,7 +460,7 @@ function CreateVideoTab() {
               onClick={() => setStep("images")}
               className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              All Audio Approved → Generate Images
+              Wszystkie zatwierdzone → Generuj obrazy
             </button>
           )}
         </div>
@@ -475,16 +472,16 @@ function CreateVideoTab() {
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Generate Images</h2>
+                <h2 className="text-xl font-semibold">Generuj obrazy</h2>
                 <p className="mt-1 text-sm text-foreground/50">
-                  Generate and approve images for each segment
+                  Wygeneruj i zatwierdź obrazy dla każdego segmentu
                 </p>
               </div>
               <button
                 onClick={() => setStep("audio")}
                 className="text-sm text-foreground/40 hover:text-foreground/60"
               >
-                ← Back to audio
+                ← Wróć do audio
               </button>
             </div>
             <button
@@ -492,7 +489,7 @@ function CreateVideoTab() {
               disabled={segments.some((s) => s.imageLoading)}
               className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
             >
-              Generate All Images
+              Generuj wszystkie obrazy
             </button>
           </div>
 
@@ -520,7 +517,7 @@ function CreateVideoTab() {
                           : "bg-green-500 text-white hover:bg-green-600"
                       }`}
                     >
-                      {seg.imageApproved ? "✓ Approved" : "Approve"}
+                      {seg.imageApproved ? "✓ Zatwierdzone" : "Zatwierdź"}
                     </button>
                     <button
                       onClick={() => {
@@ -530,13 +527,13 @@ function CreateVideoTab() {
                       disabled={seg.imageLoading}
                       className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
                     >
-                      Regenerate
+                      Generuj ponownie
                     </button>
                     <button
                       onClick={() => saveToBest(seg.imageUrl!)}
                       className="rounded-lg border border-malta-gold/50 px-3 py-1.5 text-sm text-malta-gold transition-colors hover:bg-malta-gold/10"
                     >
-                      ★ Save to Best
+                      ★ Zapisz do najlepszych
                     </button>
                   </div>
                 </div>
@@ -546,7 +543,7 @@ function CreateVideoTab() {
                   disabled={seg.imageLoading}
                   className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
                 >
-                  {seg.imageLoading ? "Generating..." : "Generate Image"}
+                  {seg.imageLoading ? "Generuję..." : "Generuj obraz"}
                 </button>
               )}
             </div>
@@ -557,7 +554,7 @@ function CreateVideoTab() {
               onClick={() => setStep("assemble")}
               className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              All Images Approved → Assemble Video
+              Wszystkie zatwierdzone → Montaż wideo
             </button>
           )}
         </div>
@@ -566,9 +563,9 @@ function CreateVideoTab() {
       {/* STEP: Assemble */}
       {step === "assemble" && (
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold">Assemble Video</h2>
+          <h2 className="text-xl font-semibold">Montaż wideo</h2>
           <p className="mt-1 text-sm text-foreground/50">
-            Combine {segments.length} segments into final TikTok video
+            Połącz {segments.length} segmentów w finalne wideo TikTok
           </p>
 
           <div className="mt-4 grid gap-2 sm:grid-cols-5">
@@ -587,7 +584,7 @@ function CreateVideoTab() {
             disabled={loading}
             className="mt-6 rounded-lg bg-malta-blue px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {loading ? "Assembling with FFmpeg..." : "Assemble Final Video"}
+            {loading ? "Montuję z FFmpeg..." : "Zmontuj finalne wideo"}
           </button>
         </div>
       )}
@@ -595,12 +592,13 @@ function CreateVideoTab() {
       {/* STEP: Done */}
       {step === "done" && finalVideoUrl && (
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-green-700">Video Ready</h2>
+          <h2 className="text-xl font-semibold text-green-700">Wideo gotowe</h2>
           <p className="mt-1 text-sm text-foreground/50">
-            &quot;{topic}&quot; — {segments.length} segments
+            &quot;{topic}&quot; — {segments.length} segmentów
           </p>
           <video
             controls
+            preload="auto"
             src={finalVideoUrl}
             className="mt-4 w-full rounded-lg"
           />
@@ -610,7 +608,7 @@ function CreateVideoTab() {
               download
               className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              Download MP4
+              Pobierz MP4
             </a>
             <button
               onClick={() => {
@@ -622,7 +620,7 @@ function CreateVideoTab() {
               }}
               className="rounded-lg border border-malta-stone/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-malta-stone/20"
             >
-              Create Another
+              Utwórz kolejne
             </button>
           </div>
         </div>
@@ -632,8 +630,6 @@ function CreateVideoTab() {
 }
 
 async function saveToBest(imageUrl: string) {
-  // Simple: the image is already on disk, just needs to be copied to best folder
-  // For now, we just open it in a new tab
   window.open(imageUrl, "_blank");
 }
 
@@ -657,15 +653,15 @@ function GalleryTab() {
   if (!data && !loading) {
     return (
       <div className="rounded-xl bg-white p-6 text-center shadow-sm">
-        <h2 className="text-xl font-semibold">Asset Gallery</h2>
+        <h2 className="text-xl font-semibold">Biblioteka materiałów</h2>
         <p className="mt-2 text-sm text-foreground/50">
-          Browse all generated images, audio, and videos
+          Przeglądaj wszystkie wygenerowane obrazy, audio i wideo
         </p>
         <button
           onClick={loadGallery}
           className="mt-4 rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
         >
-          Load Gallery
+          Załaduj bibliotekę
         </button>
       </div>
     );
@@ -674,22 +670,28 @@ function GalleryTab() {
   if (loading) {
     return (
       <div className="rounded-xl bg-white p-6 text-center shadow-sm">
-        <p className="text-foreground/50">Scanning assets...</p>
+        <p className="text-foreground/50">Skanuję materiały...</p>
       </div>
     );
   }
 
   if (!data) return null;
 
+  const FILTER_LABELS: Record<string, string> = {
+    all: "Wszystko",
+    images: "Obrazy",
+    audio: "Audio",
+    videos: "Wideo",
+  };
+
   return (
     <div className="space-y-6">
-      {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: "Sessions", value: data.totals.sessions, color: "text-malta-blue" },
-          { label: "Images", value: data.totals.images, color: "text-green-600" },
+          { label: "Sesje", value: data.totals.sessions, color: "text-malta-blue" },
+          { label: "Obrazy", value: data.totals.images, color: "text-green-600" },
           { label: "Audio", value: data.totals.audio, color: "text-purple-600" },
-          { label: "Videos", value: data.totals.videos, color: "text-malta-gold" },
+          { label: "Wideo", value: data.totals.videos, color: "text-malta-gold" },
         ].map((s) => (
           <div key={s.label} className="rounded-xl bg-white p-4 shadow-sm">
             <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
@@ -698,7 +700,6 @@ function GalleryTab() {
         ))}
       </div>
 
-      {/* Filter */}
       <div className="flex gap-2">
         {(["all", "images", "audio", "videos"] as const).map((f) => (
           <button
@@ -710,21 +711,20 @@ function GalleryTab() {
                 : "bg-malta-stone/30 text-foreground/50 hover:bg-malta-stone/50"
             }`}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {FILTER_LABELS[f]}
           </button>
         ))}
         <button
           onClick={loadGallery}
           className="ml-auto rounded-full bg-malta-stone/30 px-3 py-1 text-sm text-foreground/50 transition-colors hover:bg-malta-stone/50"
         >
-          Refresh
+          Odśwież
         </button>
       </div>
 
-      {/* Best Images */}
       {(filter === "all" || filter === "images") && data.bestImages.length > 0 && (
         <div>
-          <h3 className="mb-3 text-lg font-semibold">★ Best Collection</h3>
+          <h3 className="mb-3 text-lg font-semibold">★ Najlepsze</h3>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
             {data.bestImages.map((img) => (
               <div key={img.url} className="group relative overflow-hidden rounded-lg">
@@ -742,20 +742,19 @@ function GalleryTab() {
         </div>
       )}
 
-      {/* Final Videos */}
       {(filter === "all" || filter === "videos") && data.finalVideos.length > 0 && (
         <div>
-          <h3 className="mb-3 text-lg font-semibold">Final Videos</h3>
+          <h3 className="mb-3 text-lg font-semibold">Finalne wideo</h3>
           <div className="grid gap-4 md:grid-cols-2">
             {data.finalVideos.map((vid) => (
               <div key={vid.url} className="rounded-xl bg-white p-4 shadow-sm">
-                <video controls src={vid.url} className="w-full rounded-lg" />
+                <video controls preload="metadata" src={vid.url} className="w-full rounded-lg" />
                 <div className="mt-2 flex items-center justify-between text-sm">
                   <span className="text-foreground/50">
                     {(vid.size / 1024 / 1024).toFixed(1)} MB
                   </span>
                   <span className="text-foreground/40">
-                    {new Date(vid.created_at).toLocaleDateString()}
+                    {new Date(vid.created_at).toLocaleDateString("pl-PL")}
                   </span>
                 </div>
               </div>
@@ -764,22 +763,19 @@ function GalleryTab() {
         </div>
       )}
 
-      {/* Sessions */}
       {data.sessions.map((session) => (
         <div key={session.id} className="rounded-xl bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="font-semibold">
-              Session {session.id}
-            </h3>
+            <h3 className="font-semibold">Sesja {session.id}</h3>
             <span className="text-xs text-foreground/40">
-              {new Date(session.created_at).toLocaleString()}
+              {new Date(session.created_at).toLocaleString("pl-PL")}
             </span>
           </div>
 
           {(filter === "all" || filter === "images") && session.images.length > 0 && (
             <div className="mb-3">
               <p className="mb-1 text-xs font-medium text-foreground/40">
-                Images ({session.images.length})
+                Obrazy ({session.images.length})
               </p>
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {session.images.map((url) => (
@@ -802,7 +798,7 @@ function GalleryTab() {
               </p>
               <div className="space-y-1">
                 {session.audio.map((url) => (
-                  <audio key={url} controls src={url} className="h-8 w-full" />
+                  <audio key={url} controls preload="metadata" src={url} className="h-8 w-full" />
                 ))}
               </div>
             </div>
@@ -842,12 +838,12 @@ function PhotoComposerTab() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          backgroundImage: uploadedImage.split(",")[1], // base64 only
+          backgroundImage: uploadedImage.split(",")[1],
           prompt: compositePrompt,
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed");
+      if (!res.ok) throw new Error(data.error || "Błąd");
       setResult(data.imageUrl);
     } catch (err) {
       setError(String(err));
@@ -858,16 +854,15 @@ function PhotoComposerTab() {
   return (
     <div className="space-y-4">
       <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-semibold">Photo Composer</h2>
+        <h2 className="text-xl font-semibold">Kompozytor zdjęć</h2>
         <p className="mt-1 text-sm text-foreground/50">
-          Upload a real Malta photo, describe adjustments, and place Monika in the scene
+          Wgraj prawdziwe zdjęcie z Malty, opisz zmiany i umieść Monikę w scenie
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {/* Upload */}
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h3 className="mb-3 font-medium">1. Upload Background Photo</h3>
+          <h3 className="mb-3 font-medium">1. Wgraj zdjęcie tła</h3>
           <input
             ref={fileInputRef}
             type="file"
@@ -877,11 +872,7 @@ function PhotoComposerTab() {
           />
           {uploadedImage ? (
             <div>
-              <img
-                src={uploadedImage}
-                alt="Uploaded"
-                className="w-full rounded-lg"
-              />
+              <img src={uploadedImage} alt="Wgrane" className="w-full rounded-lg" />
               <button
                 onClick={() => {
                   setUploadedImage(null);
@@ -890,7 +881,7 @@ function PhotoComposerTab() {
                 }}
                 className="mt-2 text-sm text-foreground/40 hover:text-foreground/60"
               >
-                Remove
+                Usuń
               </button>
             </div>
           ) : (
@@ -898,18 +889,17 @@ function PhotoComposerTab() {
               onClick={() => fileInputRef.current?.click()}
               className="flex aspect-video w-full items-center justify-center rounded-lg border-2 border-dashed border-malta-stone/50 text-foreground/30 transition-colors hover:border-malta-blue/30 hover:text-foreground/50"
             >
-              Click to upload photo
+              Kliknij aby wgrać zdjęcie
             </button>
           )}
         </div>
 
-        {/* Prompt & Result */}
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h3 className="mb-3 font-medium">2. Describe the Scene</h3>
+          <h3 className="mb-3 font-medium">2. Opisz scenę</h3>
           <textarea
             value={compositePrompt}
             onChange={(e) => setCompositePrompt(e.target.value)}
-            placeholder="e.g. Place Monika walking on this street, wearing a summer dress, golden hour lighting. Remove the tourist group on the left. Enhance the sky colors."
+            placeholder="np. Umieść Monikę idącą tą ulicą w letniej sukience, złota godzina. Usuń grupę turystów po lewej. Popraw kolory nieba."
             rows={4}
             className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm focus:border-malta-blue focus:outline-none"
           />
@@ -918,29 +908,27 @@ function PhotoComposerTab() {
             disabled={loading || !uploadedImage || !compositePrompt.trim()}
             className="mt-3 w-full rounded-lg bg-malta-blue px-4 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {loading ? "Composing with Gemini..." : "Compose Image"}
+            {loading ? "Komponuję z Gemini..." : "Skomponuj obraz"}
           </button>
 
-          {error && (
-            <p className="mt-2 text-sm text-red-600">{error}</p>
-          )}
+          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
           {result && (
             <div className="mt-4">
-              <img src={result} alt="Composed" className="w-full rounded-lg" />
+              <img src={result} alt="Skomponowane" className="w-full rounded-lg" />
               <div className="mt-2 flex gap-2">
                 <a
                   href={result}
                   download
                   className="rounded-lg bg-malta-blue/10 px-3 py-1 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20"
                 >
-                  Download
+                  Pobierz
                 </a>
                 <button
                   onClick={() => saveToBest(result)}
                   className="rounded-lg border border-malta-gold/50 px-3 py-1 text-sm text-malta-gold transition-colors hover:bg-malta-gold/10"
                 >
-                  ★ Save to Best
+                  ★ Zapisz do najlepszych
                 </button>
               </div>
             </div>
