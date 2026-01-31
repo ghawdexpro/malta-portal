@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { buildScriptPrompt, TEXT_MODEL, type ScriptSegment } from '@/lib/tiktok-config';
+import { buildScriptPrompt, TEXT_MODEL, type ScriptSegment, type ContentLang } from '@/lib/tiktok-config';
 
 export async function POST(request: NextRequest) {
   try {
-    const { topic } = await request.json();
+    const { topic, lang } = await request.json();
     if (!topic) {
       return NextResponse.json({ error: 'Topic is required' }, { status: 400 });
     }
@@ -13,7 +13,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 });
     }
 
-    const prompt = buildScriptPrompt(topic);
+    const contentLang: ContentLang = lang === 'en' ? 'en' : 'pl';
+    const prompt = buildScriptPrompt(topic, contentLang);
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',

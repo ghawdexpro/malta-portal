@@ -15,7 +15,14 @@ export const VOICE_SETTINGS = {
   },
 };
 
-export function buildScriptPrompt(topic: string): string {
+export type ContentLang = 'pl' | 'en';
+
+export function buildScriptPrompt(topic: string, lang: ContentLang = 'pl'): string {
+  if (lang === 'en') return buildScriptPromptEN(topic);
+  return buildScriptPromptPL(topic);
+}
+
+function buildScriptPromptPL(topic: string): string {
   return `You are writing a soft ASMR travel script for "Monika" — a 28-year-old Polish woman living in Malta. She makes TikTok content showing how amazing Malta is. Her style: warm, personal, like a friend who lives there and shows you her favorite spots. Slightly flirty but mainly passionate about Malta itself.
 
 TOPIC: "${topic}"
@@ -52,6 +59,48 @@ OUTPUT: Valid JSON only. No markdown code blocks.
     "script": [
         {
             "text": "The Polish whispered narration. Only spoken words, nothing else.",
+            "visual_prompt": "Cinematic scene description in English for image AI. Include: Monika in the scene, Malta location, lighting, mood, camera angle. Travel content aesthetic."
+        }
+    ]
+}`;
+}
+
+function buildScriptPromptEN(topic: string): string {
+  return `You are writing a soft ASMR travel script for "Monika" — a 28-year-old woman living in Malta. She makes TikTok content showing how amazing Malta is. Her style: warm, personal, like a friend who lives there and shows you her favorite spots. Slightly flirty but mainly passionate about Malta itself.
+
+TOPIC: "${topic}"
+
+VOICE & TONE RULES:
+- Warm, personal, slightly flirty — but the star is MALTA, not Monika.
+- She genuinely loves this place and wants to share it with you.
+- Use natural pauses: "..." between phrases to create breathing space.
+- Short sentences. Never more than 15 words per sentence.
+- 80% about Malta (places, food, views, history, vibes). 20% personal asides to the viewer.
+- She makes Malta sound irresistible: "You have to see this... trust me..."
+- Occasionally address the viewer: "hey", "you know what?", "can you hear that?".
+- Subtle subtext is fine — she can hint, suggest, leave things to imagination. But NEVER explicit.
+- Think "charming first date" energy — chemistry is there but nothing stated directly.
+
+LANGUAGE RULES:
+- 100% English. Natural, conversational American English.
+- Use simple, everyday language. No fancy vocabulary.
+- Keep it casual and intimate, like talking to a close friend.
+- Use ellipsis "..." for pauses (the TTS engine reads them as natural breaks).
+
+STRUCTURE: Exactly 5 segments. Each segment 2-4 sentences.
+
+FORBIDDEN:
+- No stage directions like "[whispers]", "[sighs]", "(pause)" etc.
+- No single quotes around words.
+- No exclamation marks. Keep everything soft.
+- No bedroom/romantic/sexual content. This is a travel video.
+- No tour guide voice. She's a friend, not a teacher.
+
+OUTPUT: Valid JSON only. No markdown code blocks.
+{
+    "script": [
+        {
+            "text": "The English whispered narration. Only spoken words, nothing else.",
             "visual_prompt": "Cinematic scene description in English for image AI. Include: Monika in the scene, Malta location, lighting, mood, camera angle. Travel content aesthetic."
         }
     ]

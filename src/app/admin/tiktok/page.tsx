@@ -37,6 +37,192 @@ interface SegmentAssets {
 
 type Tab = "create" | "gallery" | "compose";
 type Step = "topic" | "script" | "audio" | "images" | "assemble" | "done";
+type Lang = "pl" | "en";
+
+const T = {
+  pl: {
+    subtitle: "Studio produkcji ASMR Monika",
+    tabCreate: "Nowe wideo",
+    tabGallery: "Biblioteka",
+    tabCompose: "Kompozytor zdjęć",
+    steps: ["Temat", "Skrypt", "Audio", "Obrazy", "Montaż", "Gotowe"],
+    chooseTopic: "Wybierz temat",
+    topicSubtitle: "Co Monika pokaże nam dzisiaj na Malcie?",
+    topicPlaceholder: "np. Spacer po starym mieście Mdina o zachodzie słońca",
+    suggestions: ["Ukryte uliczki Mdiny", "Targ rybny w Marsaxlokk", "Błękitna Laguna o świcie", "Wieczorna Valletta", "Gozo - wyspa ciszy"],
+    generating: "Generuję skrypt...",
+    generate: "Generuj skrypt",
+    reviewScript: "Sprawdź skrypt",
+    editPrompts: "Edytuj tekst i prompty wizualne. Temat:",
+    back: "← Wróć",
+    narrationLabel: "Narracja po polsku",
+    visualLabel: "Prompt wizualny (EN)",
+    regenerate: "Generuj ponownie",
+    approveScript: "Zatwierdź skrypt →",
+    generateAudio: "Generuj audio",
+    generateAudioSub: "Wygeneruj i zatwierdź audio dla każdego segmentu",
+    backToScript: "← Wróć do skryptu",
+    generateAllAudio: "Generuj wszystkie audio",
+    voiceSettings: "Ustawienia głosu",
+    globalAudioSettings: "Globalne ustawienia audio",
+    stability: "Stabilność",
+    stabilityHint: "Niżej = więcej emocji, wyżej = monotonnie",
+    similarity: "Podobieństwo",
+    similarityHint: "Jak blisko oryginalnego głosu",
+    styleLabel: "Styl",
+    styleHint: "Wzmocnienie stylu mówcy",
+    speed: "Tempo",
+    speedHint: "0.7 (wolno) — 1.0 — 1.2 (szybko)",
+    model: "Model",
+    flashFast: "Flash v2.5 (szybki)",
+    approved: "Zatwierdzone",
+    approve: "Zatwierdź",
+    redo: "Ponów",
+    localOverrides: "Nadpisania lokalne",
+    localTag: "lokalne",
+    resetGlobal: "Resetuj do globalnych",
+    versions: "Wersje:",
+    generatingAudio: "Generuję...",
+    allApprovedImages: "Wszystkie zatwierdzone → Generuj obrazy",
+    generateImages: "Generuj obrazy",
+    imagesSub: "Wygeneruj nowe, lub wybierz z biblioteki",
+    backToAudio: "← Wróć do audio",
+    generateAllImages: "Generuj wszystkie obrazy",
+    generatingImage: "Generuję...",
+    generateImage: "Generuj obraz",
+    regenerateImage: "Generuj ponownie",
+    fromLibrary: "Z biblioteki",
+    save: "Zapisz",
+    pickFromLibrary: "Wybierz obraz z biblioteki",
+    close: "Zamknij",
+    loading: "Ładuję...",
+    noImages: "Brak obrazów w bibliotece",
+    allApprovedAssemble: "Wszystkie zatwierdzone → Montaż wideo",
+    assemble: "Montaż wideo",
+    assembleSub: "segmentów w finalne wideo TikTok",
+    assembleBtn: "Zmontuj finalne wideo",
+    assembling: "Montuję z FFmpeg...",
+    videoDone: "Wideo gotowe",
+    segments: "segmentów",
+    download: "Pobierz MP4",
+    createAnother: "Utwórz kolejne",
+    galleryTitle: "Biblioteka materiałów",
+    gallerySub: "Przeglądaj wszystkie wygenerowane obrazy, audio i wideo",
+    loadGallery: "Załaduj bibliotekę",
+    scanning: "Skanuję materiały...",
+    sessions: "Sesje",
+    images: "Obrazy",
+    audio: "Audio",
+    videos: "Wideo",
+    all: "Wszystko",
+    refresh: "Odśwież",
+    best: "Najlepsze",
+    finalVideos: "Finalne wideo",
+    session: "Sesja",
+    composerTitle: "Kompozytor zdjęć",
+    composerSub: "Wgraj prawdziwe zdjęcie z Malty, opisz zmiany i umieść Monikę w scenie",
+    uploadBg: "1. Wgraj zdjęcie tła",
+    clickUpload: "Kliknij aby wgrać zdjęcie",
+    remove: "Usuń",
+    describeScene: "2. Opisz scenę",
+    composePlaceholder: "np. Umieść Monikę idącą tą ulicą w letniej sukience, złota godzina. Usuń grupę turystów po lewej. Popraw kolory nieba.",
+    composing: "Komponuję z Nanobana Pro...",
+    composeBtn: "Skomponuj obraz",
+    downloadImg: "Pobierz",
+    saveBest: "Zapisz do najlepszych",
+  },
+  en: {
+    subtitle: "Monika ASMR Production Studio",
+    tabCreate: "New video",
+    tabGallery: "Library",
+    tabCompose: "Photo composer",
+    steps: ["Topic", "Script", "Audio", "Images", "Assemble", "Done"],
+    chooseTopic: "Choose a topic",
+    topicSubtitle: "What will Monika show us in Malta today?",
+    topicPlaceholder: "e.g. Walking through old Mdina at sunset",
+    suggestions: ["Hidden alleys of Mdina", "Fish market in Marsaxlokk", "Blue Lagoon at dawn", "Evening Valletta", "Gozo - island of silence"],
+    generating: "Generating script...",
+    generate: "Generate script",
+    reviewScript: "Review script",
+    editPrompts: "Edit text and visual prompts. Topic:",
+    back: "← Back",
+    narrationLabel: "English narration",
+    visualLabel: "Visual prompt (EN)",
+    regenerate: "Regenerate",
+    approveScript: "Approve script →",
+    generateAudio: "Generate audio",
+    generateAudioSub: "Generate and approve audio for each segment",
+    backToScript: "← Back to script",
+    generateAllAudio: "Generate all audio",
+    voiceSettings: "Voice settings",
+    globalAudioSettings: "Global audio settings",
+    stability: "Stability",
+    stabilityHint: "Lower = more emotion, higher = monotone",
+    similarity: "Similarity",
+    similarityHint: "How close to original voice",
+    styleLabel: "Style",
+    styleHint: "Speaker style emphasis",
+    speed: "Speed",
+    speedHint: "0.7 (slow) — 1.0 — 1.2 (fast)",
+    model: "Model",
+    flashFast: "Flash v2.5 (fast)",
+    approved: "Approved",
+    approve: "Approve",
+    redo: "Redo",
+    localOverrides: "Local overrides",
+    localTag: "local",
+    resetGlobal: "Reset to global",
+    versions: "Versions:",
+    generatingAudio: "Generating...",
+    allApprovedImages: "All approved → Generate images",
+    generateImages: "Generate images",
+    imagesSub: "Generate new, or pick from library",
+    backToAudio: "← Back to audio",
+    generateAllImages: "Generate all images",
+    generatingImage: "Generating...",
+    generateImage: "Generate image",
+    regenerateImage: "Regenerate",
+    fromLibrary: "From library",
+    save: "Save",
+    pickFromLibrary: "Pick image from library",
+    close: "Close",
+    loading: "Loading...",
+    noImages: "No images in library",
+    allApprovedAssemble: "All approved → Assemble video",
+    assemble: "Assemble video",
+    assembleSub: "segments into final TikTok video",
+    assembleBtn: "Assemble final video",
+    assembling: "Assembling with FFmpeg...",
+    videoDone: "Video ready",
+    segments: "segments",
+    download: "Download MP4",
+    createAnother: "Create another",
+    galleryTitle: "Asset library",
+    gallerySub: "Browse all generated images, audio and video",
+    loadGallery: "Load library",
+    scanning: "Scanning assets...",
+    sessions: "Sessions",
+    images: "Images",
+    audio: "Audio",
+    videos: "Videos",
+    all: "All",
+    refresh: "Refresh",
+    best: "Best",
+    finalVideos: "Final videos",
+    session: "Session",
+    composerTitle: "Photo composer",
+    composerSub: "Upload a real Malta photo, describe changes and place Monika in the scene",
+    uploadBg: "1. Upload background",
+    clickUpload: "Click to upload photo",
+    remove: "Remove",
+    describeScene: "2. Describe scene",
+    composePlaceholder: "e.g. Place Monika walking down this street in a summer dress, golden hour. Remove the tourists on the left. Enhance the sky colors.",
+    composing: "Composing with Nanobana Pro...",
+    composeBtn: "Compose image",
+    downloadImg: "Download",
+    saveBest: "Save to best",
+  },
+};
 
 interface GallerySession {
   id: string;
@@ -56,21 +242,41 @@ interface GalleryData {
 
 export default function TikTokCreatorPage() {
   const [activeTab, setActiveTab] = useState<Tab>("create");
+  const [lang, setLang] = useState<Lang>("pl");
+  const t = T[lang];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">TikTok Creator</h1>
-        <p className="mt-1 text-foreground/50">
-          Studio produkcji ASMR Monika
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">TikTok Creator</h1>
+          <p className="mt-1 text-foreground/50">{t.subtitle}</p>
+        </div>
+        <div className="flex items-center gap-1 rounded-lg bg-malta-stone/30 p-0.5">
+          <button
+            onClick={() => setLang("pl")}
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-all ${
+              lang === "pl" ? "bg-white text-foreground shadow-sm" : "text-foreground/50"
+            }`}
+          >
+            🇵🇱 PL
+          </button>
+          <button
+            onClick={() => setLang("en")}
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-all ${
+              lang === "en" ? "bg-white text-foreground shadow-sm" : "text-foreground/50"
+            }`}
+          >
+            🇬🇧 EN
+          </button>
+        </div>
       </div>
 
       <div className="mb-6 flex gap-1 rounded-xl bg-malta-stone/30 p-1">
         {([
-          { id: "create", label: "Nowe wideo", icon: "🎬" },
-          { id: "gallery", label: "Biblioteka", icon: "🖼️" },
-          { id: "compose", label: "Kompozytor zdjęć", icon: "📸" },
+          { id: "create", label: t.tabCreate, icon: "🎬" },
+          { id: "gallery", label: t.tabGallery, icon: "🖼️" },
+          { id: "compose", label: t.tabCompose, icon: "📸" },
         ] as const).map((tab) => (
           <button
             key={tab.id}
@@ -86,16 +292,18 @@ export default function TikTokCreatorPage() {
         ))}
       </div>
 
-      {activeTab === "create" && <CreateVideoTab />}
-      {activeTab === "gallery" && <GalleryTab />}
-      {activeTab === "compose" && <PhotoComposerTab />}
+      {activeTab === "create" && <CreateVideoTab lang={lang} t={t} />}
+      {activeTab === "gallery" && <GalleryTab t={t} />}
+      {activeTab === "compose" && <PhotoComposerTab t={t} />}
     </div>
   );
 }
 
 /* ─── CREATE VIDEO TAB ─── */
 
-function CreateVideoTab() {
+type Translations = typeof T.pl;
+
+function CreateVideoTab({ lang, t }: { lang: Lang; t: Translations }) {
   const [step, setStep] = useState<Step>("topic");
   const [topic, setTopic] = useState("");
   const [sessionId] = useState(() => String(Date.now()));
@@ -122,7 +330,7 @@ function CreateVideoTab() {
       const res = await fetch("/api/tiktok/script", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, lang }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Błąd");
@@ -262,7 +470,7 @@ function CreateVideoTab() {
   const allImagesDone = segments.length > 0 && segments.every((s) => s.imageUrl && s.imageApproved);
 
   const STEPS: Step[] = ["topic", "script", "audio", "images", "assemble", "done"];
-  const STEP_LABELS = ["Temat", "Skrypt", "Audio", "Obrazy", "Montaż", "Gotowe"];
+  const STEP_LABELS = t.steps;
   const stepIdx = STEPS.indexOf(step);
 
   return (
@@ -302,26 +510,20 @@ function CreateVideoTab() {
       {/* STEP: Topic */}
       {step === "topic" && (
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold">Wybierz temat</h2>
+          <h2 className="text-xl font-semibold">{t.chooseTopic}</h2>
           <p className="mt-1 text-sm text-foreground/50">
-            Co Monika pokaże nam dzisiaj na Malcie?
+            {t.topicSubtitle}
           </p>
           <input
             type="text"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            placeholder="np. Spacer po starym mieście Mdina o zachodzie słońca"
+            placeholder={t.topicPlaceholder}
             className="mt-4 w-full rounded-lg border border-malta-stone/50 px-4 py-3 text-lg focus:border-malta-blue focus:outline-none"
             onKeyDown={(e) => e.key === "Enter" && generateScript()}
           />
           <div className="mt-3 flex flex-wrap gap-2">
-            {[
-              "Ukryte uliczki Mdiny",
-              "Targ rybny w Marsaxlokk",
-              "Błękitna Laguna o świcie",
-              "Wieczorna Valletta",
-              "Gozo - wyspa ciszy",
-            ].map((suggestion) => (
+            {t.suggestions.map((suggestion) => (
               <button
                 key={suggestion}
                 onClick={() => setTopic(suggestion)}
@@ -336,7 +538,7 @@ function CreateVideoTab() {
             disabled={loading || !topic.trim()}
             className="mt-6 rounded-lg bg-malta-blue px-6 py-3 font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {loading ? "Generuję skrypt..." : "Generuj skrypt"}
+            {loading ? t.generating : t.generate}
           </button>
         </div>
       )}
@@ -347,16 +549,16 @@ function CreateVideoTab() {
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Sprawdź skrypt</h2>
+                <h2 className="text-xl font-semibold">{t.reviewScript}</h2>
                 <p className="mt-1 text-sm text-foreground/50">
-                  Edytuj tekst i prompty wizualne. Temat: &quot;{topic}&quot;
+                  {t.editPrompts} &quot;{topic}&quot;
                 </p>
               </div>
               <button
                 onClick={() => { setStep("topic"); setScript([]); setSegments([]); }}
                 className="text-sm text-foreground/40 hover:text-foreground/60"
               >
-                ← Wróć
+                {t.back}
               </button>
             </div>
           </div>
@@ -369,7 +571,7 @@ function CreateVideoTab() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-xs font-medium text-foreground/50">
-                    Narracja po polsku
+                    {t.narrationLabel}
                   </label>
                   <textarea
                     value={seg.text}
@@ -380,7 +582,7 @@ function CreateVideoTab() {
                 </div>
                 <div>
                   <label className="mb-1 block text-xs font-medium text-foreground/50">
-                    Prompt wizualny (EN)
+                    {t.visualLabel}
                   </label>
                   <textarea
                     value={seg.visual_prompt}
@@ -399,13 +601,13 @@ function CreateVideoTab() {
               disabled={loading}
               className="rounded-lg border border-malta-stone/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
             >
-              {loading ? "Generuję..." : "Generuj ponownie"}
+              {loading ? t.generating : t.regenerate}
             </button>
             <button
               onClick={() => setStep("audio")}
               className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              Zatwierdź skrypt →
+              {t.approveScript}
             </button>
           </div>
         </div>
@@ -417,16 +619,16 @@ function CreateVideoTab() {
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Generuj audio</h2>
+                <h2 className="text-xl font-semibold">{t.generateAudio}</h2>
                 <p className="mt-1 text-sm text-foreground/50">
-                  Wygeneruj i zatwierdź audio dla każdego segmentu
+                  {t.generateAudioSub}
                 </p>
               </div>
               <button
                 onClick={() => setStep("script")}
                 className="text-sm text-foreground/40 hover:text-foreground/60"
               >
-                ← Wróć do skryptu
+                {t.backToScript}
               </button>
             </div>
 
@@ -436,7 +638,7 @@ function CreateVideoTab() {
                 disabled={segments.some((s) => s.audioLoading)}
                 className="rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
               >
-                Generuj wszystkie audio
+                {t.generateAllAudio}
               </button>
               <button
                 onClick={() => setShowGlobalSettings(!showGlobalSettings)}
@@ -446,53 +648,53 @@ function CreateVideoTab() {
                     : "border-malta-stone/50 text-foreground/50 hover:bg-malta-stone/20"
                 }`}
               >
-                ⚙️ Ustawienia głosu
+                ⚙️ {t.voiceSettings}
               </button>
             </div>
 
             {/* Global Voice Settings */}
             {showGlobalSettings && (
               <div className="mt-4 rounded-lg bg-malta-stone/10 p-4">
-                <h3 className="mb-3 text-sm font-semibold">Globalne ustawienia audio</h3>
+                <h3 className="mb-3 text-sm font-semibold">{t.globalAudioSettings}</h3>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   <VoiceSlider
-                    label="Stabilność"
-                    hint="Niżej = więcej emocji, wyżej = monotonnie"
+                    label={t.stability}
+                    hint={t.stabilityHint}
                     value={globalVoice.stability}
                     min={0} max={1} step={0.05}
                     onChange={(v) => setGlobalVoice((p) => ({ ...p, stability: v }))}
                   />
                   <VoiceSlider
-                    label="Podobieństwo"
-                    hint="Jak blisko oryginalnego głosu"
+                    label={t.similarity}
+                    hint={t.similarityHint}
                     value={globalVoice.similarity_boost}
                     min={0} max={1} step={0.05}
                     onChange={(v) => setGlobalVoice((p) => ({ ...p, similarity_boost: v }))}
                   />
                   <VoiceSlider
-                    label="Styl"
-                    hint="Wzmocnienie stylu mówcy"
+                    label={t.styleLabel}
+                    hint={t.styleHint}
                     value={globalVoice.style}
                     min={0} max={1} step={0.05}
                     onChange={(v) => setGlobalVoice((p) => ({ ...p, style: v }))}
                   />
                   <VoiceSlider
-                    label="Tempo"
-                    hint="0.7 (wolno) — 1.0 — 1.2 (szybko)"
+                    label={t.speed}
+                    hint={t.speedHint}
                     value={globalVoice.speed}
                     min={0.7} max={1.2} step={0.05}
                     onChange={(v) => setGlobalVoice((p) => ({ ...p, speed: v }))}
                   />
                   <div>
                     <label className="mb-1 block text-xs font-medium text-foreground/50">
-                      Model
+                      {t.model}
                     </label>
                     <select
                       value={globalVoice.model_id}
                       onChange={(e) => setGlobalVoice((p) => ({ ...p, model_id: e.target.value }))}
                       className="w-full rounded-lg border border-malta-stone/50 px-2 py-1.5 text-sm"
                     >
-                      <option value="eleven_flash_v2_5">Flash v2.5 (szybki)</option>
+                      <option value="eleven_flash_v2_5">{t.flashFast}</option>
                       <option value="eleven_multilingual_v2">Multilingual v2</option>
                       <option value="eleven_turbo_v2_5">Turbo v2.5</option>
                     </select>
@@ -517,6 +719,7 @@ function CreateVideoTab() {
               index={i}
               seg={seg}
               globalVoice={globalVoice}
+              t={t}
               onGenerate={() => generateAudio(i)}
               onApprove={() => updateSegment(i, { audioApproved: true })}
               onSelectTake={(take) => {
@@ -538,7 +741,7 @@ function CreateVideoTab() {
               onClick={() => setStep("images")}
               className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              Wszystkie zatwierdzone → Generuj obrazy
+              {t.allApprovedImages}
             </button>
           )}
         </div>
@@ -549,6 +752,7 @@ function CreateVideoTab() {
         <ImageStep
           segments={segments}
           sessionId={sessionId}
+          t={t}
           onUpdateSegment={updateSegment}
           onGenerateImage={generateImage}
           onGenerateAllImages={generateAllImages}
@@ -561,9 +765,9 @@ function CreateVideoTab() {
       {/* STEP: Assemble */}
       {step === "assemble" && (
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold">Montaż wideo</h2>
+          <h2 className="text-xl font-semibold">{t.assemble}</h2>
           <p className="mt-1 text-sm text-foreground/50">
-            Połącz {segments.length} segmentów w finalne wideo TikTok
+            {segments.length} {t.assembleSub}
           </p>
 
           <div className="mt-4 grid gap-2 sm:grid-cols-5">
@@ -582,7 +786,7 @@ function CreateVideoTab() {
             disabled={loading}
             className="mt-6 rounded-lg bg-malta-blue px-8 py-3 text-lg font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {loading ? "Montuję z FFmpeg..." : "Zmontuj finalne wideo"}
+            {loading ? t.assembling : t.assembleBtn}
           </button>
         </div>
       )}
@@ -590,9 +794,9 @@ function CreateVideoTab() {
       {/* STEP: Done */}
       {step === "done" && finalVideoUrl && (
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-green-700">Wideo gotowe</h2>
+          <h2 className="text-xl font-semibold text-green-700">{t.videoDone}</h2>
           <p className="mt-1 text-sm text-foreground/50">
-            &quot;{topic}&quot; — {segments.length} segmentów
+            &quot;{topic}&quot; — {segments.length} {t.segments}
           </p>
           <video
             controls
@@ -606,7 +810,7 @@ function CreateVideoTab() {
               download
               className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              Pobierz MP4
+              {t.download}
             </a>
             <button
               onClick={() => {
@@ -618,7 +822,7 @@ function CreateVideoTab() {
               }}
               className="rounded-lg border border-malta-stone/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-malta-stone/20"
             >
-              Utwórz kolejne
+              {t.createAnother}
             </button>
           </div>
         </div>
@@ -660,10 +864,11 @@ function VoiceSlider({ label, hint, value, min, max, step, onChange }: {
 
 /* ─── AUDIO SEGMENT CARD ─── */
 
-function AudioSegmentCard({ index, seg, globalVoice, onGenerate, onApprove, onSelectTake, onLocalSettingsChange }: {
+function AudioSegmentCard({ index, seg, globalVoice, t, onGenerate, onApprove, onSelectTake, onLocalSettingsChange }: {
   index: number;
   seg: SegmentAssets;
   globalVoice: VoiceSettings;
+  t: Translations;
   onGenerate: () => void;
   onApprove: () => void;
   onSelectTake: (take: number) => void;
@@ -687,7 +892,7 @@ function AudioSegmentCard({ index, seg, globalVoice, onGenerate, onApprove, onSe
             )}
             {hasLocal && (
               <span className="rounded bg-amber-100 px-1 py-0.5 text-[10px] font-medium text-amber-700">
-                lokalne
+                {t.localTag}
               </span>
             )}
           </div>
@@ -696,7 +901,7 @@ function AudioSegmentCard({ index, seg, globalVoice, onGenerate, onApprove, onSe
         <div className="ml-4 flex items-center gap-2">
           {seg.audioApproved && (
             <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-              Zatwierdzone
+              {t.approved}
             </span>
           )}
           <button
@@ -715,40 +920,40 @@ function AudioSegmentCard({ index, seg, globalVoice, onGenerate, onApprove, onSe
       {showLocal && (
         <div className="mt-3 rounded-lg bg-amber-50/50 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium text-amber-700">Nadpisania lokalne (segment {index + 1})</span>
+            <span className="text-xs font-medium text-amber-700">{t.localOverrides} (segment {index + 1})</span>
             {hasLocal && (
               <button
                 onClick={() => onLocalSettingsChange({})}
                 className="text-[10px] text-foreground/30 hover:text-foreground/50"
               >
-                Resetuj do globalnych
+                {t.resetGlobal}
               </button>
             )}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <VoiceSlider
-              label="Stabilność"
+              label={t.stability}
               hint=""
               value={seg.localSettings?.stability ?? globalVoice.stability}
               min={0} max={1} step={0.05}
               onChange={(v) => onLocalSettingsChange({ ...seg.localSettings, stability: v })}
             />
             <VoiceSlider
-              label="Tempo"
+              label={t.speed}
               hint=""
               value={seg.localSettings?.speed ?? globalVoice.speed}
               min={0.7} max={1.2} step={0.05}
               onChange={(v) => onLocalSettingsChange({ ...seg.localSettings, speed: v })}
             />
             <VoiceSlider
-              label="Podobieństwo"
+              label={t.similarity}
               hint=""
               value={seg.localSettings?.similarity_boost ?? globalVoice.similarity_boost}
               min={0} max={1} step={0.05}
               onChange={(v) => onLocalSettingsChange({ ...seg.localSettings, similarity_boost: v })}
             />
             <VoiceSlider
-              label="Styl"
+              label={t.styleLabel}
               hint=""
               value={seg.localSettings?.style ?? globalVoice.style}
               min={0} max={1} step={0.05}
@@ -773,21 +978,21 @@ function AudioSegmentCard({ index, seg, globalVoice, onGenerate, onApprove, onSe
                     : "bg-green-500 text-white hover:bg-green-600"
                 }`}
               >
-                {seg.audioApproved ? "✓" : "Zatwierdź"}
+                {seg.audioApproved ? "✓" : t.approve}
               </button>
               <button
                 onClick={onGenerate}
                 disabled={seg.audioLoading}
                 className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
               >
-                {seg.audioLoading ? "..." : "Ponów"}
+                {seg.audioLoading ? "..." : t.redo}
               </button>
             </div>
 
             {/* Take history */}
             {seg.takes.length > 1 && (
               <div className="flex items-center gap-1">
-                <span className="mr-1 text-[10px] text-foreground/30">Wersje:</span>
+                <span className="mr-1 text-[10px] text-foreground/30">{t.versions}</span>
                 {seg.takes.map((t) => (
                   <button
                     key={t.take}
@@ -810,7 +1015,7 @@ function AudioSegmentCard({ index, seg, globalVoice, onGenerate, onApprove, onSe
             disabled={seg.audioLoading}
             className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {seg.audioLoading ? "Generuję..." : "Generuj audio"}
+            {seg.audioLoading ? t.generatingAudio : t.generateAudio}
           </button>
         )}
       </div>
@@ -824,9 +1029,10 @@ async function saveToBest(imageUrl: string) {
 
 /* ─── IMAGE STEP WITH LIBRARY PICKER ─── */
 
-function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGenerateAllImages, allImagesDone, onNext, onBack }: {
+function ImageStep({ segments, sessionId, t, onUpdateSegment, onGenerateImage, onGenerateAllImages, allImagesDone, onNext, onBack }: {
   segments: SegmentAssets[];
   sessionId: string;
+  t: Translations;
   onUpdateSegment: (i: number, updates: Partial<SegmentAssets>) => void;
   onGenerateImage: (i: number) => void;
   onGenerateAllImages: () => void;
@@ -871,16 +1077,16 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
       <div className="rounded-xl bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold">Generuj obrazy</h2>
+            <h2 className="text-xl font-semibold">{t.generateImages}</h2>
             <p className="mt-1 text-sm text-foreground/50">
-              Wygeneruj nowe, lub wybierz z biblioteki
+              {t.imagesSub}
             </p>
           </div>
           <button
             onClick={onBack}
             className="text-sm text-foreground/40 hover:text-foreground/60"
           >
-            ← Wróć do audio
+            {t.backToAudio}
           </button>
         </div>
         <button
@@ -888,7 +1094,7 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
           disabled={segments.some((s) => s.imageLoading)}
           className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
         >
-          Generuj wszystkie obrazy
+          {t.generateAllImages}
         </button>
       </div>
 
@@ -916,7 +1122,7 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
                       : "bg-green-500 text-white hover:bg-green-600"
                   }`}
                 >
-                  {seg.imageApproved ? "✓ Zatwierdzone" : "Zatwierdź"}
+                  {seg.imageApproved ? `✓ ${t.approved}` : t.approve}
                 </button>
                 <button
                   onClick={() => {
@@ -926,19 +1132,19 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
                   disabled={seg.imageLoading}
                   className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
                 >
-                  Generuj ponownie
+                  {t.regenerateImage}
                 </button>
                 <button
                   onClick={() => openLibrary(i)}
                   className="rounded-lg border border-malta-blue/30 px-3 py-1.5 text-sm text-malta-blue transition-colors hover:bg-malta-blue/10"
                 >
-                  🖼️ Z biblioteki
+                  🖼️ {t.fromLibrary}
                 </button>
                 <button
                   onClick={() => saveToBest(seg.imageUrl!)}
                   className="rounded-lg border border-malta-gold/50 px-3 py-1.5 text-sm text-malta-gold transition-colors hover:bg-malta-gold/10"
                 >
-                  ★ Zapisz
+                  ★ {t.save}
                 </button>
               </div>
             </div>
@@ -949,13 +1155,13 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
                 disabled={seg.imageLoading}
                 className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
               >
-                {seg.imageLoading ? "Generuję..." : "Generuj obraz"}
+                {seg.imageLoading ? t.generatingImage : t.generateImage}
               </button>
               <button
                 onClick={() => openLibrary(i)}
                 className="rounded-lg border border-malta-blue/30 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/10"
               >
-                🖼️ Z biblioteki
+                🖼️ {t.fromLibrary}
               </button>
             </div>
           )}
@@ -964,16 +1170,16 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
           {libraryOpen === i && (
             <div className="mt-3 rounded-lg border border-malta-blue/20 bg-malta-stone/10 p-4">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-sm font-medium">Wybierz obraz z biblioteki</span>
+                <span className="text-sm font-medium">{t.pickFromLibrary}</span>
                 <button
                   onClick={() => setLibraryOpen(null)}
                   className="text-xs text-foreground/30 hover:text-foreground/50"
                 >
-                  ✕ Zamknij
+                  ✕ {t.close}
                 </button>
               </div>
               {libraryLoading ? (
-                <p className="text-sm text-foreground/40">Ładuję...</p>
+                <p className="text-sm text-foreground/40">{t.loading}</p>
               ) : (
                 <div className="grid max-h-64 grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-4 md:grid-cols-5">
                   {libraryImages.map((url) => (
@@ -986,7 +1192,7 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
                     />
                   ))}
                   {libraryImages.length === 0 && (
-                    <p className="col-span-full text-sm text-foreground/40">Brak obrazów w bibliotece</p>
+                    <p className="col-span-full text-sm text-foreground/40">{t.noImages}</p>
                   )}
                 </div>
               )}
@@ -1000,7 +1206,7 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
           onClick={onNext}
           className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
         >
-          Wszystkie zatwierdzone → Montaż wideo
+          {t.allApprovedAssemble}
         </button>
       )}
     </div>
@@ -1009,7 +1215,7 @@ function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGe
 
 /* ─── GALLERY TAB ─── */
 
-function GalleryTab() {
+function GalleryTab({ t }: { t: Translations }) {
   const [data, setData] = useState<GalleryData | null>(null);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<"all" | "images" | "audio" | "videos">("all");
@@ -1027,15 +1233,15 @@ function GalleryTab() {
   if (!data && !loading) {
     return (
       <div className="rounded-xl bg-white p-6 text-center shadow-sm">
-        <h2 className="text-xl font-semibold">Biblioteka materiałów</h2>
+        <h2 className="text-xl font-semibold">{t.galleryTitle}</h2>
         <p className="mt-2 text-sm text-foreground/50">
-          Przeglądaj wszystkie wygenerowane obrazy, audio i wideo
+          {t.gallerySub}
         </p>
         <button
           onClick={loadGallery}
           className="mt-4 rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
         >
-          Załaduj bibliotekę
+          {t.loadGallery}
         </button>
       </div>
     );
@@ -1044,7 +1250,7 @@ function GalleryTab() {
   if (loading) {
     return (
       <div className="rounded-xl bg-white p-6 text-center shadow-sm">
-        <p className="text-foreground/50">Skanuję materiały...</p>
+        <p className="text-foreground/50">{t.scanning}</p>
       </div>
     );
   }
@@ -1052,20 +1258,20 @@ function GalleryTab() {
   if (!data) return null;
 
   const FILTER_LABELS: Record<string, string> = {
-    all: "Wszystko",
-    images: "Obrazy",
-    audio: "Audio",
-    videos: "Wideo",
+    all: t.all,
+    images: t.images,
+    audio: t.audio,
+    videos: t.videos,
   };
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: "Sesje", value: data.totals.sessions, color: "text-malta-blue" },
-          { label: "Obrazy", value: data.totals.images, color: "text-green-600" },
-          { label: "Audio", value: data.totals.audio, color: "text-purple-600" },
-          { label: "Wideo", value: data.totals.videos, color: "text-malta-gold" },
+          { label: t.sessions, value: data.totals.sessions, color: "text-malta-blue" },
+          { label: t.images, value: data.totals.images, color: "text-green-600" },
+          { label: t.audio, value: data.totals.audio, color: "text-purple-600" },
+          { label: t.videos, value: data.totals.videos, color: "text-malta-gold" },
         ].map((s) => (
           <div key={s.label} className="rounded-xl bg-white p-4 shadow-sm">
             <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
@@ -1092,13 +1298,13 @@ function GalleryTab() {
           onClick={loadGallery}
           className="ml-auto rounded-full bg-malta-stone/30 px-3 py-1 text-sm text-foreground/50 transition-colors hover:bg-malta-stone/50"
         >
-          Odśwież
+          {t.refresh}
         </button>
       </div>
 
       {(filter === "all" || filter === "images") && data.bestImages.length > 0 && (
         <div>
-          <h3 className="mb-3 text-lg font-semibold">★ Najlepsze</h3>
+          <h3 className="mb-3 text-lg font-semibold">★ {t.best}</h3>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
             {data.bestImages.map((img) => (
               <div key={img.url} className="group relative overflow-hidden rounded-lg">
@@ -1118,7 +1324,7 @@ function GalleryTab() {
 
       {(filter === "all" || filter === "videos") && data.finalVideos.length > 0 && (
         <div>
-          <h3 className="mb-3 text-lg font-semibold">Finalne wideo</h3>
+          <h3 className="mb-3 text-lg font-semibold">{t.finalVideos}</h3>
           <div className="grid gap-4 md:grid-cols-2">
             {data.finalVideos.map((vid) => (
               <div key={vid.url} className="rounded-xl bg-white p-4 shadow-sm">
@@ -1140,7 +1346,7 @@ function GalleryTab() {
       {data.sessions.map((session) => (
         <div key={session.id} className="rounded-xl bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="font-semibold">Sesja {session.id}</h3>
+            <h3 className="font-semibold">{t.session} {session.id}</h3>
             <span className="text-xs text-foreground/40">
               {new Date(session.created_at).toLocaleString("pl-PL")}
             </span>
@@ -1149,7 +1355,7 @@ function GalleryTab() {
           {(filter === "all" || filter === "images") && session.images.length > 0 && (
             <div className="mb-3">
               <p className="mb-1 text-xs font-medium text-foreground/40">
-                Obrazy ({session.images.length})
+                {t.images} ({session.images.length})
               </p>
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {session.images.map((url) => (
@@ -1168,7 +1374,7 @@ function GalleryTab() {
           {(filter === "all" || filter === "audio") && session.audio.length > 0 && (
             <div>
               <p className="mb-1 text-xs font-medium text-foreground/40">
-                Audio ({session.audio.length})
+                {t.audio} ({session.audio.length})
               </p>
               <div className="space-y-1">
                 {session.audio.map((url) => (
@@ -1185,7 +1391,7 @@ function GalleryTab() {
 
 /* ─── PHOTO COMPOSER TAB ─── */
 
-function PhotoComposerTab() {
+function PhotoComposerTab({ t }: { t: Translations }) {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [compositePrompt, setCompositePrompt] = useState("");
   const [result, setResult] = useState<string | null>(null);
@@ -1228,15 +1434,15 @@ function PhotoComposerTab() {
   return (
     <div className="space-y-4">
       <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-semibold">Kompozytor zdjęć</h2>
+        <h2 className="text-xl font-semibold">{t.composerTitle}</h2>
         <p className="mt-1 text-sm text-foreground/50">
-          Wgraj prawdziwe zdjęcie z Malty, opisz zmiany i umieść Monikę w scenie
+          {t.composerSub}
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h3 className="mb-3 font-medium">1. Wgraj zdjęcie tła</h3>
+          <h3 className="mb-3 font-medium">{t.uploadBg}</h3>
           <input
             ref={fileInputRef}
             type="file"
@@ -1255,7 +1461,7 @@ function PhotoComposerTab() {
                 }}
                 className="mt-2 text-sm text-foreground/40 hover:text-foreground/60"
               >
-                Usuń
+                {t.remove}
               </button>
             </div>
           ) : (
@@ -1263,17 +1469,17 @@ function PhotoComposerTab() {
               onClick={() => fileInputRef.current?.click()}
               className="flex aspect-video w-full items-center justify-center rounded-lg border-2 border-dashed border-malta-stone/50 text-foreground/30 transition-colors hover:border-malta-blue/30 hover:text-foreground/50"
             >
-              Kliknij aby wgrać zdjęcie
+              {t.clickUpload}
             </button>
           )}
         </div>
 
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h3 className="mb-3 font-medium">2. Opisz scenę</h3>
+          <h3 className="mb-3 font-medium">{t.describeScene}</h3>
           <textarea
             value={compositePrompt}
             onChange={(e) => setCompositePrompt(e.target.value)}
-            placeholder="np. Umieść Monikę idącą tą ulicą w letniej sukience, złota godzina. Usuń grupę turystów po lewej. Popraw kolory nieba."
+            placeholder={t.composePlaceholder}
             rows={4}
             className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm focus:border-malta-blue focus:outline-none"
           />
@@ -1282,7 +1488,7 @@ function PhotoComposerTab() {
             disabled={loading || !uploadedImage || !compositePrompt.trim()}
             className="mt-3 w-full rounded-lg bg-malta-blue px-4 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {loading ? "Komponuję z Nanobana Pro..." : "Skomponuj obraz"}
+            {loading ? t.composing : t.composeBtn}
           </button>
 
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
@@ -1296,13 +1502,13 @@ function PhotoComposerTab() {
                   download
                   className="rounded-lg bg-malta-blue/10 px-3 py-1 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20"
                 >
-                  Pobierz
+                  {t.downloadImg}
                 </a>
                 <button
                   onClick={() => saveToBest(result)}
                   className="rounded-lg border border-malta-gold/50 px-3 py-1 text-sm text-malta-gold transition-colors hover:bg-malta-gold/10"
                 >
-                  ★ Zapisz do najlepszych
+                  ★ {t.saveBest}
                 </button>
               </div>
             </div>
