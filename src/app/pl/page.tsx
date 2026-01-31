@@ -30,6 +30,7 @@ async function getLatestArticles() {
       "id, slug, title, subtitle, topic, cover_image, published_at, source_count"
     )
     .eq("status", "published")
+    .eq("lang", "pl")
     .order("published_at", { ascending: false })
     .limit(6);
   return data ?? [];
