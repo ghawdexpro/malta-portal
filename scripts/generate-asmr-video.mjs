@@ -33,28 +33,44 @@ if (!fs.existsSync(OUTPUT_DIR)) {
 async function generateScript(topic) {
     console.log(`📝 Generating script for topic: "${topic}"...`);
 
-    const prompt = `You are a scriptwriter for "Monika", a beautiful Polish travel host in Malta.
-    Write a short, relaxing ASMR-style video script about: "${topic}".
-    
-    TONE: Calm, intimate, whispering, "girlfriend experience", warm.
-    LANGUAGE: Polish (with occasional English words).
-    Structure: divide into 3-5 short segments.
-    
-    IMPORTANT: You must output VALID JSON only.
-    - Start each Polish text segment with "[whispers] " to cue the voice actor.
-    - Do not use markdown code blocks.
-    - NEVER use double quotes (") inside the text strings. Use single quotes (') instead for emphasis or dialogue.
-    - Example: "text": "[whispers] This is 'great'..."
-    
-    Output format:
-    {
-        "script": [
-            {
-                "text": "Polish narration text here...",
-                "visual_prompt": "Description of the visual scene for image generator (English)"
-            }
-        ]
-    }`;
+    const prompt = `You are writing a soft ASMR travel script for "Monika" — a 28-year-old Polish woman living in Malta. She makes TikTok content showing how amazing Malta is. Her style: warm, personal, like a friend who lives there and shows you her favorite spots. Slightly flirty but mainly passionate about Malta itself.
+
+TOPIC: "${topic}"
+
+VOICE & TONE RULES:
+- Warm, personal, slightly flirty — but the star is MALTA, not Monika.
+- She genuinely loves this place and wants to share it with you.
+- Use natural pauses: "..." between phrases to create breathing space.
+- Short sentences. Never more than 15 words per sentence.
+- 80% about Malta (places, food, views, history, vibes). 20% personal asides to the viewer.
+- She makes Malta sound irresistible: "Musisz to zobaczyć... zaufaj mi..."
+- Occasionally address the viewer: "hej", "wiesz co?", "słyszysz to?".
+
+LANGUAGE RULES:
+- 100% Polish. ZERO English words. Not a single one.
+- Use simple, everyday Polish. No literary or formal language.
+- Avoid rare Polish words or complex grammar. Keep it conversational.
+- Use ellipsis "..." for pauses (the TTS engine reads them as natural breaks).
+
+STRUCTURE: Exactly 5 segments. Each segment 2-4 sentences.
+
+FORBIDDEN:
+- No stage directions like "[whispers]", "[sighs]", "(pause)" etc.
+- No English words at all.
+- No single quotes around words.
+- No exclamation marks. Keep everything soft.
+- No bedroom/romantic/sexual content. This is a travel video.
+- No tour guide voice. She's a friend, not a teacher.
+
+OUTPUT: Valid JSON only. No markdown code blocks.
+{
+    "script": [
+        {
+            "text": "The Polish whispered narration. Only spoken words, nothing else.",
+            "visual_prompt": "Cinematic scene description in English for image AI. Include: Monika in the scene, Malta location, lighting, mood, camera angle. Travel content aesthetic."
+        }
+    ]
+}`;
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -142,8 +158,8 @@ async function main() {
 
     console.log(`\n🚀 Starting Asset Generation...`);
 
-    // Voice ID: Sara Martin - Sensual & Intimate (multilingual, handles Polish well)
-    const VOICE_ID = 'Ir1QNHvhaJXbAGhT50w3';
+    // Voice ID: Alicia - ASMR Soft-Spoken (best Polish ASMR result)
+    const VOICE_ID = 'TDHOWxVtDS0zj6s4Jgg6';
 
     for (let i = 0; i < script.length; i++) {
         const seg = script[i];

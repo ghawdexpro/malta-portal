@@ -46,10 +46,11 @@ export async function generateSpeech({ text, voiceId = DEFAULT_VOICE_ID, outputP
         },
         body: JSON.stringify({
             text: text,
-            model_id: "eleven_multilingual_v2", // Updated for free tier compatibility
+            model_id: "eleven_flash_v2_5",
             voice_settings: {
-                stability: 0.35,
-                similarity_boost: 0.80
+                stability: 0.25,
+                similarity_boost: 0.85,
+                style: 0.5
             }
         })
     });

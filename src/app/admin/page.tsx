@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface PipelineJob {
   id: string;
@@ -97,6 +98,16 @@ export default function AdminPage() {
       <p className="mt-1 text-foreground/50">
         Manage content pipeline and portal data
       </p>
+
+      {/* Quick Links */}
+      <div className="mt-4">
+        <Link
+          href="/admin/tiktok"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-malta-blue to-malta-blue/80 px-5 py-2.5 font-medium text-white shadow-sm transition-all hover:shadow-md"
+        >
+          🎬 TikTok Creator Studio
+        </Link>
+      </div>
 
       {/* Stats */}
       <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-5">

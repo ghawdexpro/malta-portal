@@ -1,0 +1,9 @@
+node_modules
+.next
+public/videos/asmr/
+public/images/monika/flash-archive
+public/images/monika/asmr-best
+public/images/monika/composed
+scripts/
+docs/
+*.md
