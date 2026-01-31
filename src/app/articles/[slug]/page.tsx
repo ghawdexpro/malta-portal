@@ -223,7 +223,7 @@ export default async function ArticlePage({ params }: Props) {
             More Community-Powered Insights
           </h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
-            Every article is generated from real tourist discussions, analyzed by AI, and enriched with video content from Robert Maklowicz.
+            Every article is built from real tourist discussions and enriched with video content from Robert Maklowicz.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
