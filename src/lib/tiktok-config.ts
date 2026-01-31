@@ -4,9 +4,7 @@
 
 export const MONIKA_VOICE_ID = 'TDHOWxVtDS0zj6s4Jgg6'; // Alicia - ASMR Soft-Spoken
 export const TEXT_MODEL = 'anthropic/claude-4.5-opus';
-export const IMAGE_MODEL = 'gemini-3-pro-image-preview';
-export const GOOGLE_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || 'primal-turbine-478412-k9';
-export const IMAGE_LOCATION = 'global';
+export const IMAGE_MODEL = 'google/gemini-3-pro-image-preview'; // Nanobana Pro via OpenRouter
 
 export const VOICE_SETTINGS = {
   model_id: 'eleven_flash_v2_5',

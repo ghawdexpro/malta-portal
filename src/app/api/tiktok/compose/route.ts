@@ -1,28 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GOOGLE_PROJECT_ID, IMAGE_MODEL, IMAGE_LOCATION } from '@/lib/tiktok-config';
-import { GoogleAuth } from 'google-auth-library';
+import { IMAGE_MODEL } from '@/lib/tiktok-config';
 import fs from 'fs';
 import path from 'path';
 
 const REF_IMAGE_PATH = path.join(process.cwd(), 'public', 'images', 'monika', 'monika-master-ref.jpg');
-
-async function getAccessToken() {
-  const credsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-  if (!credsJson) throw new Error('GOOGLE_APPLICATION_CREDENTIALS_JSON missing');
-  let credentials;
-  try {
-    credentials = JSON.parse(credsJson);
-  } catch {
-    credentials = JSON.parse(Buffer.from(credsJson, 'base64').toString('utf8'));
-  }
-  const auth = new GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-  });
-  const client = await auth.getClient();
-  const token = await client.getAccessToken();
-  return token.token;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,6 +11,11 @@ export async function POST(request: NextRequest) {
 
     if (!backgroundImage || !prompt) {
       return NextResponse.json({ error: 'backgroundImage (base64) and prompt required' }, { status: 400 });
+    }
+
+    const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+    if (!OPENROUTER_API_KEY) {
+      return NextResponse.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 });
     }
 
     if (!fs.existsSync(REF_IMAGE_PATH)) {
@@ -52,52 +38,82 @@ CRITICAL RULES:
 - Match lighting and perspective between Monika and the background
 - Photorealistic 8K quality, cinematic travel photography aesthetic`;
 
-    const accessToken = await getAccessToken();
-    const endpoint = `https://aiplatform.googleapis.com/v1/projects/${GOOGLE_PROJECT_ID}/locations/${IMAGE_LOCATION}/publishers/google/models/${IMAGE_MODEL}:generateContent`;
-
-    const body = {
-      contents: [{
-        role: 'user',
-        parts: [
-          { inlineData: { mimeType: 'image/jpeg', data: backgroundImage } },
-          { inlineData: { mimeType: 'image/jpeg', data: refImageB64 } },
-          { text: fullPrompt },
-        ],
-      }],
-      generationConfig: {
-        responseModalities: ['TEXT', 'IMAGE'],
-        imageConfig: { aspectRatio: '16:9' },
-      },
-    };
-
-    const response = await fetch(endpoint, {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://malta-portal-production.up.railway.app',
+        'X-Title': 'Malta Portal TikTok Creator',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        model: IMAGE_MODEL,
+        modalities: ['text', 'image'],
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:image/jpeg;base64,${backgroundImage}`,
+                },
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:image/jpeg;base64,${refImageB64}`,
+                },
+              },
+              {
+                type: 'text',
+                text: fullPrompt,
+              },
+            ],
+          },
+        ],
+      }),
     });
 
     if (!response.ok) {
       const err = await response.text();
       return NextResponse.json(
-        { error: `Vertex AI error: ${response.status}`, details: err.substring(0, 300) },
+        { error: `OpenRouter error: ${response.status}`, details: err.substring(0, 500) },
         { status: 502 }
       );
     }
 
     const result = await response.json();
+
+    // Extract image from OpenRouter response
     let imageBuffer: Buffer | null = null;
-    for (const part of (result.candidates?.[0]?.content?.parts || [])) {
-      if (part.inlineData?.data) {
-        imageBuffer = Buffer.from(part.inlineData.data, 'base64');
-        break;
+    const message = result.choices?.[0]?.message;
+
+    if (message?.content) {
+      const parts = Array.isArray(message.content) ? message.content : [];
+      for (const part of parts) {
+        if (part.type === 'image_url' && part.image_url?.url) {
+          const dataUrl = part.image_url.url;
+          if (dataUrl.startsWith('data:')) {
+            const b64 = dataUrl.split(',')[1];
+            if (b64) {
+              imageBuffer = Buffer.from(b64, 'base64');
+              break;
+            }
+          }
+        }
+        if (part.inline_data?.data) {
+          imageBuffer = Buffer.from(part.inline_data.data, 'base64');
+          break;
+        }
       }
     }
 
     if (!imageBuffer) {
-      return NextResponse.json({ error: 'No image returned from Vertex AI' }, { status: 502 });
+      return NextResponse.json(
+        { error: 'No image returned from Nanobana Pro', raw: JSON.stringify(result).substring(0, 500) },
+        { status: 502 }
+      );
     }
 
     // Save to composed directory

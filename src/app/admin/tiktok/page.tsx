@@ -7,6 +7,20 @@ interface ScriptSegment {
   visual_prompt: string;
 }
 
+interface VoiceSettings {
+  stability: number;
+  similarity_boost: number;
+  style: number;
+  speed: number;
+  use_speaker_boost: boolean;
+  model_id: string;
+}
+
+interface AudioTake {
+  take: number;
+  url: string;
+}
+
 interface SegmentAssets {
   text: string;
   visual_prompt: string;
@@ -16,6 +30,9 @@ interface SegmentAssets {
   imageApproved: boolean;
   audioLoading: boolean;
   imageLoading: boolean;
+  takes: AudioTake[];
+  activeTake?: number;
+  localSettings?: Partial<VoiceSettings>;
 }
 
 type Tab = "create" | "gallery" | "compose";
@@ -87,6 +104,15 @@ function CreateVideoTab() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
+  const [globalVoice, setGlobalVoice] = useState<VoiceSettings>({
+    stability: 0.25,
+    similarity_boost: 0.85,
+    style: 0.5,
+    speed: 1.0,
+    use_speaker_boost: true,
+    model_id: "eleven_flash_v2_5",
+  });
+  const [showGlobalSettings, setShowGlobalSettings] = useState(false);
 
   const generateScript = async () => {
     if (!topic.trim()) return;
@@ -109,6 +135,7 @@ function CreateVideoTab() {
           imageApproved: false,
           audioLoading: false,
           imageLoading: false,
+          takes: [],
         }))
       );
       setStep("script");
@@ -121,6 +148,8 @@ function CreateVideoTab() {
   const generateAudio = async (index: number) => {
     updateSegment(index, { audioLoading: true });
     try {
+      // Merge global + local settings
+      const merged = { ...globalVoice, ...(segments[index].localSettings || {}) };
       const res = await fetch("/api/tiktok/audio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -128,11 +157,18 @@ function CreateVideoTab() {
           text: segments[index].text,
           sessionId,
           segmentIndex: index,
+          voiceSettings: merged,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Błąd");
-      updateSegment(index, { audioUrl: data.audioUrl + "&t=" + Date.now(), audioLoading: false });
+      updateSegment(index, {
+        audioUrl: data.audioUrl + "&t=" + Date.now(),
+        audioLoading: false,
+        takes: data.takes || [],
+        activeTake: data.take,
+        audioApproved: false,
+      });
     } catch (err) {
       setError(`Audio ${index + 1}: ${err}`);
       updateSegment(index, { audioLoading: false });
@@ -172,8 +208,9 @@ function CreateVideoTab() {
     for (let i = 0; i < segments.length; i++) {
       if (!segments[i].imageUrl) {
         await generateImage(i);
+        // 8s delay between requests to avoid 429 rate limits on Nanobana Pro
         if (i < segments.length - 1) {
-          await new Promise((r) => setTimeout(r, 2000));
+          await new Promise((r) => setTimeout(r, 8000));
         }
       }
     }
@@ -392,67 +429,108 @@ function CreateVideoTab() {
                 ← Wróć do skryptu
               </button>
             </div>
-            <button
-              onClick={generateAllAudio}
-              disabled={segments.some((s) => s.audioLoading)}
-              className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
-            >
-              Generuj wszystkie audio
-            </button>
+
+            <div className="mt-4 flex items-center gap-3">
+              <button
+                onClick={generateAllAudio}
+                disabled={segments.some((s) => s.audioLoading)}
+                className="rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
+              >
+                Generuj wszystkie audio
+              </button>
+              <button
+                onClick={() => setShowGlobalSettings(!showGlobalSettings)}
+                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                  showGlobalSettings
+                    ? "border-malta-blue bg-malta-blue/5 text-malta-blue"
+                    : "border-malta-stone/50 text-foreground/50 hover:bg-malta-stone/20"
+                }`}
+              >
+                ⚙️ Ustawienia głosu
+              </button>
+            </div>
+
+            {/* Global Voice Settings */}
+            {showGlobalSettings && (
+              <div className="mt-4 rounded-lg bg-malta-stone/10 p-4">
+                <h3 className="mb-3 text-sm font-semibold">Globalne ustawienia audio</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <VoiceSlider
+                    label="Stabilność"
+                    hint="Niżej = więcej emocji, wyżej = monotonnie"
+                    value={globalVoice.stability}
+                    min={0} max={1} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, stability: v }))}
+                  />
+                  <VoiceSlider
+                    label="Podobieństwo"
+                    hint="Jak blisko oryginalnego głosu"
+                    value={globalVoice.similarity_boost}
+                    min={0} max={1} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, similarity_boost: v }))}
+                  />
+                  <VoiceSlider
+                    label="Styl"
+                    hint="Wzmocnienie stylu mówcy"
+                    value={globalVoice.style}
+                    min={0} max={1} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, style: v }))}
+                  />
+                  <VoiceSlider
+                    label="Tempo"
+                    hint="0.7 (wolno) — 1.0 — 1.2 (szybko)"
+                    value={globalVoice.speed}
+                    min={0.7} max={1.2} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, speed: v }))}
+                  />
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-foreground/50">
+                      Model
+                    </label>
+                    <select
+                      value={globalVoice.model_id}
+                      onChange={(e) => setGlobalVoice((p) => ({ ...p, model_id: e.target.value }))}
+                      className="w-full rounded-lg border border-malta-stone/50 px-2 py-1.5 text-sm"
+                    >
+                      <option value="eleven_flash_v2_5">Flash v2.5 (szybki)</option>
+                      <option value="eleven_multilingual_v2">Multilingual v2</option>
+                      <option value="eleven_turbo_v2_5">Turbo v2.5</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={globalVoice.use_speaker_boost}
+                      onChange={(e) => setGlobalVoice((p) => ({ ...p, use_speaker_boost: e.target.checked }))}
+                      className="h-4 w-4"
+                    />
+                    <label className="text-xs text-foreground/60">Speaker Boost</label>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {segments.map((seg, i) => (
-            <div key={i} className="rounded-xl bg-white p-5 shadow-sm">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="mb-1 text-xs font-bold uppercase tracking-wider text-malta-blue/60">
-                    Segment {i + 1}
-                  </div>
-                  <p className="text-sm text-foreground/70">{seg.text}</p>
-                </div>
-                <div className="ml-4 flex items-center gap-2">
-                  {seg.audioApproved && (
-                    <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                      Zatwierdzone
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-3 flex items-center gap-3">
-                {seg.audioUrl ? (
-                  <>
-                    <audio controls preload="auto" src={seg.audioUrl} className="h-10 flex-1" />
-                    <button
-                      onClick={() => updateSegment(i, { audioApproved: true })}
-                      disabled={seg.audioApproved}
-                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                        seg.audioApproved
-                          ? "bg-green-100 text-green-700"
-                          : "bg-green-500 text-white hover:bg-green-600"
-                      }`}
-                    >
-                      {seg.audioApproved ? "✓" : "Zatwierdź"}
-                    </button>
-                    <button
-                      onClick={() => generateAudio(i)}
-                      disabled={seg.audioLoading}
-                      className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
-                    >
-                      Ponów
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => generateAudio(i)}
-                    disabled={seg.audioLoading}
-                    className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
-                  >
-                    {seg.audioLoading ? "Generuję..." : "Generuj audio"}
-                  </button>
-                )}
-              </div>
-            </div>
+            <AudioSegmentCard
+              key={i}
+              index={i}
+              seg={seg}
+              globalVoice={globalVoice}
+              onGenerate={() => generateAudio(i)}
+              onApprove={() => updateSegment(i, { audioApproved: true })}
+              onSelectTake={(take) => {
+                const t = seg.takes.find((tk) => tk.take === take);
+                if (t) {
+                  updateSegment(i, {
+                    audioUrl: t.url + "&t=" + Date.now(),
+                    activeTake: take,
+                    audioApproved: false,
+                  });
+                }
+              }}
+              onLocalSettingsChange={(settings) => updateSegment(i, { localSettings: settings })}
+            />
           ))}
 
           {allAudioDone && (
@@ -468,96 +546,16 @@ function CreateVideoTab() {
 
       {/* STEP: Image Generation */}
       {step === "images" && (
-        <div className="space-y-4">
-          <div className="rounded-xl bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold">Generuj obrazy</h2>
-                <p className="mt-1 text-sm text-foreground/50">
-                  Wygeneruj i zatwierdź obrazy dla każdego segmentu
-                </p>
-              </div>
-              <button
-                onClick={() => setStep("audio")}
-                className="text-sm text-foreground/40 hover:text-foreground/60"
-              >
-                ← Wróć do audio
-              </button>
-            </div>
-            <button
-              onClick={generateAllImages}
-              disabled={segments.some((s) => s.imageLoading)}
-              className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
-            >
-              Generuj wszystkie obrazy
-            </button>
-          </div>
-
-          {segments.map((seg, i) => (
-            <div key={i} className="rounded-xl bg-white p-5 shadow-sm">
-              <div className="mb-2 text-xs font-bold uppercase tracking-wider text-malta-blue/60">
-                Segment {i + 1}
-              </div>
-              <p className="mb-3 text-xs text-foreground/50">{seg.visual_prompt}</p>
-
-              {seg.imageUrl ? (
-                <div>
-                  <img
-                    src={seg.imageUrl}
-                    alt={`Segment ${i + 1}`}
-                    className="w-full rounded-lg"
-                  />
-                  <div className="mt-3 flex items-center gap-3">
-                    <button
-                      onClick={() => updateSegment(i, { imageApproved: true })}
-                      disabled={seg.imageApproved}
-                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                        seg.imageApproved
-                          ? "bg-green-100 text-green-700"
-                          : "bg-green-500 text-white hover:bg-green-600"
-                      }`}
-                    >
-                      {seg.imageApproved ? "✓ Zatwierdzone" : "Zatwierdź"}
-                    </button>
-                    <button
-                      onClick={() => {
-                        updateSegment(i, { imageUrl: undefined, imageApproved: false });
-                        generateImage(i);
-                      }}
-                      disabled={seg.imageLoading}
-                      className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
-                    >
-                      Generuj ponownie
-                    </button>
-                    <button
-                      onClick={() => saveToBest(seg.imageUrl!)}
-                      className="rounded-lg border border-malta-gold/50 px-3 py-1.5 text-sm text-malta-gold transition-colors hover:bg-malta-gold/10"
-                    >
-                      ★ Zapisz do najlepszych
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => generateImage(i)}
-                  disabled={seg.imageLoading}
-                  className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
-                >
-                  {seg.imageLoading ? "Generuję..." : "Generuj obraz"}
-                </button>
-              )}
-            </div>
-          ))}
-
-          {allImagesDone && (
-            <button
-              onClick={() => setStep("assemble")}
-              className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
-            >
-              Wszystkie zatwierdzone → Montaż wideo
-            </button>
-          )}
-        </div>
+        <ImageStep
+          segments={segments}
+          sessionId={sessionId}
+          onUpdateSegment={updateSegment}
+          onGenerateImage={generateImage}
+          onGenerateAllImages={generateAllImages}
+          allImagesDone={allImagesDone}
+          onNext={() => setStep("assemble")}
+          onBack={() => setStep("audio")}
+        />
       )}
 
       {/* STEP: Assemble */}
@@ -629,8 +627,384 @@ function CreateVideoTab() {
   );
 }
 
+/* ─── VOICE SLIDER ─── */
+
+function VoiceSlider({ label, hint, value, min, max, step, onChange }: {
+  label: string;
+  hint: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between">
+        <label className="text-xs font-medium text-foreground/50">{label}</label>
+        <span className="text-xs font-mono text-malta-blue">{value.toFixed(2)}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="w-full accent-malta-blue"
+      />
+      <p className="mt-0.5 text-[10px] text-foreground/30">{hint}</p>
+    </div>
+  );
+}
+
+/* ─── AUDIO SEGMENT CARD ─── */
+
+function AudioSegmentCard({ index, seg, globalVoice, onGenerate, onApprove, onSelectTake, onLocalSettingsChange }: {
+  index: number;
+  seg: SegmentAssets;
+  globalVoice: VoiceSettings;
+  onGenerate: () => void;
+  onApprove: () => void;
+  onSelectTake: (take: number) => void;
+  onLocalSettingsChange: (settings: Partial<VoiceSettings>) => void;
+}) {
+  const [showLocal, setShowLocal] = useState(false);
+  const hasLocal = seg.localSettings && Object.keys(seg.localSettings).length > 0;
+
+  return (
+    <div className="rounded-xl bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-malta-blue/60">
+              Segment {index + 1}
+            </span>
+            {seg.activeTake && (
+              <span className="text-xs text-foreground/30">
+                Take {seg.activeTake}
+              </span>
+            )}
+            {hasLocal && (
+              <span className="rounded bg-amber-100 px-1 py-0.5 text-[10px] font-medium text-amber-700">
+                lokalne
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-foreground/70">{seg.text}</p>
+        </div>
+        <div className="ml-4 flex items-center gap-2">
+          {seg.audioApproved && (
+            <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+              Zatwierdzone
+            </span>
+          )}
+          <button
+            onClick={() => setShowLocal(!showLocal)}
+            className={`rounded px-2 py-1 text-xs transition-colors ${
+              showLocal ? "bg-malta-blue/10 text-malta-blue" : "text-foreground/30 hover:text-foreground/50"
+            }`}
+            title="Ustawienia lokalne"
+          >
+            ⚙️
+          </button>
+        </div>
+      </div>
+
+      {/* Local overrides */}
+      {showLocal && (
+        <div className="mt-3 rounded-lg bg-amber-50/50 p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-medium text-amber-700">Nadpisania lokalne (segment {index + 1})</span>
+            {hasLocal && (
+              <button
+                onClick={() => onLocalSettingsChange({})}
+                className="text-[10px] text-foreground/30 hover:text-foreground/50"
+              >
+                Resetuj do globalnych
+              </button>
+            )}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <VoiceSlider
+              label="Stabilność"
+              hint=""
+              value={seg.localSettings?.stability ?? globalVoice.stability}
+              min={0} max={1} step={0.05}
+              onChange={(v) => onLocalSettingsChange({ ...seg.localSettings, stability: v })}
+            />
+            <VoiceSlider
+              label="Tempo"
+              hint=""
+              value={seg.localSettings?.speed ?? globalVoice.speed}
+              min={0.7} max={1.2} step={0.05}
+              onChange={(v) => onLocalSettingsChange({ ...seg.localSettings, speed: v })}
+            />
+            <VoiceSlider
+              label="Podobieństwo"
+              hint=""
+              value={seg.localSettings?.similarity_boost ?? globalVoice.similarity_boost}
+              min={0} max={1} step={0.05}
+              onChange={(v) => onLocalSettingsChange({ ...seg.localSettings, similarity_boost: v })}
+            />
+            <VoiceSlider
+              label="Styl"
+              hint=""
+              value={seg.localSettings?.style ?? globalVoice.style}
+              min={0} max={1} step={0.05}
+              onChange={(v) => onLocalSettingsChange({ ...seg.localSettings, style: v })}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Audio player + controls */}
+      <div className="mt-3">
+        {seg.audioUrl ? (
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <audio controls preload="auto" src={seg.audioUrl} className="h-10 flex-1" />
+              <button
+                onClick={onApprove}
+                disabled={seg.audioApproved}
+                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                  seg.audioApproved
+                    ? "bg-green-100 text-green-700"
+                    : "bg-green-500 text-white hover:bg-green-600"
+                }`}
+              >
+                {seg.audioApproved ? "✓" : "Zatwierdź"}
+              </button>
+              <button
+                onClick={onGenerate}
+                disabled={seg.audioLoading}
+                className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
+              >
+                {seg.audioLoading ? "..." : "Ponów"}
+              </button>
+            </div>
+
+            {/* Take history */}
+            {seg.takes.length > 1 && (
+              <div className="flex items-center gap-1">
+                <span className="mr-1 text-[10px] text-foreground/30">Wersje:</span>
+                {seg.takes.map((t) => (
+                  <button
+                    key={t.take}
+                    onClick={() => onSelectTake(t.take)}
+                    className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${
+                      seg.activeTake === t.take
+                        ? "bg-malta-blue text-white"
+                        : "bg-malta-stone/20 text-foreground/50 hover:bg-malta-stone/40"
+                    }`}
+                  >
+                    #{t.take}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={onGenerate}
+            disabled={seg.audioLoading}
+            className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
+          >
+            {seg.audioLoading ? "Generuję..." : "Generuj audio"}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 async function saveToBest(imageUrl: string) {
   window.open(imageUrl, "_blank");
+}
+
+/* ─── IMAGE STEP WITH LIBRARY PICKER ─── */
+
+function ImageStep({ segments, sessionId, onUpdateSegment, onGenerateImage, onGenerateAllImages, allImagesDone, onNext, onBack }: {
+  segments: SegmentAssets[];
+  sessionId: string;
+  onUpdateSegment: (i: number, updates: Partial<SegmentAssets>) => void;
+  onGenerateImage: (i: number) => void;
+  onGenerateAllImages: () => void;
+  allImagesDone: boolean;
+  onNext: () => void;
+  onBack: () => void;
+}) {
+  const [libraryOpen, setLibraryOpen] = useState<number | null>(null);
+  const [libraryImages, setLibraryImages] = useState<string[]>([]);
+  const [libraryLoading, setLibraryLoading] = useState(false);
+
+  const loadLibrary = async () => {
+    if (libraryImages.length > 0) return;
+    setLibraryLoading(true);
+    try {
+      const res = await fetch("/api/tiktok/gallery");
+      const data = await res.json();
+      const allImages: string[] = [];
+      // Best images first
+      for (const img of data.bestImages || []) allImages.push(img.url);
+      // Then session images
+      for (const session of data.sessions || []) {
+        for (const url of session.images) allImages.push(url);
+      }
+      setLibraryImages(allImages);
+    } catch {}
+    setLibraryLoading(false);
+  };
+
+  const openLibrary = async (segIndex: number) => {
+    setLibraryOpen(segIndex);
+    await loadLibrary();
+  };
+
+  const selectFromLibrary = (segIndex: number, url: string) => {
+    onUpdateSegment(segIndex, { imageUrl: url, imageApproved: false });
+    setLibraryOpen(null);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">Generuj obrazy</h2>
+            <p className="mt-1 text-sm text-foreground/50">
+              Wygeneruj nowe, lub wybierz z biblioteki
+            </p>
+          </div>
+          <button
+            onClick={onBack}
+            className="text-sm text-foreground/40 hover:text-foreground/60"
+          >
+            ← Wróć do audio
+          </button>
+        </div>
+        <button
+          onClick={onGenerateAllImages}
+          disabled={segments.some((s) => s.imageLoading)}
+          className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
+        >
+          Generuj wszystkie obrazy
+        </button>
+      </div>
+
+      {segments.map((seg, i) => (
+        <div key={i} className="rounded-xl bg-white p-5 shadow-sm">
+          <div className="mb-2 text-xs font-bold uppercase tracking-wider text-malta-blue/60">
+            Segment {i + 1}
+          </div>
+          <p className="mb-3 text-xs text-foreground/50">{seg.visual_prompt}</p>
+
+          {seg.imageUrl ? (
+            <div>
+              <img
+                src={seg.imageUrl}
+                alt={`Segment ${i + 1}`}
+                className="w-full rounded-lg"
+              />
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => onUpdateSegment(i, { imageApproved: true })}
+                  disabled={seg.imageApproved}
+                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                    seg.imageApproved
+                      ? "bg-green-100 text-green-700"
+                      : "bg-green-500 text-white hover:bg-green-600"
+                  }`}
+                >
+                  {seg.imageApproved ? "✓ Zatwierdzone" : "Zatwierdź"}
+                </button>
+                <button
+                  onClick={() => {
+                    onUpdateSegment(i, { imageUrl: undefined, imageApproved: false });
+                    onGenerateImage(i);
+                  }}
+                  disabled={seg.imageLoading}
+                  className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
+                >
+                  Generuj ponownie
+                </button>
+                <button
+                  onClick={() => openLibrary(i)}
+                  className="rounded-lg border border-malta-blue/30 px-3 py-1.5 text-sm text-malta-blue transition-colors hover:bg-malta-blue/10"
+                >
+                  🖼️ Z biblioteki
+                </button>
+                <button
+                  onClick={() => saveToBest(seg.imageUrl!)}
+                  className="rounded-lg border border-malta-gold/50 px-3 py-1.5 text-sm text-malta-gold transition-colors hover:bg-malta-gold/10"
+                >
+                  ★ Zapisz
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <button
+                onClick={() => onGenerateImage(i)}
+                disabled={seg.imageLoading}
+                className="rounded-lg bg-malta-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
+              >
+                {seg.imageLoading ? "Generuję..." : "Generuj obraz"}
+              </button>
+              <button
+                onClick={() => openLibrary(i)}
+                className="rounded-lg border border-malta-blue/30 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/10"
+              >
+                🖼️ Z biblioteki
+              </button>
+            </div>
+          )}
+
+          {/* Library picker modal */}
+          {libraryOpen === i && (
+            <div className="mt-3 rounded-lg border border-malta-blue/20 bg-malta-stone/10 p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-sm font-medium">Wybierz obraz z biblioteki</span>
+                <button
+                  onClick={() => setLibraryOpen(null)}
+                  className="text-xs text-foreground/30 hover:text-foreground/50"
+                >
+                  ✕ Zamknij
+                </button>
+              </div>
+              {libraryLoading ? (
+                <p className="text-sm text-foreground/40">Ładuję...</p>
+              ) : (
+                <div className="grid max-h-64 grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-4 md:grid-cols-5">
+                  {libraryImages.map((url) => (
+                    <img
+                      key={url}
+                      src={url}
+                      alt=""
+                      className="aspect-video cursor-pointer rounded-lg object-cover transition-all hover:ring-2 hover:ring-malta-blue"
+                      onClick={() => selectFromLibrary(i, url)}
+                    />
+                  ))}
+                  {libraryImages.length === 0 && (
+                    <p className="col-span-full text-sm text-foreground/40">Brak obrazów w bibliotece</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
+
+      {allImagesDone && (
+        <button
+          onClick={onNext}
+          className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
+        >
+          Wszystkie zatwierdzone → Montaż wideo
+        </button>
+      )}
+    </div>
+  );
 }
 
 /* ─── GALLERY TAB ─── */
@@ -908,7 +1282,7 @@ function PhotoComposerTab() {
             disabled={loading || !uploadedImage || !compositePrompt.trim()}
             className="mt-3 w-full rounded-lg bg-malta-blue px-4 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80 disabled:opacity-50"
           >
-            {loading ? "Komponuję z Gemini..." : "Skomponuj obraz"}
+            {loading ? "Komponuję z Nanobana Pro..." : "Skomponuj obraz"}
           </button>
 
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MONIKA_VOICE_ID, VOICE_SETTINGS } from '@/lib/tiktok-config';
+import { MONIKA_VOICE_ID } from '@/lib/tiktok-config';
 import fs from 'fs';
 import path from 'path';
 
@@ -8,7 +8,7 @@ const BASE_URL = 'https://api.elevenlabs.io/v1';
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, sessionId, segmentIndex } = await request.json();
+    const { text, sessionId, segmentIndex, voiceSettings } = await request.json();
 
     if (!text || sessionId === undefined || segmentIndex === undefined) {
       return NextResponse.json({ error: 'text, sessionId, segmentIndex required' }, { status: 400 });
@@ -21,7 +21,41 @@ export async function POST(request: NextRequest) {
     const sessionDir = path.join(process.cwd(), 'public', 'videos', 'asmr', `session_${sessionId}`);
     fs.mkdirSync(sessionDir, { recursive: true });
 
-    const audioPath = path.join(sessionDir, `seg_${segmentIndex}_audio.mp3`);
+    // Find next available take number for this segment
+    const existingFiles = fs.readdirSync(sessionDir);
+    const takePattern = new RegExp(`^seg_${segmentIndex}_audio_take(\\d+)\\.mp3$`);
+    let maxTake = 0;
+    for (const f of existingFiles) {
+      const match = f.match(takePattern);
+      if (match) {
+        maxTake = Math.max(maxTake, parseInt(match[1], 10));
+      }
+    }
+    const takeNum = maxTake + 1;
+
+    // Save as numbered take
+    const audioPath = path.join(sessionDir, `seg_${segmentIndex}_audio_take${takeNum}.mp3`);
+    // Also save/overwrite as the "current" version
+    const currentPath = path.join(sessionDir, `seg_${segmentIndex}_audio.mp3`);
+
+    // Build voice settings from request (with defaults)
+    const settings = {
+      stability: voiceSettings?.stability ?? 0.25,
+      similarity_boost: voiceSettings?.similarity_boost ?? 0.85,
+      style: voiceSettings?.style ?? 0.5,
+      use_speaker_boost: voiceSettings?.use_speaker_boost ?? true,
+    };
+
+    const bodyPayload: Record<string, unknown> = {
+      text,
+      model_id: voiceSettings?.model_id || 'eleven_flash_v2_5',
+      voice_settings: settings,
+    };
+
+    // Speed is a top-level param, not inside voice_settings
+    if (voiceSettings?.speed !== undefined && voiceSettings.speed !== 1.0) {
+      bodyPayload.speed = Math.max(0.7, Math.min(1.2, voiceSettings.speed));
+    }
 
     const response = await fetch(`${BASE_URL}/text-to-speech/${MONIKA_VOICE_ID}`, {
       method: 'POST',
@@ -30,10 +64,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
         'Accept': 'audio/mpeg',
       },
-      body: JSON.stringify({
-        text,
-        ...VOICE_SETTINGS,
-      }),
+      body: JSON.stringify(bodyPayload),
     });
 
     if (!response.ok) {
@@ -46,11 +77,33 @@ export async function POST(request: NextRequest) {
     }
 
     const audioBuffer = await response.arrayBuffer();
-    fs.writeFileSync(audioPath, Buffer.from(audioBuffer));
+    const buf = Buffer.from(audioBuffer);
+    fs.writeFileSync(audioPath, buf);
+    fs.writeFileSync(currentPath, buf);
 
-    const audioUrl = `/api/tiktok/files?path=videos/asmr/session_${sessionId}/seg_${segmentIndex}_audio.mp3`;
+    // Return all takes for this segment
+    const takes: { take: number; url: string }[] = [];
+    const updatedFiles = fs.readdirSync(sessionDir);
+    for (const f of updatedFiles) {
+      const match = f.match(takePattern);
+      if (match) {
+        takes.push({
+          take: parseInt(match[1], 10),
+          url: `/api/tiktok/files?path=videos/asmr/session_${sessionId}/${f}`,
+        });
+      }
+    }
+    takes.sort((a, b) => a.take - b.take);
 
-    return NextResponse.json({ audioUrl, size: audioBuffer.byteLength });
+    const audioUrl = `/api/tiktok/files?path=videos/asmr/session_${sessionId}/seg_${segmentIndex}_audio_take${takeNum}.mp3`;
+
+    return NextResponse.json({
+      audioUrl,
+      size: audioBuffer.byteLength,
+      take: takeNum,
+      takes,
+      settings,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: 'Internal error', details: String(error) },
