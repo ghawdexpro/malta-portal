@@ -24,6 +24,17 @@ export const VOICE_SETTINGS = {
   },
 };
 
+/** Energetic, upbeat voice for Top N countdown videos (not ASMR) */
+export const TOPN_VOICE_SETTINGS = {
+  model_id: 'eleven_flash_v2_5',
+  voice_settings: {
+    stability: 0.55,
+    similarity_boost: 0.80,
+    style: 0.75,
+  },
+  speed: 1.05,
+};
+
 export type ContentLang = 'pl' | 'en';
 
 export function buildScriptPrompt(topic: string, lang: ContentLang = 'pl'): string {

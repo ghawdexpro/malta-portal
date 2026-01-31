@@ -11,7 +11,7 @@ const execAsync = promisify(exec);
 
 export async function POST(request: NextRequest) {
   try {
-    const { sessionId, items, template: templateKey, aspectRatio: ratioKey } = await request.json();
+    const { sessionId, items, intro, template: templateKey, aspectRatio: ratioKey } = await request.json();
 
     if (!sessionId || !items || !items.length) {
       return NextResponse.json({ error: 'sessionId and items required' }, { status: 400 });
@@ -21,13 +21,59 @@ export async function POST(request: NextRequest) {
     const { width, height } = ar;
     const tmpl = TOPN_TEMPLATES[(templateKey as TopNTemplate) || 'countdown'];
 
-    const sessionDir = path.join(process.cwd(), 'public', 'videos', 'topn', `session_topn_${sessionId}`);
+    const sessionDir = path.join(process.cwd(), 'public', 'videos', 'topn', `session_${sessionId}`);
     const outputDir = path.join(process.cwd(), 'public', 'videos', 'topn');
     fs.mkdirSync(sessionDir, { recursive: true });
     fs.mkdirSync(outputDir, { recursive: true });
 
     const segmentVideos: string[] = [];
 
+    // === INTRO SCENE ===
+    if (intro) {
+      const introImagePath = path.join(sessionDir, 'intro_0_image.png');
+      const introAudioPath = path.join(sessionDir, 'intro_0_audio.mp3');
+      const introVideoPath = path.join(sessionDir, 'intro.mp4');
+
+      if (fs.existsSync(introImagePath) && fs.existsSync(introAudioPath)) {
+        const introFilters: string[] = [];
+        introFilters.push(`scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2`);
+
+        // Darken slightly for text readability
+        introFilters.push('colorchannelmixer=aa=0.7');
+
+        // Topic title (big, center-top)
+        if (intro.topic) {
+          introFilters.push(buildTitleOverlayFilter({
+            title: intro.topic,
+            position: 'top',
+            fontSize: tmpl.introTitleFontSize || 72,
+            color: 'white',
+            width,
+            height,
+          }));
+        }
+
+        // Hook text (below title, center)
+        if (intro.hook) {
+          introFilters.push(buildTitleOverlayFilter({
+            title: intro.hook,
+            position: 'center',
+            fontSize: tmpl.introHookFontSize || 48,
+            color: '#FFD700',
+            width,
+            height,
+          }));
+        }
+
+        const introFilterChain = introFilters.join(',');
+        const introCmd = `ffmpeg -y -loop 1 -i "${introImagePath}" -i "${introAudioPath}" -c:v libx264 -t 5 -pix_fmt yuv420p -vf "${introFilterChain}" -shortest "${introVideoPath}"`;
+
+        await execAsync(introCmd);
+        segmentVideos.push(introVideoPath);
+      }
+    }
+
+    // === RANK ITEMS ===
     for (const item of items as TopNItem[]) {
       const imagePath = path.join(sessionDir, `rank_${item.rank}_image.png`);
       const audioPath = path.join(sessionDir, `rank_${item.rank}_audio.mp3`);
@@ -74,7 +120,7 @@ export async function POST(request: NextRequest) {
       }
 
       const filterChain = filters.join(',');
-      const cmd = `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" -c:v libx264 -t 30 -pix_fmt yuv420p -vf "${filterChain}" -shortest "${videoPath}"`;
+      const cmd = `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" -c:v libx264 -t 8 -pix_fmt yuv420p -vf "${filterChain}" -shortest "${videoPath}"`;
 
       await execAsync(cmd);
       segmentVideos.push(videoPath);

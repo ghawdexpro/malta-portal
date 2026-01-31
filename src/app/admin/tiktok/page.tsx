@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { ASPECT_RATIOS, type AspectRatioKey } from "@/lib/tiktok-config";
-import { TOPN_TEMPLATES, type TopNTemplate, type TopNCount, type TopNItem } from "@/lib/topn-templates";
+import { TOPN_TEMPLATES, type TopNTemplate, type TopNCount, type TopNItem, type TopNIntro } from "@/lib/topn-templates";
 import { VideoEditor, type EditorSegmentData } from "@/components/tiktok/VideoEditor";
 
 interface ScriptSegment {
@@ -1379,10 +1379,19 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
+  // Energetic voice for Top N (not ASMR)
   const [globalVoice, setGlobalVoice] = useState<VoiceSettings>({
-    stability: 0.25, similarity_boost: 0.85, style: 0.5, speed: 1.0,
+    stability: 0.55, similarity_boost: 0.80, style: 0.75, speed: 1.05,
     use_speaker_boost: true, model_id: "eleven_flash_v2_5",
   });
+  // Intro scene state
+  const [intro, setIntro] = useState<TopNIntro | null>(null);
+  const [introAudioUrl, setIntroAudioUrl] = useState<string | null>(null);
+  const [introImageUrl, setIntroImageUrl] = useState<string | null>(null);
+  const [introAudioLoading, setIntroAudioLoading] = useState(false);
+  const [introImageLoading, setIntroImageLoading] = useState(false);
+  const [introAudioApproved, setIntroAudioApproved] = useState(false);
+  const [introImageApproved, setIntroImageApproved] = useState(false);
 
   const generateScript = async () => {
     if (!topic.trim()) return;
@@ -1403,6 +1412,14 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
           audioLoading: false, imageLoading: false, takes: [],
         }))
       );
+      // Capture intro from API
+      if (data.intro) {
+        setIntro(data.intro);
+        setIntroAudioUrl(null);
+        setIntroImageUrl(null);
+        setIntroAudioApproved(false);
+        setIntroImageApproved(false);
+      }
       setStep("script");
     } catch (err) {
       setError(String(err));
@@ -1478,12 +1495,68 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
   };
 
   const generateAllImages = async () => {
+    // Generate intro image first
+    if (intro && !introImageUrl) {
+      await generateIntroImage();
+      await new Promise((r) => setTimeout(r, 8000));
+    }
     for (const item of items) {
       if (!item.imageUrl) {
         await generateImage(item.rank);
         await new Promise((r) => setTimeout(r, 8000));
       }
     }
+  };
+
+  const generateIntroAudio = async () => {
+    if (!intro) return;
+    setIntroAudioLoading(true);
+    try {
+      const merged = { ...globalVoice };
+      const res = await fetch("/api/tiktok/audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: intro.hook,
+          sessionId,
+          segmentIndex: 0,
+          voiceSettings: merged,
+          prefix: "intro",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setIntroAudioUrl(data.audioUrl + "&t=" + Date.now());
+      setIntroAudioApproved(false);
+    } catch (err) {
+      setError(`Intro audio: ${err}`);
+    }
+    setIntroAudioLoading(false);
+  };
+
+  const generateIntroImage = async () => {
+    if (!intro) return;
+    setIntroImageLoading(true);
+    try {
+      const res = await fetch("/api/tiktok/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visualPrompt: intro.visual_prompt,
+          sessionId,
+          segmentIndex: 0,
+          aspectRatio,
+          prefix: "intro",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setIntroImageUrl(data.imageUrl + "&t=" + Date.now());
+      setIntroImageApproved(false);
+    } catch (err) {
+      setError(`Intro image: ${err}`);
+    }
+    setIntroImageLoading(false);
   };
 
   const assembleVideo = async () => {
@@ -1493,7 +1566,7 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
       const res = await fetch("/api/tiktok/topn-assemble", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, items, template, aspectRatio }),
+        body: JSON.stringify({ sessionId, items, intro: intro ? { ...intro, topic } : null, template, aspectRatio }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
@@ -1505,8 +1578,8 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
     setLoading(false);
   };
 
-  const allAudioDone = items.length > 0 && items.every((i) => i.audioUrl && i.audioApproved);
-  const allImagesDone = items.length > 0 && items.every((i) => i.imageUrl && i.imageApproved);
+  const allAudioDone = items.length > 0 && items.every((i) => i.audioUrl && i.audioApproved) && (!intro || (introAudioUrl && introAudioApproved));
+  const allImagesDone = items.length > 0 && items.every((i) => i.imageUrl && i.imageApproved) && (!intro || (introImageUrl && introImageApproved));
 
   const STEPS: TopNStep[] = ["setup", "script", "audio", "images", "assemble", "done"];
   const STEP_LABELS = [
@@ -1688,6 +1761,42 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
             </div>
           </div>
 
+          {/* Intro card */}
+          {intro && (
+            <div className="rounded-xl border-2 border-amber-300 bg-amber-50 p-5 shadow-sm">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="text-2xl">🎬</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-600">
+                  {lang === "pl" ? "Scena intro" : "Intro scene"}
+                </span>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-foreground/50">
+                    {lang === "pl" ? "Hook (tekst zachęty)" : "Hook text"}
+                  </label>
+                  <input
+                    type="text"
+                    value={intro.hook}
+                    onChange={(e) => setIntro({ ...intro, hook: e.target.value })}
+                    className="w-full rounded-lg border border-amber-300 px-3 py-2 text-sm font-semibold focus:border-amber-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-foreground/50">
+                    {t.visualLabel}
+                  </label>
+                  <textarea
+                    value={intro.visual_prompt}
+                    onChange={(e) => setIntro({ ...intro, visual_prompt: e.target.value })}
+                    rows={2}
+                    className="w-full rounded-lg border border-amber-300 px-3 py-2 text-sm focus:border-amber-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {items.map((item) => (
             <div key={item.rank} className="rounded-xl bg-white p-5 shadow-sm">
               <div className="mb-2 flex items-center gap-2">
@@ -1768,13 +1877,67 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
               </button>
             </div>
             <button
-              onClick={generateAllAudio}
-              disabled={items.some((i) => i.audioLoading)}
+              onClick={async () => {
+                if (intro && !introAudioUrl) await generateIntroAudio();
+                await generateAllAudio();
+              }}
+              disabled={items.some((i) => i.audioLoading) || introAudioLoading}
               className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
             >
               {t.generateAllAudio}
             </button>
           </div>
+
+          {/* Intro audio */}
+          {intro && (
+            <div className="rounded-xl border-2 border-amber-300 bg-amber-50 p-5 shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="text-lg">🎬</span>
+                    <span className="text-sm font-semibold">{lang === "pl" ? "Intro" : "Intro"}</span>
+                    {introAudioApproved && (
+                      <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                        {t.approved}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-foreground/50">{intro.hook}</p>
+                </div>
+              </div>
+              <div className="mt-3">
+                {introAudioUrl ? (
+                  <div className="flex items-center gap-3">
+                    <audio controls preload="auto" src={introAudioUrl} className="h-10 flex-1" />
+                    <button
+                      onClick={() => setIntroAudioApproved(true)}
+                      disabled={introAudioApproved}
+                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                        introAudioApproved ? "bg-green-100 text-green-700" : "bg-green-500 text-white hover:bg-green-600"
+                      }`}
+                    >
+                      {introAudioApproved ? "✓" : t.approve}
+                    </button>
+                    <button
+                      onClick={generateIntroAudio}
+                      disabled={introAudioLoading}
+                      className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
+                    >
+                      {introAudioLoading ? "..." : t.redo}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={generateIntroAudio}
+                    disabled={introAudioLoading}
+                    className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-600 disabled:opacity-50"
+                  >
+                    {introAudioLoading ? t.generatingAudio : t.generateAudio}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
           {items.map((item) => (
             <div key={item.rank} className="rounded-xl bg-white p-5 shadow-sm">
@@ -1854,12 +2017,55 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
             </div>
             <button
               onClick={generateAllImages}
-              disabled={items.some((i) => i.imageLoading)}
+              disabled={items.some((i) => i.imageLoading) || introImageLoading}
               className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
             >
               {t.generateAllImages}
             </button>
           </div>
+
+          {/* Intro image */}
+          {intro && (
+            <div className="rounded-xl border-2 border-amber-300 bg-amber-50 p-5 shadow-sm">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="text-lg">🎬</span>
+                <span className="text-sm font-semibold">{lang === "pl" ? "Intro" : "Intro"}</span>
+              </div>
+              <p className="mb-3 text-xs text-foreground/50">{intro.visual_prompt}</p>
+
+              {introImageUrl ? (
+                <div>
+                  <img src={introImageUrl} alt="Intro" className="w-full rounded-lg" />
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      onClick={() => setIntroImageApproved(true)}
+                      disabled={introImageApproved}
+                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                        introImageApproved ? "bg-green-100 text-green-700" : "bg-green-500 text-white hover:bg-green-600"
+                      }`}
+                    >
+                      {introImageApproved ? `✓ ${t.approved}` : t.approve}
+                    </button>
+                    <button
+                      onClick={() => { setIntroImageUrl(null); setIntroImageApproved(false); generateIntroImage(); }}
+                      disabled={introImageLoading}
+                      className="rounded-lg border border-malta-stone/50 px-3 py-1.5 text-sm transition-colors hover:bg-malta-stone/20 disabled:opacity-50"
+                    >
+                      {t.regenerateImage}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={generateIntroImage}
+                  disabled={introImageLoading}
+                  className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-600 disabled:opacity-50"
+                >
+                  {introImageLoading ? t.generatingImage : t.generateImage}
+                </button>
+              )}
+            </div>
+          )}
 
           {items.map((item) => (
             <div key={item.rank} className="rounded-xl bg-white p-5 shadow-sm">

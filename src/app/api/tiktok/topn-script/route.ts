@@ -4,33 +4,39 @@ import type { TopNItem, TopNCount } from '@/lib/topn-templates';
 
 function buildTopNPrompt(topic: string, n: TopNCount, lang: ContentLang): string {
   const langRules = lang === 'pl'
-    ? `LANGUAGE: 100% Polish. ZERO English words. Natural, conversational Polish.
-Use ellipsis "..." for pauses (TTS engine reads them as natural breaks).`
-    : `LANGUAGE: 100% English. Natural, conversational American English.
-Use ellipsis "..." for pauses (TTS engine reads them as natural breaks).`;
+    ? `LANGUAGE: 100% Polish. ZERO English words. Natural, conversational Polish. No ellipsis pauses — keep it punchy and fast.`
+    : `LANGUAGE: 100% English. Natural, conversational American English. No ellipsis pauses — keep it punchy and fast.`;
+
+  const outfitExamples = `Examples of outfits by context: beach = bikini or flowing sundress, restaurant = elegant cocktail dress, temple/church = modest summer outfit with hat, nightlife = stylish party look, hiking/nature = sporty tank top and shorts, market = casual boho style. NEVER repeat the same outfit twice.`;
 
   return `Create a TikTok "Top ${n}" ranked list about: "${topic}".
 
-STRUCTURE: Exactly ${n} items, counting DOWN from ${n} to 1.
+STRUCTURE:
+1. An INTRO hook — a short catchy teaser line that makes viewers stay (e.g. "Nie uwierzysz co jest na pierwszym miejscu!" or "Number one will blow your mind!")
+2. Exactly ${n} items, counting DOWN from ${n} to 1.
 - Rank ${n} = Good but least impressive
 - Rank 1 = THE BEST, save-the-best-for-last
-- Build excitement toward #1
+- Build excitement and hype toward #1
 
 Each item needs:
 {
   "rank": number,
   "title": "Short catchy name (2-5 words)",
-  "description": "2-3 sentences spoken voiceover describing why this ranks here. Warm, personal tone like a friend sharing recommendations. Use pauses with '...' between phrases.",
-  "visual_prompt": "Cinematic scene description in English for image AI. Include: specific location/subject, lighting, mood, camera angle. Travel content aesthetic. 8K photorealistic."
+  "description": "ONE punchy sentence, max 15 words. Energetic, fun, slightly provocative. This must fit in ~6 seconds of speech.",
+  "visual_prompt": "Cinematic scene description in English for image AI. Include: specific location/subject, lighting, mood, camera angle. Travel content aesthetic. 8K photorealistic. IMPORTANT: Describe Monika (young woman, 28yo) wearing a SPECIFIC outfit appropriate for THIS scene. ${outfitExamples}"
 }
 
 ${langRules}
 
-TONE: Warm, personal, like sharing tips with a friend. Build momentum toward #1.
-FORBIDDEN: No stage directions like [whispers]. No exclamation marks. Keep it soft and engaging.
+TONE: Energetic, fun, hype-building! Short punchy lines. Exclamation marks welcome. Think YouTube/TikTok countdown energy — NOT soft ASMR. She's excited, slightly flirty, and wants you to keep watching.
+FORBIDDEN: No stage directions like [whispers]. No long pauses. No boring tour-guide voice.
 
 OUTPUT: Valid JSON only. No markdown code blocks.
 {
+  "intro": {
+    "hook": "Short catchy teaser (1 sentence, makes viewers stay)",
+    "visual_prompt": "Eye-catching intro graphic scene in English for image AI. Bold, colorful, dynamic composition. Include Monika looking excited/inviting. 8K photorealistic."
+  },
   "items": [
     { "rank": ${n}, "title": "...", "description": "...", "visual_prompt": "..." },
     ...
@@ -110,7 +116,10 @@ export async function POST(request: NextRequest) {
     // Ensure proper ranking order (N → 1)
     items.sort((a, b) => b.rank - a.rank);
 
-    return NextResponse.json({ items, topic, n: count });
+    // Extract intro if present
+    const intro = parsed.intro || null;
+
+    return NextResponse.json({ items, intro, topic, n: count });
   } catch (error) {
     return NextResponse.json(
       { error: 'Internal error', details: String(error) },

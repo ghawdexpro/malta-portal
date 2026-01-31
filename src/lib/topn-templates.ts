@@ -23,6 +23,15 @@ export interface TopNTemplateConfig {
   transitionType: 'fade' | 'slideleft' | 'slideright';
   transitionDuration: number;
   backgroundFilter?: string; // e.g. "boxblur=10:10" for behind number
+  /** Intro scene: title font size */
+  introTitleFontSize: number;
+  /** Intro scene: hook font size */
+  introHookFontSize: number;
+}
+
+export interface TopNIntro {
+  hook: string;
+  visual_prompt: string;
 }
 
 export const TOPN_TEMPLATES: Record<TopNTemplate, TopNTemplateConfig> = {
@@ -44,6 +53,8 @@ export const TOPN_TEMPLATES: Record<TopNTemplate, TopNTemplateConfig> = {
     transitionType: 'fade',
     transitionDuration: 0.5,
     backgroundFilter: 'boxblur=4:4',
+    introTitleFontSize: 80,
+    introHookFontSize: 52,
   },
   infographic: {
     id: 'infographic',
@@ -62,6 +73,8 @@ export const TOPN_TEMPLATES: Record<TopNTemplate, TopNTemplateConfig> = {
     titlePosition: 'top',
     transitionType: 'slideleft',
     transitionDuration: 0.4,
+    introTitleFontSize: 72,
+    introHookFontSize: 46,
   },
   minimal: {
     id: 'minimal',
@@ -80,6 +93,8 @@ export const TOPN_TEMPLATES: Record<TopNTemplate, TopNTemplateConfig> = {
     titlePosition: 'top',
     transitionType: 'fade',
     transitionDuration: 0.3,
+    introTitleFontSize: 64,
+    introHookFontSize: 40,
   },
 };
 

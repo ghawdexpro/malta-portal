@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Reference image not found' }, { status: 500 });
     }
 
-    const subDir = filePrefix === 'rank' ? 'topn' : 'asmr';
+    const subDir = (filePrefix === 'rank' || filePrefix === 'intro') ? 'topn' : 'asmr';
     const sessionDir = path.join(process.cwd(), 'public', 'videos', subDir, `session_${sessionId}`);
     fs.mkdirSync(sessionDir, { recursive: true });
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       : `Generate this image in HORIZONTAL landscape orientation (${ar.width}x${ar.height}, ${ratioKey || '16:9'} aspect ratio).`;
 
     const fullPrompt = `${visualPrompt}.
-        KEEP IDENTICAL: The woman from reference image (Monika).
+        KEEP IDENTICAL from the reference image (Monika): her face, hairstyle, body type, and figure (slim, fit, attractive physique). Only change her OUTFIT to match the scene described above. Each scene should have a DIFFERENT outfit appropriate for the context.
         STYLE: Photorealistic 8K, cinematic lighting, shallow depth of field.
         FRAMING: ${orientationHint}`;
 

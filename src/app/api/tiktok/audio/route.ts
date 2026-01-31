@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'ELEVENLABS_API_KEY not configured' }, { status: 500 });
     }
 
-    const subDir = filePrefix === 'rank' ? 'topn' : 'asmr';
+    const subDir = (filePrefix === 'rank' || filePrefix === 'intro') ? 'topn' : 'asmr';
     const sessionDir = path.join(process.cwd(), 'public', 'videos', subDir, `session_${sessionId}`);
     fs.mkdirSync(sessionDir, { recursive: true });
 
