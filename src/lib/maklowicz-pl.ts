@@ -55,7 +55,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Siedziba władzy 21 kolejnych Wielkich Mistrzów Zakonu Kawalerów św. Jana, ten pałac jest dziś rezydencją Prezydenta Malty. Makłowicz przechodzi przez Sale Reprezentacyjne i Zbrojownię — jedną z największych kolekcji średniowiecznej broni na świecie, z ponad 5000 eksponatami broni i zbroi z XVI–XVIII wieku.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=800&q=80",
+      "/images/monika/articles/grand_master_palace.png",
     article_slug: "pl-palac-wielkiego-mistrza",
   },
   "Upper Barrakka Gardens": {
@@ -71,7 +71,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Makłowicz odkrywa scenę restauracyjną Valletty, od skromnych pastizzerii po eleganckie winiarnie. Próbuje kapunatę — maltańską kuzynkę ratatouille z bakłażana, oliwek i kaparów — i tłumaczy, jak kuchnia maltańska łączy sycylijską hojność, arabskie przyprawy i brytyjski pragmatyzm. Punkt kulminacyjny: tradycyjny maltański talerz z suszonymi pomidorami, bigillą (pasta z bobu), serem gbejniet i lokalnymi oliwkami.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
+      "/images/monika/articles/street_food.png",
     article_slug: "pl-kuchnia-maltanska-kompletny-przewodnik",
   },
   "Birgu (Vittoriosa)": {
@@ -87,7 +87,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Makłowicz podąża śladem Apostoła Pawła, którego statek rozbił się u wybrzeży Malty w 60 roku naszej ery. Według tradycji Paweł przeżył ukąszenie żmii, uzdrowił ojca rzymskiego namiestnika i osobiście nawrócił Maltańczyków na chrześcijaństwo podczas swojego trzymiesięcznego pobytu. Zatoka nazwana jego imieniem jest dziś tętniącym życiem kurortem, ale spuścizna świętego wpleciona jest w każdy aspekt maltańskiej tożsamości.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1568702846914-96b305d2ead1?w=800&q=80",
+      "/images/monika/articles/st_pauls_bay.png",
     article_slug: "pl-st-pauls-bay-swiety-pawel",
   },
   "Gozo Ferry Terminal (Cirkewwa)": {
@@ -96,7 +96,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Makłowicz wsiada na prom na Gozo z północno-zachodniego krańca Malty w Ċirkewwie. Dwudziestopięciominutowa przeprawa oferuje zapierające dech widoki na wyspę Comino i słynną Błękitną Lagunę. Opisuje Gozo jako 'to, czym Malta była pięćdziesiąt lat temu' — zieleńsze, cichsze i bardziej tradycyjne. Napięcie rośnie, gdy wapienne klify Gozo stają się coraz bliższe.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1602519060498-d761efde0086?w=800&q=80",
+      "/images/monika/articles/gozo_ferry.png",
     article_slug: "pl-prom-na-gozo",
   },
   "Gozo - Victoria (Rabat)": {
@@ -112,7 +112,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Wspinając się na ufortyfikowaną koronę Gozo, Makłowicz zwiedzał starożytną Cytadelę — naturalną twierdzę zamieszkaną od ponad 5000 lat. Wchodzi do Katedry Wniebowzięcia, której sufit to mistrzowski trompe l'oeil (planowana kopuła nigdy nie powstała z braku funduszy). Z murów obronnych rozciąga się widok na całą wyspę — tarasowe wzgórza, kopulaste kościoły i błękitne Morze Śródziemne we wszystkich kierunkach.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1599922407878-c3483cba5640?w=800&q=80",
+      "/images/monika/articles/victoria.png",
     article_slug: "pl-cytadela-gozo-twierdza",
   },
   Rabat: {
@@ -128,7 +128,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Schodząc pod ulice Rabatu, Makłowicz wchodzi do jednego z najwspanialszych wczesnochrześcijańskich stanowisk w Europie — katakumb z III wieku naszej ery, gdzie pierwsi maltańscy chrześcijanie chowali swoich zmarłych. Podziemne komnaty ciągną się labiryntem połączonych pomieszczeń, z kamiennymi stołami, przy których żałobnicy urządzali uczty pogrzebowe. Tradycja głosi, że sam św. Paweł nauczał w tych jaskiniach podczas pobytu na Malcie.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1569587112025-0d460e81a126?w=800&q=80",
+      "/images/monika/articles/catacombs.png",
     article_slug: "pl-katakumby-swietego-pawla",
   },
   "Pastizzi Shop in Rabat": {
@@ -137,7 +137,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Makłowicz znajduje to, czego szukał — autentyczny sklep z pastizzi, gdzie chrupiące, diamentowe ciastka wypiekane są świeżo przez cały dzień. Próbuje obu odmian: rikotta (z ricottą) i piżelli (z musem z groszku) i ogłasza je jednym z wielkich ulicznych dań kuchni śródziemnomorskiej. Za zaledwie 50 centów pastizzi to demokratyczne jedzenie Malty — jedzone zarówno przez robotników budowlanych, jak i ministrów.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=80",
+      "/images/monika/articles/street_food.png",
     article_slug: "pl-pastizzi-street-food-malty",
   },
   "Mdina - The Silent City": {
@@ -153,7 +153,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Na swój ostatni maltański posiłek Makłowicz zasiada do narodowego dania wyspy — fenku (królika), wolno duszonego w bogatym sosie z wina, czosnku i pomidorów. Tłumaczy, że królik jest dla Malty tym, czym pierogi dla Polski — daniem definiującym narodowe podniebienie. Przepis sięga wieków wstecz, pierwotnie kłusowany z prywatnych łowisk Kawalerów przez zbuntowanych rolników. Królikowa rewolucja, jak zauważa Makłowicz z uśmiechem, była jednym z pierwszych aktów niepodległości Malty.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
+      "/images/monika/articles/fenek_rabbit.png",
     article_slug: "pl-fenek-krolik-maltanski",
   },
   "Mdina by Night": {
@@ -162,7 +162,7 @@ export const MAKLOWICZ_PL: Record<string, StopTranslation> = {
     description_pl:
       "Gdy zapada zmrok, Makłowicz wraca do Mdiny na ostatnią, magiczną sekwencję. Ciche Miasto naprawdę zasługuje na swoją nazwę po zmroku — wąskie uliczki oświetlone są kutymi latarniami, kroki odbijają się echem od wapienianych ścian, a miasto odsłania swoje najbardziej romantyczne oblicze. Z bastionów migoczą światła Malty, a Morze Śródziemne rozciąga się ciemne i nieskończone aż po horyzont. To idealne zakończenie niezapomnianej podróży po 7000 lat historii, wiary i jedzenia na wyspie.",
     fallback_cover_image:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80",
+      "/images/monika/articles/mdina_night.png",
     article_slug: "pl-mdina-noca-wino-cisza",
   },
 };

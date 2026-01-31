@@ -100,7 +100,7 @@ export default async function Home() {
         {/* Hero content */}
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-malta-gold">
-            Inteligencja Podróżnicza AI
+            Wiedza od Prawdziwych Turystów
           </p>
           <h1 className="max-w-4xl text-5xl font-extrabold leading-[1.1] tracking-tight md:text-7xl">
             Odkryj Maltę
@@ -108,7 +108,7 @@ export default async function Home() {
             <span className="text-malta-gold">Oczami Prawdziwych Ludzi</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-            Wiedza z tysięcy prawdziwych doświadczeń turystycznych — analizowana przez AI,
+            Wiedza z tysięcy prawdziwych doświadczeń turystycznych —
             zebrana z polskich społeczności internetowych.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -139,21 +139,25 @@ export default async function Home() {
               value: stats.posts,
               label: "Posty Społeczności",
               color: "text-malta-blue",
+              href: "/pl/articles",
             },
             {
               value: stats.articles,
-              label: "Artykuły AI",
+              label: "Przewodniki",
               color: "text-malta-gold",
+              href: "/pl/articles",
             },
             {
               value: stats.stops,
               label: "Przystanki Makłowicza",
               color: "text-malta-charcoal",
+              href: "/pl/maklowicz",
             },
           ].map((stat, i) => (
-            <div
+            <Link
               key={stat.label}
-              className={`flex flex-col items-center py-8 ${i > 0 ? "border-l border-gray-100" : ""}`}
+              href={stat.href}
+              className={`flex flex-col items-center py-8 transition-colors hover:bg-gray-50 ${i > 0 ? "border-l border-gray-100" : ""}`}
             >
               <span className={`text-4xl font-extrabold ${stat.color}`}>
                 {stat.value}
@@ -161,7 +165,7 @@ export default async function Home() {
               <span className="mt-1 text-xs font-medium uppercase tracking-wider text-gray-400">
                 {stat.label}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -177,7 +181,7 @@ export default async function Home() {
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-gray-500">
             Prawdziwe spostrzeżenia zebrane z polskich społeczności turystycznych,
-            przeanalizowane i uporządkowane przez AI.
+            zebrane i uporządkowane dla Ciebie.
           </p>
         </div>
 
@@ -211,7 +215,7 @@ export default async function Home() {
                 Najnowsze
               </p>
               <h2 className="mt-2 text-3xl font-extrabold text-malta-dark">
-                Artykuły Generowane przez AI
+                Artykuły ze Społeczności
               </h2>
             </div>
             <Link
@@ -229,7 +233,7 @@ export default async function Home() {
                 Brak artykułów
               </p>
               <p className="mt-1 text-sm text-gray-300">
-                Artykuły pojawią się, gdy system AI przetworzy dane społeczności
+                Artykuły pojawią się, gdy system przetworzy dane społeczności
               </p>
             </div>
           ) : (
@@ -283,7 +287,7 @@ export default async function Home() {
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage:
-                  "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80')",
+                  "url('/images/monika/articles/wine_tasting.png')",
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-malta-dark/80 via-transparent to-transparent" />
@@ -312,7 +316,7 @@ export default async function Home() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-white/60">
               Legendarny polski twórca kulinarno-podróżniczy odkrywał ukryte kulinarne
-              perły Malty w 3 odcinkach. Nasz przewodnik zorganizowany przez AI pozwala
+              perły Malty w 3 odcinkach. Nasz przewodnik pozwala
               śledzić jego podróż — z <strong className="text-white/80">wideo z minutami</strong>, oryginalnymi polskimi cytatami,
               interaktywnymi mapami i rekomendacjami lokalnego jedzenia.
             </p>
@@ -418,7 +422,7 @@ export default async function Home() {
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-gray-500 leading-relaxed">
             Każdy artykuł w tym portalu jest generowany z prawdziwych dyskusji
-            w polskich społecznościach turystycznych. Nasze AI czyta, analizuje i porządkuje
+            w polskich społecznościach turystycznych. Czytamy, analizujemy i porządkujemy
             tysiące postów i komentarzy — wzbogaconych o spostrzeżenia z filmów Roberta Makłowicza
             — więc dostajesz najbardziej autentyczne porady podróżnicze.
           </p>

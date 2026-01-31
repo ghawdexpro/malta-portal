@@ -13,7 +13,7 @@ export const metadata: Metadata = {
       "Virtual tour through 16 Malta stops with GPS, Street View, and food guides.",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+        url: "/images/monika/page/hero_harbour.png",
         width: 1200,
         height: 630,
       },

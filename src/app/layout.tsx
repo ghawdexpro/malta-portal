@@ -14,19 +14,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Malta Travel Portal | AI-Powered Community Insights",
+  title: "Malta Travel Portal | Community-Driven Travel Insights",
   description:
-    "Discover Malta through real community experiences. AI-analyzed travel tips, restaurants, beaches, and insider knowledge from thousands of tourists. Featuring Robert Makłowicz's Malta journey.",
+    "Discover Malta through real community experiences. Curated travel tips, restaurants, beaches, and insider knowledge from thousands of tourists. Featuring Robert Makłowicz's Malta journey.",
   openGraph: {
     title: "Malta Travel Portal — Discover Malta Through Real Eyes",
     description:
-      "AI-powered Malta travel guide built from real community experiences. Featuring Robert Makłowicz's interactive video journey through Valletta, Gozo, and Mdina.",
+      "Community-driven Malta travel guide built from real experiences. Featuring Robert Makłowicz's interactive video journey through Valletta, Gozo, and Mdina.",
     locale: "en_US",
     type: "website",
     siteName: "Malta Travel Portal",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+        url: "/images/monika/page/hero_harbour.png",
         width: 1200,
         height: 630,
         alt: "Malta Travel Portal — Valletta harbour view",
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Malta Travel Portal — Discover Malta Through Real Eyes",
     description:
-      "AI-powered Malta travel guide with Robert Makłowicz's interactive video journey.",
-    images: ["https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80"],
+      "Community-driven Malta travel guide with Robert Makłowicz's interactive video journey.",
+    images: ["/images/monika/page/hero_harbour.png"],
   },
   metadataBase: new URL("https://malta-portal-production.up.railway.app"),
 };
@@ -116,9 +116,8 @@ export default function RootLayout({
                   <span className="text-lg font-bold">Malta Travel Portal</span>
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-white/50">
-                  AI-powered insights from thousands of real tourist experiences.
-                  Built from community discussions, analyzed by artificial intelligence,
-                  curated for you.
+                  Insights from thousands of real tourist experiences.
+                  Built from community discussions, expertly curated for you.
                 </p>
               </div>
               <div>
@@ -153,14 +152,14 @@ export default function RootLayout({
                   About
                 </h3>
                 <ul className="mt-4 space-y-2 text-sm text-white/60">
-                  <li>Powered by Moltbot AI</li>
+                  <li>Powered by Moltbot</li>
                   <li>Built by Gozo Max</li>
                   <li>Data from Polish tourist communities</li>
                 </ul>
               </div>
             </div>
             <div className="mt-12 border-t border-white/10 pt-8 text-center text-xs text-white/30">
-              Malta Travel Portal &copy; {new Date().getFullYear()} &mdash; AI-powered community insights
+              Malta Travel Portal &copy; {new Date().getFullYear()} &mdash; community-driven travel insights
             </div>
           </div>
         </footer>

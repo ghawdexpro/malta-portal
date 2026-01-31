@@ -5,14 +5,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Artykuły Podróżnicze | Portal Maltański",
   description:
-    "Przewodniki generowane przez AI z prawdziwych dyskusji turystycznych — restauracje, plaże, transport, ceny, zwiedzanie, wydarzenia, porady i Gozo.",
+    "Przewodniki tworzone z prawdziwych dyskusji turystycznych — restauracje, plaże, transport, ceny, zwiedzanie, wydarzenia, porady i Gozo.",
   openGraph: {
     title: "Artykuły Maltańskie — Przewodniki Społeczności",
     description:
-      "Przewodniki podróżnicze o Malcie generowane przez AI z prawdziwych dyskusji turystycznych. Restauracje, plaże, transport, ceny i więcej.",
+      "Przewodniki podróżnicze o Malcie tworzone z prawdziwych dyskusji turystycznych. Restauracje, plaże, transport, ceny i więcej.",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80",
+        url: "/images/monika/articles/blue_lagoon.png",
         width: 1200,
         height: 630,
       },
@@ -74,7 +74,7 @@ export default async function ArticlesPage({
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1600&q=80')",
+              "url('/images/monika/articles/blue_lagoon.png')",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-malta-dark/70 via-malta-dark/40 to-malta-dark/80" />
@@ -86,7 +86,7 @@ export default async function ArticlesPage({
             Artykuły Podróżnicze
           </h1>
           <p className="mt-3 max-w-md text-white/60">
-            Przewodniki generowane przez AI z prawdziwych dyskusji turystycznych
+            Przewodniki tworzone z prawdziwych dyskusji turystycznych
           </p>
         </div>
       </section>
@@ -118,7 +118,7 @@ export default async function ArticlesPage({
               Brak artykułów
             </p>
             <p className="mt-2 text-sm text-gray-300">
-              System AI wygeneruje artykuły z postów społeczności.
+              Nowe artykuły powstają regularnie z postów społeczności.
               <br />
               Wróć wkrótce!
             </p>

@@ -94,7 +94,7 @@ export default async function Home() {
         {/* Hero content */}
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-malta-gold">
-            AI-Powered Travel Intelligence
+            Real Traveler Insights
           </p>
           <h1 className="max-w-4xl text-5xl font-extrabold leading-[1.1] tracking-tight md:text-7xl">
             Discover Malta
@@ -102,7 +102,7 @@ export default async function Home() {
             <span className="text-malta-gold">Through Real Eyes</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-            Insights from thousands of real tourist experiences — analyzed by AI,
+            Insights from thousands of real tourist experiences —
             curated from Polish community discussions.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -133,21 +133,25 @@ export default async function Home() {
               value: stats.posts,
               label: "Community Posts",
               color: "text-malta-blue",
+              href: "/articles",
             },
             {
               value: stats.articles,
-              label: "AI Articles",
+              label: "Community Guides",
               color: "text-malta-gold",
+              href: "/articles",
             },
             {
               value: stats.stops,
               label: "Maklowicz Stops",
               color: "text-malta-charcoal",
+              href: "/maklowicz",
             },
           ].map((stat, i) => (
-            <div
+            <Link
               key={stat.label}
-              className={`flex flex-col items-center py-8 ${i > 0 ? "border-l border-gray-100" : ""}`}
+              href={stat.href}
+              className={`flex flex-col items-center py-8 transition-colors hover:bg-gray-50 ${i > 0 ? "border-l border-gray-100" : ""}`}
             >
               <span className={`text-4xl font-extrabold ${stat.color}`}>
                 {stat.value}
@@ -155,7 +159,7 @@ export default async function Home() {
               <span className="mt-1 text-xs font-medium uppercase tracking-wider text-gray-400">
                 {stat.label}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -171,7 +175,7 @@ export default async function Home() {
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-gray-500">
             Real insights gathered from Polish tourist communities,
-            analyzed and organized by AI.
+            organized and curated for you.
           </p>
         </div>
 
@@ -205,7 +209,7 @@ export default async function Home() {
                 Latest
               </p>
               <h2 className="mt-2 text-3xl font-extrabold text-malta-dark">
-                AI-Generated Articles
+                Community-Driven Articles
               </h2>
             </div>
             <Link
@@ -223,7 +227,7 @@ export default async function Home() {
                 No articles yet
               </p>
               <p className="mt-1 text-sm text-gray-300">
-                Articles will appear once the AI pipeline processes community data
+                Articles will appear once our system processes community data
               </p>
             </div>
           ) : (
@@ -277,7 +281,7 @@ export default async function Home() {
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage:
-                  "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80')",
+                  "url('/images/monika/articles/wine_tasting.png')",
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-malta-dark/80 via-transparent to-transparent" />
@@ -306,7 +310,7 @@ export default async function Home() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-white/60">
               The legendary Polish food and travel creator explored Malta&apos;s
-              hidden culinary gems across 3 episodes. Our AI-organized guide lets
+              hidden culinary gems across 3 episodes. Our community-sourced guide lets
               you follow his journey — with <strong className="text-white/80">timestamped videos</strong>, original Polish quotes,
               interactive maps, and local food recommendations.
             </p>
@@ -412,7 +416,7 @@ export default async function Home() {
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-gray-500 leading-relaxed">
             Every article on this portal is generated from real discussions in
-            Polish tourist communities. Our AI reads, analyzes, and organizes
+            Polish tourist communities. We read, analyze, and organize
             thousands of posts and comments — enriched with Robert Makłowicz&apos;s
             video insights — so you get the most authentic travel advice.
           </p>

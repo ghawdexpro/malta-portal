@@ -14,19 +14,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portal Turystyczny Malta | Przewodnik AI ze Społeczności",
+  title: "Portal Turystyczny Malta | Przewodnik Tworzony przez Społeczność",
   description:
-    "Odkryj Maltę oczami prawdziwych turystów. Przewodniki AI, restauracje, plaże i insider knowledge z polskich grup turystycznych. Robert Makłowicz — interaktywny przewodnik wideo.",
+    "Odkryj Maltę oczami prawdziwych turystów. Przewodniki, restauracje, plaże i insider knowledge z polskich grup turystycznych. Robert Makłowicz — interaktywny przewodnik wideo.",
   openGraph: {
     title: "Portal Turystyczny Malta — Odkryj Maltę Oczami Prawdziwych Turystów",
     description:
-      "Przewodnik turystyczny Malta napędzany AI — z interaktywną podróżą Roberta Makłowicza po Valletcie, Gozo i Mdinie.",
+      "Przewodnik turystyczny Malta tworzony przez społeczność — z interaktywną podróżą Roberta Makłowicza po Valletcie, Gozo i Mdinie.",
     locale: "pl_PL",
     type: "website",
     siteName: "Portal Turystyczny Malta",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+        url: "/images/monika/page/hero_harbour.png",
         width: 1200,
         height: 630,
       },
@@ -102,9 +102,8 @@ export default function PolishLayout({
                   <span className="text-lg font-bold">Portal Turystyczny Malta</span>
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-white/50">
-                  Spostrzeżenia napędzane AI z tysięcy prawdziwych doświadczeń turystycznych.
-                  Zbudowane z dyskusji społeczności, przeanalizowane przez sztuczną inteligencję,
-                  wyselekcjonowane dla Ciebie.
+                  Spostrzeżenia z tysięcy prawdziwych doświadczeń turystycznych.
+                  Zbudowane z dyskusji społeczności, starannie wyselekcjonowane dla Ciebie.
                 </p>
               </div>
               <div>
@@ -144,14 +143,14 @@ export default function PolishLayout({
                   O Portalu
                 </h3>
                 <ul className="mt-4 space-y-2 text-sm text-white/60">
-                  <li>Napędzane przez Moltbot AI</li>
+                  <li>Napędzane przez Moltbot</li>
                   <li>Stworzone przez Gozo Max</li>
                   <li>Dane z polskich społeczności turystycznych</li>
                 </ul>
               </div>
             </div>
             <div className="mt-12 border-t border-white/10 pt-8 text-center text-xs text-white/30">
-              Portal Turystyczny Malta &copy; {new Date().getFullYear()} &mdash; spostrzeżenia AI ze społeczności
+              Portal Turystyczny Malta &copy; {new Date().getFullYear()} &mdash; przewodnik tworzony przez społeczność
             </div>
           </div>
         </footer>

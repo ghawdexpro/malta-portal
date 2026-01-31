@@ -13,7 +13,7 @@ export const metadata: Metadata = {
       "Legendarny polski twórca kulinarno-podróżniczy odkrywał Maltę w 3 odcinkach. Śledź jego podróż krok po kroku.",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80",
+        url: "/images/monika/articles/wine_tasting.png",
         width: 1200,
         height: 630,
       },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Robert Makłowicz — Podróż po Malcie",
     description: "Śledź Makłowicza po Malcie: 3 odcinki, 16 lokalizacji, interaktywny przewodnik.",
-    images: ["https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80"],
+    images: ["/images/monika/articles/wine_tasting.png"],
   },
 };
 
@@ -132,7 +132,7 @@ export default async function MaklowiczPage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80')",
+              "url('/images/monika/articles/wine_tasting.png')",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-malta-dark/70 via-malta-dark/30 to-malta-dark/90" />

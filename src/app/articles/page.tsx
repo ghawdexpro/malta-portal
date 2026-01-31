@@ -5,14 +5,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Travel Articles | Malta Travel Portal",
   description:
-    "AI-generated guides from real tourist discussions — restaurants, beaches, transport, prices, sightseeing, events, tips, and Gozo.",
+    "Community-driven guides from real tourist discussions — restaurants, beaches, transport, prices, sightseeing, events, tips, and Gozo.",
   openGraph: {
     title: "Malta Travel Articles — Community-Powered Guides",
     description:
-      "AI-generated Malta travel guides from real tourist discussions. Restaurants, beaches, transport, prices, and more.",
+      "Community-driven Malta travel guides from real tourist discussions. Restaurants, beaches, transport, prices, and more.",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80",
+        url: "/images/monika/articles/blue_lagoon.png",
         width: 1200,
         height: 630,
       },
@@ -74,7 +74,7 @@ export default async function ArticlesPage({
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1600&q=80')",
+              "url('/images/monika/articles/blue_lagoon.png')",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-malta-dark/70 via-malta-dark/40 to-malta-dark/80" />
@@ -86,7 +86,7 @@ export default async function ArticlesPage({
             Travel Articles
           </h1>
           <p className="mt-3 max-w-md text-white/60">
-            AI-generated guides from real tourist discussions
+            Community-driven guides from real tourist discussions
           </p>
         </div>
       </section>
@@ -118,7 +118,7 @@ export default async function ArticlesPage({
               No articles yet
             </p>
             <p className="mt-2 text-sm text-gray-300">
-              The AI pipeline will generate articles from community posts.
+              New articles are generated from community posts regularly.
               <br />
               Check back soon!
             </p>
