@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     const finalOutput = path.join(outputDir, `monika_asmr_${sessionId}.mp4`);
     await execAsync(`ffmpeg -y -f concat -safe 0 -i "${listPath}" -c copy "${finalOutput}"`);
 
-    const videoUrl = `/videos/asmr/monika_asmr_${sessionId}.mp4`;
+    const videoUrl = `/api/tiktok/files?path=videos/asmr/monika_asmr_${sessionId}.mp4`;
     const stats = fs.statSync(finalOutput);
 
     return NextResponse.json({

@@ -108,7 +108,7 @@ CRITICAL RULES:
     fs.writeFileSync(outputPath, imageBuffer);
 
     return NextResponse.json({
-      imageUrl: `/images/monika/composed/${filename}`,
+      imageUrl: `/api/tiktok/files?path=images/monika/composed/${filename}`,
       size: imageBuffer.byteLength,
     });
   } catch (error) {

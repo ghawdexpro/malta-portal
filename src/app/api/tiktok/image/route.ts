@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     }
 
     fs.writeFileSync(imagePath, imageBuffer);
-    const imageUrl = `/videos/asmr/session_${sessionId}/seg_${segmentIndex}_image.png`;
+    const imageUrl = `/api/tiktok/files?path=videos/asmr/session_${sessionId}/seg_${segmentIndex}_image.png`;
 
     return NextResponse.json({ imageUrl, size: imageBuffer.byteLength });
   } catch (error) {

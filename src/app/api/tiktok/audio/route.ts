@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const audioBuffer = await response.arrayBuffer();
     fs.writeFileSync(audioPath, Buffer.from(audioBuffer));
 
-    const audioUrl = `/videos/asmr/session_${sessionId}/seg_${segmentIndex}_audio.mp3`;
+    const audioUrl = `/api/tiktok/files?path=videos/asmr/session_${sessionId}/seg_${segmentIndex}_audio.mp3`;
 
     return NextResponse.json({ audioUrl, size: audioBuffer.byteLength });
   } catch (error) {
