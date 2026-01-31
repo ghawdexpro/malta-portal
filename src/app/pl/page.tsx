@@ -40,42 +40,42 @@ const EXPERIENCE_CARDS = [
     title: "Restauracje i Jedzenie",
     subtitle: "Gdzie naprawdę jedzą miejscowi",
     image:
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
+      "/images/monika/page/experience_food.png",
     topic: "restaurants",
   },
   {
     title: "Plaże i Pływanie",
     subtitle: "Krystalicznie czyste wody",
     image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+      "/images/monika/page/experience_beach.png",
     topic: "beaches",
   },
   {
     title: "Zwiedzanie",
     subtitle: "Starożytna historia czeka",
     image:
-      "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&q=80",
+      "/images/monika/page/experience_sightseeing.png",
     topic: "sightseeing",
   },
   {
     title: "Transport i Dojazd",
     subtitle: "Autobusy, promy i porady",
     image:
-      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80",
+      "/images/monika/page/experience_transport.png",
     topic: "transport",
   },
   {
     title: "Noclegi",
     subtitle: "Najlepsze miejsca na nocleg",
     image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+      "/images/monika/page/experience_accommodation.png",
     topic: "accommodation",
   },
   {
     title: "Ceny i Budżet",
     subtitle: "Prawdziwe koszty od prawdziwych turystów",
     image:
-      "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80",
+      "/images/monika/page/experience_prices.png",
     topic: "prices",
   },
 ];
@@ -91,8 +91,7 @@ export default async function Home() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1920&q=85')",
+            backgroundImage: "url('/images/monika/page/hero_harbour.png')",
           }}
         />
         {/* Dark gradient overlay */}
