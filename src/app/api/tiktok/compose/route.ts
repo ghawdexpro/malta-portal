@@ -89,7 +89,22 @@ CRITICAL RULES:
     let imageBuffer: Buffer | null = null;
     const message = result.choices?.[0]?.message;
 
-    if (message?.content) {
+    // Check message.images[] (OpenRouter's native image response format)
+    if (message?.images && Array.isArray(message.images)) {
+      for (const img of message.images) {
+        const dataUrl = img?.image_url?.url;
+        if (dataUrl && dataUrl.startsWith('data:')) {
+          const b64 = dataUrl.split(',')[1];
+          if (b64) {
+            imageBuffer = Buffer.from(b64, 'base64');
+            break;
+          }
+        }
+      }
+    }
+
+    // Fallback: check message.content[] (OpenAI-compatible format)
+    if (!imageBuffer && message?.content) {
       const parts = Array.isArray(message.content) ? message.content : [];
       for (const part of parts) {
         if (part.type === 'image_url' && part.image_url?.url) {

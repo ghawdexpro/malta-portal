@@ -103,16 +103,29 @@ export async function POST(request: NextRequest) {
 
     const result = await response.json();
 
-    // Extract image from OpenRouter response (OpenAI-compatible format)
+    // Extract image from OpenRouter response
     let imageBuffer: Buffer | null = null;
     const message = result.choices?.[0]?.message;
 
-    if (message?.content) {
-      // Content can be string or array of parts
+    // Check message.images[] (OpenRouter's native image response format)
+    if (message?.images && Array.isArray(message.images)) {
+      for (const img of message.images) {
+        const dataUrl = img?.image_url?.url;
+        if (dataUrl && dataUrl.startsWith('data:')) {
+          const b64 = dataUrl.split(',')[1];
+          if (b64) {
+            imageBuffer = Buffer.from(b64, 'base64');
+            break;
+          }
+        }
+      }
+    }
+
+    // Fallback: check message.content[] (OpenAI-compatible format)
+    if (!imageBuffer && message?.content) {
       const parts = Array.isArray(message.content) ? message.content : [];
 
       for (const part of parts) {
-        // Check for inline_data format (Gemini-style through OpenRouter)
         if (part.type === 'image_url' && part.image_url?.url) {
           const dataUrl = part.image_url.url;
           if (dataUrl.startsWith('data:')) {
@@ -123,7 +136,6 @@ export async function POST(request: NextRequest) {
             }
           }
         }
-        // Check for inline_data directly
         if (part.inline_data?.data) {
           imageBuffer = Buffer.from(part.inline_data.data, 'base64');
           break;
