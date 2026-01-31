@@ -417,8 +417,8 @@ export default async function Home() {
           <p className="mx-auto mt-4 max-w-lg text-gray-500 leading-relaxed">
             Every article on this portal is generated from real discussions in
             Polish tourist communities. We read, analyze, and organize
-            thousands of posts and comments — enriched with Robert Makłowicz&apos;s
-            video insights — so you get the most authentic travel advice.
+            thousands of posts and comments — enriched with Monika&apos;s
+            local tips and community insights — so you get the most authentic travel advice.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link

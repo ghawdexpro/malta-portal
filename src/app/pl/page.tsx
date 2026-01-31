@@ -423,7 +423,7 @@ export default async function Home() {
           <p className="mx-auto mt-4 max-w-lg text-gray-500 leading-relaxed">
             Każdy artykuł w tym portalu jest generowany z prawdziwych dyskusji
             w polskich społecznościach turystycznych. Czytamy, analizujemy i porządkujemy
-            tysiące postów i komentarzy — wzbogaconych o spostrzeżenia z filmów Roberta Makłowicza
+            tysiące postów i komentarzy — wzbogaconych o porady Moniki i spostrzeżenia społeczności
             — więc dostajesz najbardziej autentyczne porady podróżnicze.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">

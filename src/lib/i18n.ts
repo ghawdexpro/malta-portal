@@ -38,7 +38,7 @@ export const dictionaries = {
     maklowicz_quotes_badge: "Makłowicz on Malta",
     cta_badge: "Powered by Community",
     cta_title: "Real People, Real Experiences",
-    cta_body: "Every article on this portal is built from real discussions in Polish tourist communities. We read, analyze, and organize thousands of posts and comments — enriched with Robert Makłowicz's video insights — so you get the most authentic travel advice.",
+    cta_body: "Every article on this portal is built from real discussions in Polish tourist communities. We read, analyze, and organize thousands of posts and comments — enriched with Monika's local tips and community insights — so you get the most authentic travel advice.",
     cta_explore: "Start Exploring",
     cta_maklowicz: "Makłowicz Journey",
 
@@ -135,7 +135,7 @@ export const dictionaries = {
     maklowicz_quotes_badge: "Makłowicz o Malcie",
     cta_badge: "Napędzane Przez Społeczność",
     cta_title: "Prawdziwi Ludzie, Prawdziwe Doświadczenia",
-    cta_body: "Każdy artykuł na tym portalu powstaje z prawdziwych dyskusji w polskich społecznościach turystycznych. Czytamy, analizujemy i organizujemy tysiące postów i komentarzy — wzbogacone o materiały wideo Roberta Makłowicza.",
+    cta_body: "Każdy artykuł na tym portalu powstaje z prawdziwych dyskusji w polskich społecznościach turystycznych. Czytamy, analizujemy i organizujemy tysiące postów i komentarzy — wzbogacone o porady Moniki i spostrzeżenia społeczności.",
     cta_explore: "Zacznij Odkrywać",
     cta_maklowicz: "Podróż Makłowicza",
 

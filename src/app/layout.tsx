@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Malta Travel Portal | Community-Driven Travel Insights",
   description:
-    "Discover Malta through real community experiences. Curated travel tips, restaurants, beaches, and insider knowledge from thousands of tourists. Featuring Robert Makłowicz's Malta journey.",
+    "Discover Malta through real community experiences. Curated travel tips, restaurants, beaches, and insider knowledge from thousands of tourists. Your guide by Monika and the community.",
   openGraph: {
     title: "Malta Travel Portal — Discover Malta Through Real Eyes",
     description:
-      "Community-driven Malta travel guide built from real experiences. Featuring Robert Makłowicz's interactive video journey through Valletta, Gozo, and Mdina.",
+      "Community-driven Malta travel guide built from real experiences. Your community guide by Monika.",
     locale: "en_US",
     type: "website",
     siteName: "Malta Travel Portal",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Malta Travel Portal — Discover Malta Through Real Eyes",
     description:
-      "Community-driven Malta travel guide with Robert Makłowicz's interactive video journey.",
+      "Community-driven Malta travel guide curated by Monika and the community.",
     images: ["/images/monika/page/hero_harbour.png"],
   },
   metadataBase: new URL("https://malta-portal-production.up.railway.app"),

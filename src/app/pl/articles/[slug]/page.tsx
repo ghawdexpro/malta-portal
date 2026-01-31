@@ -223,7 +223,7 @@ export default async function ArticlePage({ params }: Props) {
             Więcej Artykułów ze Społeczności
           </h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
-            Każdy artykuł jest tworzony z prawdziwych dyskusji turystycznych i wzbogacony materiałami wideo od Roberta Makłowicza.
+            Każdy artykuł jest tworzony z prawdziwych dyskusji turystycznych i wzbogacony o wskazówki od Moniki i społeczności.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link

@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Portal Turystyczny Malta | Przewodnik Tworzony przez Społeczność",
   description:
-    "Odkryj Maltę oczami prawdziwych turystów. Przewodniki, restauracje, plaże i insider knowledge z polskich grup turystycznych. Robert Makłowicz — interaktywny przewodnik wideo.",
+    "Odkryj Maltę oczami prawdziwych turystów. Przewodniki, restauracje, plaże i insider knowledge z polskich grup turystycznych. Twój przewodnik od Moniki i społeczności.",
   openGraph: {
     title: "Portal Turystyczny Malta — Odkryj Maltę Oczami Prawdziwych Turystów",
     description:
-      "Przewodnik turystyczny Malta tworzony przez społeczność — z interaktywną podróżą Roberta Makłowicza po Valletcie, Gozo i Mdinie.",
+      "Przewodnik turystyczny Malta tworzony przez społeczność — Twój przewodnik od Moniki i społeczności.",
     locale: "pl_PL",
     type: "website",
     siteName: "Portal Turystyczny Malta",
