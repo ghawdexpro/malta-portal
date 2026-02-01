@@ -3,15 +3,26 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
-import { ASPECT_RATIOS, type AspectRatioKey } from '@/lib/tiktok-config';
+import { ASPECT_RATIOS, type AspectRatioKey, AUDIO_PADDING_S, ENCODING_PRESETS, type QualityPreset } from '@/lib/tiktok-config';
 import { TOPN_TEMPLATES, type TopNTemplate, type TopNItem } from '@/lib/topn-templates';
-import { buildNumberOverlayFilter, buildTitleOverlayFilter } from '@/lib/ffmpeg-utils';
+import { buildNumberOverlayFilter, buildTitleOverlayFilter, buildProgressBarFilters } from '@/lib/ffmpeg-utils';
+import { compileSegmentFilters } from '@/lib/topn-ffmpeg-compiler';
+import type { SegmentComposition } from '@/lib/topn-composition';
+import type { ProgressBarStyle } from '@/lib/topn-templates';
 
 const execAsync = promisify(exec);
 
+/** Get audio duration in seconds using ffprobe */
+async function getAudioDuration(audioPath: string): Promise<number> {
+  const { stdout } = await execAsync(
+    `ffprobe -v error -show_entries format=duration -of csv=p=0 "${audioPath}"`
+  );
+  return parseFloat(stdout.trim()) || 3;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { sessionId, items, intro, template: templateKey, aspectRatio: ratioKey } = await request.json();
+    const { sessionId, items, intro, template: templateKey, aspectRatio: ratioKey, quality: qualityKey, fontId: fontIdOverride, progressBar: progressBarConfig, composition } = await request.json();
 
     if (!sessionId || !items || !items.length) {
       return NextResponse.json({ error: 'sessionId and items required' }, { status: 400 });
@@ -20,6 +31,13 @@ export async function POST(request: NextRequest) {
     const ar = (ratioKey && ASPECT_RATIOS[ratioKey as AspectRatioKey]) || ASPECT_RATIOS['9:16'];
     const { width, height } = ar;
     const tmpl = TOPN_TEMPLATES[(templateKey as TopNTemplate) || 'countdown'];
+    const enc = ENCODING_PRESETS[(qualityKey as QualityPreset) || 'high'];
+    const fontId = fontIdOverride || tmpl.fontId;
+    const pbStyle: ProgressBarStyle = progressBarConfig?.style || tmpl.progressBar?.style || 'none';
+    const pbEnabled = pbStyle !== 'none' && (progressBarConfig?.enabled ?? tmpl.progressBar?.enabled ?? false);
+    const pbColor = progressBarConfig?.color || tmpl.progressBar?.color || 'white';
+    const pbHeight = progressBarConfig?.height || tmpl.progressBar?.height || 8;
+    const pbPosition = progressBarConfig?.position || tmpl.progressBar?.position || 'bottom';
 
     const sessionDir = path.join(process.cwd(), 'public', 'videos', 'topn', `session_${sessionId}`);
     const outputDir = path.join(process.cwd(), 'public', 'videos', 'topn');
@@ -28,6 +46,42 @@ export async function POST(request: NextRequest) {
 
     const segmentVideos: string[] = [];
 
+    // Parse composition segments if provided
+    const compSegs: SegmentComposition[] | null = composition && Array.isArray(composition) ? composition : null;
+
+    // Helper: build filter chain for a segment, using composition compiler or legacy template
+    function buildLegacyIntroFilters(introData: { topic?: string; hook?: string }, dur: number): string {
+      const f: string[] = [];
+      f.push(`scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2`);
+      f.push('colorchannelmixer=aa=0.7');
+      if (introData.topic) {
+        f.push(buildTitleOverlayFilter({ title: introData.topic, position: 'top', fontSize: tmpl.introTitleFontSize || 72, color: 'white', width, height, fontId }));
+      }
+      if (introData.hook) {
+        f.push(buildTitleOverlayFilter({ title: introData.hook, position: 'center', fontSize: tmpl.introHookFontSize || 48, color: '#FFD700', width, height, fontId }));
+      }
+      if (pbEnabled) {
+        f.push(...buildProgressBarFilters({ style: pbStyle as 'bar' | 'countdown' | 'both', duration: dur, color: pbColor, height: pbHeight, position: pbPosition, fontId }));
+      }
+      return f.join(',');
+    }
+
+    function buildLegacyRankFilters(item: TopNItem, dur: number): string {
+      const f: string[] = [];
+      f.push(`scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2`);
+      if (tmpl.backgroundFilter && tmpl.numberPosition === 'center') {
+        f.push('colorchannelmixer=aa=0.7');
+      }
+      f.push(buildNumberOverlayFilter({ rank: item.rank, position: tmpl.numberPosition, fontSize: tmpl.numberFontSize, color: tmpl.numberColor, borderWidth: tmpl.numberBorderWidth, borderColor: tmpl.numberBorderColor, width, height, fontId }));
+      if (tmpl.showTitle && item.title) {
+        f.push(buildTitleOverlayFilter({ title: item.title, position: tmpl.titlePosition, fontSize: tmpl.titleFontSize, color: 'white', width, height, fontId }));
+      }
+      if (pbEnabled) {
+        f.push(...buildProgressBarFilters({ style: pbStyle as 'bar' | 'countdown' | 'both', duration: dur, color: pbColor, height: pbHeight, position: pbPosition, fontId }));
+      }
+      return f.join(',');
+    }
+
     // === INTRO SCENE ===
     if (intro) {
       const introImagePath = path.join(sessionDir, 'intro_0_image.png');
@@ -35,39 +89,13 @@ export async function POST(request: NextRequest) {
       const introVideoPath = path.join(sessionDir, 'intro.mp4');
 
       if (fs.existsSync(introImagePath) && fs.existsSync(introAudioPath)) {
-        const introFilters: string[] = [];
-        introFilters.push(`scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2`);
+        const introDuration = await getAudioDuration(introAudioPath) + AUDIO_PADDING_S;
+        const introCompSeg = compSegs?.find((s) => s.isIntro || s.segmentId === 'intro_0');
+        const filterChain = introCompSeg
+          ? compileSegmentFilters(introCompSeg, introDuration, width, height)
+          : buildLegacyIntroFilters(intro, introDuration);
 
-        // Darken slightly for text readability
-        introFilters.push('colorchannelmixer=aa=0.7');
-
-        // Topic title (big, center-top)
-        if (intro.topic) {
-          introFilters.push(buildTitleOverlayFilter({
-            title: intro.topic,
-            position: 'top',
-            fontSize: tmpl.introTitleFontSize || 72,
-            color: 'white',
-            width,
-            height,
-          }));
-        }
-
-        // Hook text (below title, center)
-        if (intro.hook) {
-          introFilters.push(buildTitleOverlayFilter({
-            title: intro.hook,
-            position: 'center',
-            fontSize: tmpl.introHookFontSize || 48,
-            color: '#FFD700',
-            width,
-            height,
-          }));
-        }
-
-        const introFilterChain = introFilters.join(',');
-        const introCmd = `ffmpeg -y -loop 1 -i "${introImagePath}" -i "${introAudioPath}" -c:v libx264 -t 5 -pix_fmt yuv420p -vf "${introFilterChain}" -shortest "${introVideoPath}"`;
-
+        const introCmd = `ffmpeg -y -loop 1 -i "${introImagePath}" -i "${introAudioPath}" -c:v libx264 -preset ${enc.preset} -crf ${enc.crf} -t ${introDuration.toFixed(2)} -pix_fmt yuv420p -vf "${filterChain}" "${introVideoPath}"`;
         await execAsync(introCmd);
         segmentVideos.push(introVideoPath);
       }
@@ -83,45 +111,13 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      // Build filter chain
-      const filters: string[] = [];
+      const segDuration = await getAudioDuration(audioPath) + AUDIO_PADDING_S;
+      const compSeg = compSegs?.find((s) => s.rank === item.rank || s.segmentId === `rank_${item.rank}`);
+      const filterChain = compSeg
+        ? compileSegmentFilters(compSeg, segDuration, width, height)
+        : buildLegacyRankFilters(item, segDuration);
 
-      // Base scale
-      filters.push(`scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2`);
-
-      // Optional background blur for countdown template
-      if (tmpl.backgroundFilter && tmpl.numberPosition === 'center') {
-        // Apply a subtle darkening to make the number readable
-        filters.push('colorchannelmixer=aa=0.7');
-      }
-
-      // Number overlay
-      filters.push(buildNumberOverlayFilter({
-        rank: item.rank,
-        position: tmpl.numberPosition,
-        fontSize: tmpl.numberFontSize,
-        color: tmpl.numberColor,
-        borderWidth: tmpl.numberBorderWidth,
-        borderColor: tmpl.numberBorderColor,
-        width,
-        height,
-      }));
-
-      // Title overlay
-      if (tmpl.showTitle && item.title) {
-        filters.push(buildTitleOverlayFilter({
-          title: item.title,
-          position: tmpl.titlePosition,
-          fontSize: tmpl.titleFontSize,
-          color: 'white',
-          width,
-          height,
-        }));
-      }
-
-      const filterChain = filters.join(',');
-      const cmd = `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" -c:v libx264 -t 8 -pix_fmt yuv420p -vf "${filterChain}" -shortest "${videoPath}"`;
-
+      const cmd = `ffmpeg -y -loop 1 -i "${imagePath}" -i "${audioPath}" -c:v libx264 -preset ${enc.preset} -crf ${enc.crf} -t ${segDuration.toFixed(2)} -pix_fmt yuv420p -vf "${filterChain}" "${videoPath}"`;
       await execAsync(cmd);
       segmentVideos.push(videoPath);
     }
@@ -179,7 +175,7 @@ export async function POST(request: NextRequest) {
 
       finalOutput = path.join(outputDir, `topn_${sessionId}.mp4`);
       const filterComplex = [...filterParts, ...audioFilterParts].join(';');
-      const cmd = `ffmpeg -y ${inputs} -filter_complex "${filterComplex}" -map "[outv]" -map "[outa]" -c:v libx264 -preset fast -crf 23 -c:a aac "${finalOutput}"`;
+      const cmd = `ffmpeg -y ${inputs} -filter_complex "${filterComplex}" -map "[outv]" -map "[outa]" -c:v libx264 -preset ${enc.preset} -crf ${enc.crf} -c:a aac "${finalOutput}"`;
 
       try {
         await execAsync(cmd);

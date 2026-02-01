@@ -27,7 +27,19 @@ export interface TopNTemplateConfig {
   introTitleFontSize: number;
   /** Intro scene: hook font size */
   introHookFontSize: number;
+  /** Default bundled font ID for this template */
+  fontId: string;
+  /** Progress bar configuration */
+  progressBar?: {
+    enabled: boolean;
+    style: 'bar' | 'countdown' | 'both';
+    color: string;
+    height: number;
+    position: 'bottom' | 'top';
+  };
 }
+
+export type ProgressBarStyle = 'bar' | 'countdown' | 'both' | 'none';
 
 export interface TopNIntro {
   hook: string;
@@ -55,6 +67,7 @@ export const TOPN_TEMPLATES: Record<TopNTemplate, TopNTemplateConfig> = {
     backgroundFilter: 'boxblur=4:4',
     introTitleFontSize: 80,
     introHookFontSize: 52,
+    fontId: 'bebas',
   },
   infographic: {
     id: 'infographic',
@@ -75,6 +88,7 @@ export const TOPN_TEMPLATES: Record<TopNTemplate, TopNTemplateConfig> = {
     transitionDuration: 0.4,
     introTitleFontSize: 72,
     introHookFontSize: 46,
+    fontId: 'montserrat',
   },
   minimal: {
     id: 'minimal',
@@ -95,6 +109,7 @@ export const TOPN_TEMPLATES: Record<TopNTemplate, TopNTemplateConfig> = {
     transitionDuration: 0.3,
     introTitleFontSize: 64,
     introHookFontSize: 40,
+    fontId: 'poppins',
   },
 };
 

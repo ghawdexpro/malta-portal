@@ -1442,6 +1442,7 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
     stability: 0.55, similarity_boost: 0.80, style: 0.75, speed: 1.05,
     use_speaker_boost: true, model_id: "eleven_flash_v2_5",
   });
+  const [topNShowGlobalSettings, setTopNShowGlobalSettings] = useState(false);
   // Intro scene state
   const [intro, setIntro] = useState<TopNIntro | null>(null);
   const [introAudioUrl, setIntroAudioUrl] = useState<string | null>(null);
@@ -2024,16 +2025,88 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
                 {t.backToScript}
               </button>
             </div>
-            <button
-              onClick={async () => {
-                if (intro && !introAudioUrl) await generateIntroAudio();
-                await generateAllAudio();
-              }}
-              disabled={items.some((i) => i.audioLoading) || introAudioLoading}
-              className="mt-4 rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
-            >
-              {t.generateAllAudio}
-            </button>
+            <div className="mt-4 flex items-center gap-3">
+              <button
+                onClick={async () => {
+                  if (intro && !introAudioUrl) await generateIntroAudio();
+                  await generateAllAudio();
+                }}
+                disabled={items.some((i) => i.audioLoading) || introAudioLoading}
+                className="rounded-lg bg-malta-blue/10 px-4 py-2 text-sm font-medium text-malta-blue transition-colors hover:bg-malta-blue/20 disabled:opacity-50"
+              >
+                {t.generateAllAudio}
+              </button>
+              <button
+                onClick={() => setTopNShowGlobalSettings(!topNShowGlobalSettings)}
+                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                  topNShowGlobalSettings
+                    ? "border-malta-blue bg-malta-blue/5 text-malta-blue"
+                    : "border-malta-stone/50 text-foreground/50 hover:bg-malta-stone/20"
+                }`}
+              >
+                ⚙️ {t.voiceSettings}
+              </button>
+            </div>
+
+            {/* Global Voice Settings */}
+            {topNShowGlobalSettings && (
+              <div className="mt-4 rounded-lg bg-malta-stone/10 p-4">
+                <h3 className="mb-3 text-sm font-semibold">{t.globalAudioSettings}</h3>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <VoiceSlider
+                    label={t.stability}
+                    hint={t.stabilityHint}
+                    value={globalVoice.stability}
+                    min={0} max={1} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, stability: v }))}
+                  />
+                  <VoiceSlider
+                    label={t.similarity}
+                    hint={t.similarityHint}
+                    value={globalVoice.similarity_boost}
+                    min={0} max={1} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, similarity_boost: v }))}
+                  />
+                  <VoiceSlider
+                    label={t.styleLabel}
+                    hint={t.styleHint}
+                    value={globalVoice.style}
+                    min={0} max={1} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, style: v }))}
+                  />
+                  <VoiceSlider
+                    label={t.speed}
+                    hint={t.speedHint}
+                    value={globalVoice.speed}
+                    min={0.7} max={1.2} step={0.05}
+                    onChange={(v) => setGlobalVoice((p) => ({ ...p, speed: v }))}
+                  />
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-foreground/50">
+                      {t.model}
+                    </label>
+                    <select
+                      value={globalVoice.model_id}
+                      onChange={(e) => setGlobalVoice((p) => ({ ...p, model_id: e.target.value }))}
+                      className="w-full rounded-lg border border-malta-stone/50 px-2 py-1.5 text-sm"
+                    >
+                      <option value="eleven_flash_v2_5">{t.flashFast}</option>
+                      <option value="eleven_multilingual_v2">Multilingual v2</option>
+                      <option value="eleven_turbo_v2_5">Turbo v2.5</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={globalVoice.use_speaker_boost}
+                      onChange={(e) => setGlobalVoice((p) => ({ ...p, use_speaker_boost: e.target.checked }))}
+                      className="h-4 w-4"
+                    />
+                    <label className="text-xs text-foreground/60">Speaker Boost</label>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Intro audio */}
