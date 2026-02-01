@@ -35,6 +35,34 @@ export const TOPN_VOICE_SETTINGS = {
   speed: 1.05,
 };
 
+/** Padding added after audio ends for visual breathing room (seconds) */
+export const AUDIO_PADDING_S = 0.4;
+
+/** Encoding quality presets for video assembly */
+export type QualityPreset = 'draft' | 'standard' | 'high';
+
+export const ENCODING_PRESETS: Record<QualityPreset, { crf: number; preset: string; label: string; labelEn: string }> = {
+  draft:    { crf: 28, preset: 'ultrafast', label: 'Szkic', labelEn: 'Draft' },
+  standard: { crf: 23, preset: 'fast',      label: 'Standard', labelEn: 'Standard' },
+  high:     { crf: 18, preset: 'medium',     label: 'Wysoka jakość', labelEn: 'High Quality' },
+};
+
+/** Bundled display fonts (OFL licensed) */
+export interface BundledFont {
+  file: string;
+  name: string;
+  nameEn: string;
+  category: 'sans' | 'serif' | 'display';
+}
+
+export const BUNDLED_FONTS: Record<string, BundledFont> = {
+  montserrat: { file: 'Montserrat-Bold.ttf', name: 'Montserrat Bold', nameEn: 'Montserrat Bold', category: 'sans' },
+  bebas:      { file: 'BebasNeue-Regular.ttf', name: 'Bebas Neue', nameEn: 'Bebas Neue', category: 'display' },
+  poppins:    { file: 'Poppins-Bold.ttf', name: 'Poppins Bold', nameEn: 'Poppins Bold', category: 'sans' },
+  oswald:     { file: 'Oswald-Bold.ttf', name: 'Oswald Bold', nameEn: 'Oswald Bold', category: 'display' },
+  playfair:   { file: 'PlayfairDisplay-Bold.ttf', name: 'Playfair Display', nameEn: 'Playfair Display', category: 'serif' },
+};
+
 export type ContentLang = 'pl' | 'en';
 
 export function buildScriptPrompt(topic: string, lang: ContentLang = 'pl'): string {
@@ -126,6 +154,59 @@ OUTPUT: Valid JSON only. No markdown code blocks.
     ]
 }`;
 }
+
+/* ─── Veo 3.1 Image-to-Video ─── */
+
+export type VeoAnimationPreset = 'cinematic' | 'dynamic' | 'subtle' | 'dramatic' | 'gentle-pan';
+
+export const VEO_ANIMATION_PRESETS: Record<VeoAnimationPreset, {
+  label: string;
+  labelEn: string;
+  promptSuffix: string;
+  icon: string;
+}> = {
+  cinematic: {
+    label: 'Kinowy',
+    labelEn: 'Cinematic',
+    promptSuffix: 'Cinematic camera movement, smooth dolly, shallow depth of field, film grain.',
+    icon: '🎬',
+  },
+  dynamic: {
+    label: 'Dynamiczny',
+    labelEn: 'Dynamic',
+    promptSuffix: 'Dynamic camera movement, tracking shot, energetic motion.',
+    icon: '💫',
+  },
+  subtle: {
+    label: 'Subtelny',
+    labelEn: 'Subtle',
+    promptSuffix: 'Very subtle parallax movement, gentle breathing motion, almost still.',
+    icon: '🌊',
+  },
+  dramatic: {
+    label: 'Dramatyczny',
+    labelEn: 'Dramatic',
+    promptSuffix: 'Dramatic zoom, reveal shot, intense atmospheric lighting shifts.',
+    icon: '🔥',
+  },
+  'gentle-pan': {
+    label: 'Panorama',
+    labelEn: 'Gentle Pan',
+    promptSuffix: 'Slow horizontal pan, smooth steady movement, establishing shot feel.',
+    icon: '📐',
+  },
+};
+
+export type VeoDuration = 2 | 4 | 6 | 8;
+
+export const VEO_DURATIONS: { value: VeoDuration; label: string }[] = [
+  { value: 2, label: '2s' },
+  { value: 4, label: '4s' },
+  { value: 6, label: '6s' },
+  { value: 8, label: '8s' },
+];
+
+export type VeoAudioMode = 'veo-native' | 'elevenlabs' | 'both';
 
 export interface ScriptSegment {
   text: string;

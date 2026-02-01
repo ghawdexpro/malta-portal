@@ -25,7 +25,7 @@ async function fetchWithRetry(url: string, options: RequestInit, retries = MAX_R
 
 export async function POST(request: NextRequest) {
   try {
-    const { visualPrompt, sessionId, segmentIndex, aspectRatio: ratioKey, prefix } = await request.json();
+    const { visualPrompt, sessionId, segmentIndex, aspectRatio: ratioKey, prefix, referenceImages, subDir: subDirOverride } = await request.json();
     const filePrefix = prefix || 'seg';
 
     if (!visualPrompt || sessionId === undefined || segmentIndex === undefined) {
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Reference image not found' }, { status: 500 });
     }
 
-    const subDir = (filePrefix === 'rank' || filePrefix === 'intro') ? 'topn' : 'asmr';
+    const subDir = subDirOverride || ((filePrefix === 'rank' || filePrefix === 'intro') ? 'topn' : 'asmr');
     const sessionDir = path.join(process.cwd(), 'public', 'videos', subDir, `session_${sessionId}`);
     fs.mkdirSync(sessionDir, { recursive: true });
 
@@ -57,10 +57,43 @@ export async function POST(request: NextRequest) {
       ? `Generate this image in SQUARE format (${ar.width}x${ar.height}, 1:1 aspect ratio).`
       : `Generate this image in HORIZONTAL landscape orientation (${ar.width}x${ar.height}, ${ratioKey || '16:9'} aspect ratio).`;
 
+    // Build reference image labels for the prompt
+    const extraRefs: Array<{ label: string; b64: string }> = [];
+    if (referenceImages && Array.isArray(referenceImages)) {
+      for (const ref of referenceImages.slice(0, 5)) {
+        if (ref.path) {
+          const refPath = path.join(process.cwd(), 'public', ref.path);
+          if (fs.existsSync(refPath)) {
+            const ext = refPath.endsWith('.png') ? 'png' : 'jpeg';
+            extraRefs.push({ label: ref.label || 'style reference', b64: `data:image/${ext};base64,${fs.readFileSync(refPath).toString('base64')}` });
+          }
+        }
+      }
+    }
+
+    const refLabels = extraRefs.length > 0
+      ? `\nAdditional reference images provided: ${extraRefs.map((r, i) => `Image ${i + 2} is a ${r.label}`).join('. ')}.`
+      : '';
+
     const fullPrompt = `${visualPrompt}.
-        KEEP IDENTICAL from the reference image (Monika): her face, hairstyle, body type, and figure (slim, fit, attractive physique). Only change her OUTFIT to match the scene described above. Each scene should have a DIFFERENT outfit appropriate for the context.
+        KEEP IDENTICAL from the reference image 1 (Monika): her face, hairstyle, body type, and figure (slim, fit, attractive physique). Only change her OUTFIT to match the scene described above. Each scene should have a DIFFERENT outfit appropriate for the context.${refLabels}
         STYLE: Photorealistic 8K, cinematic lighting, shallow depth of field.
         FRAMING: ${orientationHint}`;
+
+    // Build content array with all reference images
+    const contentParts: Array<Record<string, unknown>> = [
+      {
+        type: 'image_url',
+        image_url: { url: `data:image/jpeg;base64,${refImageB64}` },
+      },
+    ];
+    for (const ref of extraRefs) {
+      contentParts.push({
+        type: 'image_url',
+        image_url: { url: ref.b64 },
+      });
+    }
+    contentParts.push({ type: 'text', text: fullPrompt });
 
     const response = await fetchWithRetry('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -76,18 +109,7 @@ export async function POST(request: NextRequest) {
         messages: [
           {
             role: 'user',
-            content: [
-              {
-                type: 'image_url',
-                image_url: {
-                  url: `data:image/jpeg;base64,${refImageB64}`,
-                },
-              },
-              {
-                type: 'text',
-                text: fullPrompt,
-              },
-            ],
+            content: contentParts,
           },
         ],
       }),

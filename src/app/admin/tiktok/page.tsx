@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { ASPECT_RATIOS, type AspectRatioKey } from "@/lib/tiktok-config";
+import { ASPECT_RATIOS, type AspectRatioKey, ENCODING_PRESETS, type QualityPreset, BUNDLED_FONTS, VEO_ANIMATION_PRESETS, type VeoAnimationPreset, VEO_DURATIONS, type VeoDuration, type VeoAudioMode } from "@/lib/tiktok-config";
 import { TOPN_TEMPLATES, type TopNTemplate, type TopNCount, type TopNItem, type TopNIntro } from "@/lib/topn-templates";
+import { TopNOverlayEditor } from "@/components/tiktok/TopNOverlayEditor";
+import { generateDefaultComposition, type SegmentComposition } from "@/lib/topn-composition";
 import { VideoEditor, type EditorSegmentData } from "@/components/tiktok/VideoEditor";
 
 interface ScriptSegment {
@@ -38,7 +40,7 @@ interface SegmentAssets {
   localSettings?: Partial<VoiceSettings>;
 }
 
-type Tab = "create" | "topn" | "gallery" | "compose";
+type Tab = "create" | "topn" | "veo" | "gallery" | "compose";
 type Step = "topic" | "script" | "audio" | "images" | "editor" | "assemble" | "done";
 type Lang = "pl" | "en";
 
@@ -157,6 +159,30 @@ const T = {
     topNAssembleSub: "pozycji w finalne wideo",
     assembleTopNBtn: "Zmontuj wideo Top N",
     topNSuggestions: ["Najlepsze plaże Malty", "Top restauracje w Valletcie", "Ukryte miejsca na Gozo", "Najlepsze zachody slonca", "Maltanskie potrawy"],
+    tabVeo: "Veo Video",
+    veoTitle: "Veo 3.1 — Animowane wideo",
+    veoSubtitle: "Generuj obrazy, potem animuj je w wideo z Google Veo 3.1",
+    veoSteps: ["Temat", "Skrypt", "Obrazy", "Animacja", "Audio", "Montaż", "Gotowe"],
+    veoAnimateTitle: "Animuj obrazy",
+    veoAnimateSub: "Zamień statyczne obrazy w klipy wideo z Veo 3.1",
+    veoPreset: "Styl animacji",
+    veoDuration: "Długość klipu",
+    veoGenerateClip: "Generuj klip",
+    veoGenerateAllClips: "Generuj wszystkie klipy",
+    veoPolling: "Generuję wideo...",
+    veoClipReady: "Klip gotowy",
+    veoAudioMode: "Tryb audio",
+    veoAudioNative: "Dźwięk Veo (natywny)",
+    veoAudioTts: "Lektor (ElevenLabs)",
+    veoAudioBoth: "Mix (Veo + lektor)",
+    veoTransition: "Przejścia między klipami",
+    veoTransitionNone: "Brak",
+    veoTransitionFade: "Przenikanie",
+    veoAssembleBtn: "Zmontuj wideo Veo",
+    veoAssembling: "Montuję klipy Veo...",
+    veoSkipAudio: "Pomiń (użyj audio Veo) →",
+    veoNativeAudioHint: "Veo 3.1 generuje natywne dźwięki — ambient, efekty. Możesz je użyć lub dodać lektor.",
+    veoSuggestions: ["Spacer po Valletcie", "Wschód słońca na Gozo", "Targ rybny Marsaxlokk", "Mdina nocą", "Błękitna Grota"],
   },
   en: {
     subtitle: "Monika ASMR Production Studio",
@@ -272,6 +298,30 @@ const T = {
     topNAssembleSub: "items into final video",
     assembleTopNBtn: "Assemble Top N video",
     topNSuggestions: ["Best beaches in Malta", "Top restaurants in Valletta", "Hidden gems in Gozo", "Best sunsets", "Maltese dishes to try"],
+    tabVeo: "Veo Video",
+    veoTitle: "Veo 3.1 — Animated Video",
+    veoSubtitle: "Generate images, then animate them into video with Google Veo 3.1",
+    veoSteps: ["Topic", "Script", "Images", "Animate", "Audio", "Assemble", "Done"],
+    veoAnimateTitle: "Animate images",
+    veoAnimateSub: "Turn static images into video clips with Veo 3.1",
+    veoPreset: "Animation style",
+    veoDuration: "Clip duration",
+    veoGenerateClip: "Generate clip",
+    veoGenerateAllClips: "Generate all clips",
+    veoPolling: "Generating video...",
+    veoClipReady: "Clip ready",
+    veoAudioMode: "Audio mode",
+    veoAudioNative: "Veo sound (native)",
+    veoAudioTts: "Voiceover (ElevenLabs)",
+    veoAudioBoth: "Mix (Veo + voiceover)",
+    veoTransition: "Clip transitions",
+    veoTransitionNone: "None",
+    veoTransitionFade: "Crossfade",
+    veoAssembleBtn: "Assemble Veo video",
+    veoAssembling: "Assembling Veo clips...",
+    veoSkipAudio: "Skip (use Veo audio) →",
+    veoNativeAudioHint: "Veo 3.1 generates native sounds — ambient, effects. Use them or add voiceover.",
+    veoSuggestions: ["Walk through Valletta", "Sunrise on Gozo", "Marsaxlokk fish market", "Mdina at night", "Blue Grotto"],
   },
 };
 
@@ -327,6 +377,7 @@ export default function TikTokCreatorPage() {
         {([
           { id: "create" as Tab, label: t.tabCreate, icon: "🎬" },
           { id: "topn" as Tab, label: t.tabTopN, icon: "🏆" },
+          { id: "veo" as Tab, label: t.tabVeo, icon: "🎥" },
           { id: "gallery" as Tab, label: t.tabGallery, icon: "🖼️" },
           { id: "compose" as Tab, label: t.tabCompose, icon: "📸" },
         ]).map((tab) => (
@@ -346,6 +397,7 @@ export default function TikTokCreatorPage() {
 
       {activeTab === "create" && <CreateVideoTab lang={lang} t={t} />}
       {activeTab === "topn" && <TopNTab lang={lang} t={t} />}
+      {activeTab === "veo" && <VeoTab lang={lang} t={t} />}
       {activeTab === "gallery" && <GalleryTab t={t} />}
       {activeTab === "compose" && <PhotoComposerTab t={t} />}
     </div>
@@ -1366,7 +1418,7 @@ interface TopNItemAssets extends TopNItem {
   localSettings?: Partial<VoiceSettings>;
 }
 
-type TopNStep = "setup" | "script" | "audio" | "images" | "assemble" | "done";
+type TopNStep = "setup" | "script" | "audio" | "images" | "editor" | "assemble" | "done";
 
 function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
   const [step, setStep] = useState<TopNStep>("setup");
@@ -1374,6 +1426,12 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
   const [topNCount, setTopNCount] = useState<TopNCount>(5);
   const [template, setTemplate] = useState<TopNTemplate>("countdown");
   const [aspectRatio, setAspectRatio] = useState<AspectRatioKey>("9:16");
+  const [quality, setQuality] = useState<QualityPreset>("high");
+  const [fontId, setFontId] = useState<string>("");  // empty = use template default
+  const [progressBar, setProgressBar] = useState<{ enabled: boolean; style: string; color: string; height: number; position: string }>({
+    enabled: false, style: "bar", color: "white", height: 8, position: "bottom",
+  });
+  const [composition, setComposition] = useState<SegmentComposition[] | null>(null);
   const [sessionId] = useState(() => `topn_${Date.now()}`);
   const [items, setItems] = useState<TopNItemAssets[]>([]);
   const [loading, setLoading] = useState(false);
@@ -1566,7 +1624,7 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
       const res = await fetch("/api/tiktok/topn-assemble", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, items, intro: intro ? { ...intro, topic } : null, template, aspectRatio }),
+        body: JSON.stringify({ sessionId, items, intro: intro ? { ...intro, topic } : null, template, aspectRatio, quality, fontId: fontId || undefined, progressBar: progressBar.enabled ? progressBar : undefined, composition: composition || undefined }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
@@ -1581,7 +1639,7 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
   const allAudioDone = items.length > 0 && items.every((i) => i.audioUrl && i.audioApproved) && (!intro || (introAudioUrl && introAudioApproved));
   const allImagesDone = items.length > 0 && items.every((i) => i.imageUrl && i.imageApproved) && (!intro || (introImageUrl && introImageApproved));
 
-  const STEPS: TopNStep[] = ["setup", "script", "audio", "images", "assemble", "done"];
+  const STEPS: TopNStep[] = ["setup", "script", "audio", "images", "editor", "assemble", "done"];
   const STEP_LABELS = [
     lang === "pl" ? "Ustawienia" : "Setup",
     ...t.steps.slice(1),
@@ -1706,6 +1764,96 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Quality */}
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground/70">{lang === "pl" ? "Jakość wideo" : "Video Quality"}</h3>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {(Object.keys(ENCODING_PRESETS) as QualityPreset[]).map((key) => {
+                  const p = ENCODING_PRESETS[key];
+                  const selected = quality === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setQuality(key)}
+                      className={`rounded-lg border-2 px-3 py-2 text-center text-xs font-medium transition-all ${
+                        selected
+                          ? "border-malta-blue bg-malta-blue/5 text-malta-blue"
+                          : "border-malta-stone/30 text-foreground/50 hover:border-malta-stone/60"
+                      }`}
+                    >
+                      {lang === "pl" ? p.label : p.labelEn}
+                      <span className="block text-[10px] opacity-60">CRF {p.crf} / {p.preset}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Font */}
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground/70">{lang === "pl" ? "Czcionka" : "Font"}</h3>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => setFontId("")}
+                  className={`rounded-lg border-2 px-3 py-2 text-center text-xs font-medium transition-all ${
+                    fontId === ""
+                      ? "border-malta-blue bg-malta-blue/5 text-malta-blue"
+                      : "border-malta-stone/30 text-foreground/50 hover:border-malta-stone/60"
+                  }`}
+                >
+                  {lang === "pl" ? "Domyślna" : "Default"}
+                  <span className="block text-[10px] opacity-60">{lang === "pl" ? "z szablonu" : "from template"}</span>
+                </button>
+                {Object.entries(BUNDLED_FONTS).map(([id, f]) => {
+                  const selected = fontId === id;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => setFontId(id)}
+                      className={`rounded-lg border-2 px-3 py-2 text-center text-xs font-medium transition-all ${
+                        selected
+                          ? "border-malta-blue bg-malta-blue/5 text-malta-blue"
+                          : "border-malta-stone/30 text-foreground/50 hover:border-malta-stone/60"
+                      }`}
+                    >
+                      {f.name}
+                      <span className="block text-[10px] opacity-60">{f.category}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mt-6">
+              <div className="flex items-center gap-3">
+                <h3 className="text-sm font-semibold text-foreground/70">{lang === "pl" ? "Pasek postępu" : "Progress Bar"}</h3>
+                <button
+                  onClick={() => setProgressBar((p) => ({ ...p, enabled: !p.enabled }))}
+                  className={`relative h-5 w-9 rounded-full transition-colors ${progressBar.enabled ? "bg-malta-blue" : "bg-malta-stone/40"}`}
+                >
+                  <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${progressBar.enabled ? "translate-x-4" : "translate-x-0.5"}`} />
+                </button>
+              </div>
+              {progressBar.enabled && (
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  {(["bar", "countdown", "both"] as const).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setProgressBar((p) => ({ ...p, style: s }))}
+                      className={`rounded-lg border-2 px-3 py-2 text-center text-xs font-medium transition-all ${
+                        progressBar.style === s
+                          ? "border-malta-blue bg-malta-blue/5 text-malta-blue"
+                          : "border-malta-stone/30 text-foreground/50 hover:border-malta-stone/60"
+                      }`}
+                    >
+                      {s === "bar" ? (lang === "pl" ? "Pasek" : "Bar") : s === "countdown" ? (lang === "pl" ? "Odliczanie" : "Countdown") : (lang === "pl" ? "Oba" : "Both")}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Topic */}
@@ -2113,12 +2261,47 @@ function TopNTab({ lang, t }: { lang: Lang; t: Translations }) {
 
           {allImagesDone && (
             <button
+              onClick={() => {
+                // Generate default composition from template
+                const tmpl = TOPN_TEMPLATES[template];
+                const segs = generateDefaultComposition(tmpl, items, intro, topic, fontId || undefined);
+                setComposition(segs);
+                setStep("editor");
+              }}
+              className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
+            >
+              {lang === "pl" ? "Edytuj nakładki" : "Edit Overlays"}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* STEP: Editor */}
+      {step === "editor" && composition && (
+        <div className="space-y-4">
+          <TopNOverlayEditor
+            segments={composition}
+            onChange={setComposition}
+            lang={lang}
+            imageUrls={Object.fromEntries([
+              ...(intro && introImageUrl ? [["intro_0", introImageUrl]] : []),
+              ...items.filter((i) => i.imageUrl).map((i) => [`rank_${i.rank}`, i.imageUrl!]),
+            ])}
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={() => setStep("images")}
+              className="rounded-lg border border-malta-stone/30 px-4 py-2 text-sm text-foreground/60 transition-colors hover:bg-malta-stone/10"
+            >
+              {lang === "pl" ? "Wróć" : "Back"}
+            </button>
+            <button
               onClick={() => setStep("assemble")}
               className="rounded-lg bg-malta-blue px-6 py-2 font-medium text-white transition-colors hover:bg-malta-blue/80"
             >
-              {t.allApprovedAssemble}
+              {lang === "pl" ? "Montuj wideo" : "Assemble Video"}
             </button>
-          )}
+          </div>
         </div>
       )}
 
@@ -2498,6 +2681,719 @@ function PhotoComposerTab({ t }: { t: Translations }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ─── VEO TAB ─── */
+
+interface VeoSegmentAssets {
+  text: string;
+  visual_prompt: string;
+  animationPrompt: string;
+  imageUrl?: string;
+  clipUrl?: string;
+  audioUrl?: string;
+  imageApproved: boolean;
+  clipApproved: boolean;
+  audioApproved: boolean;
+  imageLoading: boolean;
+  clipLoading: boolean;
+  clipPolling: boolean;
+  clipOperationName?: string;
+  audioLoading: boolean;
+  takes: AudioTake[];
+  activeTake?: number;
+}
+
+type VeoStep = "topic" | "script" | "images" | "animate" | "audio" | "assemble" | "done";
+
+function VeoTab({ lang, t }: { lang: Lang; t: Translations }) {
+  const [step, setStep] = useState<VeoStep>("topic");
+  const [topic, setTopic] = useState("");
+  const [aspectRatio, setAspectRatio] = useState<AspectRatioKey>("9:16");
+  const [sessionId] = useState(() => `veo_${Date.now()}`);
+  const [script, setScript] = useState<ScriptSegment[]>([]);
+  const [segments, setSegments] = useState<VeoSegmentAssets[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
+  const [animationPreset, setAnimationPreset] = useState<VeoAnimationPreset>("cinematic");
+  const [clipDuration, setClipDuration] = useState<VeoDuration>(4);
+  const [generateNativeAudio, setGenerateNativeAudio] = useState(true);
+  const [audioMode, setAudioMode] = useState<VeoAudioMode>("veo-native");
+  const [transitionType, setTransitionType] = useState<"fade" | "none">("fade");
+  const [quality, setQuality] = useState<QualityPreset>("high");
+  const [globalVoice, setGlobalVoice] = useState<VoiceSettings>({
+    stability: 0.25, similarity_boost: 0.85, style: 0.5, speed: 1.0,
+    use_speaker_boost: true, model_id: "eleven_flash_v2_5",
+  });
+
+  const pollTimersRef = useRef<Record<number, NodeJS.Timeout>>({});
+
+  const STEPS: VeoStep[] = ["topic", "script", "images", "animate", "audio", "assemble", "done"];
+  const STEP_LABELS = t.veoSteps;
+  const stepIdx = STEPS.indexOf(step);
+
+  const updateSeg = useCallback((index: number, updates: Partial<VeoSegmentAssets>) => {
+    setSegments((prev) => prev.map((seg, i) => (i === index ? { ...seg, ...updates } : seg)));
+  }, []);
+
+  // ─── Script Generation (reuse existing API) ───
+
+  const generateScript = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/tiktok/script", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic, lang }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setScript(data.script);
+      setSegments(data.script.map((seg: ScriptSegment) => ({
+        text: seg.text,
+        visual_prompt: seg.visual_prompt,
+        animationPrompt: seg.visual_prompt,
+        imageApproved: false, clipApproved: false, audioApproved: false,
+        imageLoading: false, clipLoading: false, clipPolling: false, audioLoading: false,
+        takes: [],
+      })));
+      setStep("script");
+    } catch (err) {
+      setError(String(err));
+    }
+    setLoading(false);
+  };
+
+  // ─── Image Generation (reuse existing API with subDir) ───
+
+  const generateImage = async (index: number) => {
+    updateSeg(index, { imageLoading: true });
+    try {
+      const res = await fetch("/api/tiktok/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visualPrompt: segments[index].visual_prompt,
+          sessionId, segmentIndex: index, aspectRatio, subDir: "veo",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      updateSeg(index, { imageUrl: data.imageUrl + "&t=" + Date.now(), imageLoading: false });
+    } catch (err) {
+      setError(`Image ${index + 1}: ${err}`);
+      updateSeg(index, { imageLoading: false });
+    }
+  };
+
+  const generateAllImages = async () => {
+    for (let i = 0; i < segments.length; i++) {
+      if (!segments[i].imageUrl) {
+        await generateImage(i);
+        if (i < segments.length - 1) await new Promise((r) => setTimeout(r, 8000));
+      }
+    }
+  };
+
+  // ─── Veo Clip Generation (submit + poll) ───
+
+  const generateClip = async (index: number) => {
+    updateSeg(index, { clipLoading: true, clipPolling: false });
+    try {
+      const presetConfig = VEO_ANIMATION_PRESETS[animationPreset];
+      const res = await fetch("/api/tiktok/veo-generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId, segmentIndex: index,
+          animationPrompt: segments[index].animationPrompt,
+          preset: animationPreset,
+          duration: clipDuration,
+          aspectRatio,
+          generateAudio: generateNativeAudio,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+
+      // Start polling
+      updateSeg(index, { clipLoading: false, clipPolling: true, clipOperationName: data.operationName });
+      startPolling(index, data.operationName);
+    } catch (err) {
+      setError(`Clip ${index + 1}: ${err}`);
+      updateSeg(index, { clipLoading: false });
+    }
+  };
+
+  const startPolling = (index: number, operationName: string) => {
+    // Clear existing timer if any
+    if (pollTimersRef.current[index]) clearInterval(pollTimersRef.current[index]);
+
+    const timer = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `/api/tiktok/veo-generate?operationName=${encodeURIComponent(operationName)}&sessionId=${sessionId}&segmentIndex=${index}`
+        );
+        const data = await res.json();
+
+        if (data.status === "done") {
+          clearInterval(pollTimersRef.current[index]);
+          delete pollTimersRef.current[index];
+          updateSeg(index, {
+            clipUrl: data.videoUrl + "&t=" + Date.now(),
+            clipPolling: false,
+            clipApproved: false,
+          });
+        } else if (data.status === "error") {
+          clearInterval(pollTimersRef.current[index]);
+          delete pollTimersRef.current[index];
+          setError(`Clip ${index + 1}: ${data.error}`);
+          updateSeg(index, { clipPolling: false });
+        }
+        // status === 'pending' → keep polling
+      } catch (err) {
+        clearInterval(pollTimersRef.current[index]);
+        delete pollTimersRef.current[index];
+        setError(`Clip ${index + 1} poll: ${err}`);
+        updateSeg(index, { clipPolling: false });
+      }
+    }, 5000);
+
+    pollTimersRef.current[index] = timer;
+  };
+
+  const generateAllClips = async () => {
+    for (let i = 0; i < segments.length; i++) {
+      if (segments[i].imageUrl && !segments[i].clipUrl) {
+        await generateClip(i);
+        // Stagger submissions by 2s to avoid rate limits
+        if (i < segments.length - 1) await new Promise((r) => setTimeout(r, 2000));
+      }
+    }
+  };
+
+  // ─── Audio Generation (reuse existing API) ───
+
+  const generateAudio = async (index: number) => {
+    updateSeg(index, { audioLoading: true });
+    try {
+      const res = await fetch("/api/tiktok/audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: segments[index].text, sessionId, segmentIndex: index,
+          voiceSettings: globalVoice, prefix: "seg", subDir: "veo",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      updateSeg(index, {
+        audioUrl: data.audioUrl + "&t=" + Date.now(), audioLoading: false,
+        takes: data.takes || [], activeTake: data.take, audioApproved: false,
+      });
+    } catch (err) {
+      setError(`Audio ${index + 1}: ${err}`);
+      updateSeg(index, { audioLoading: false });
+    }
+  };
+
+  const generateAllAudio = async () => {
+    for (let i = 0; i < segments.length; i++) {
+      if (!segments[i].audioUrl) await generateAudio(i);
+    }
+  };
+
+  // ─── Assembly ───
+
+  const assembleVideo = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/tiktok/veo-assemble", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId, clipCount: segments.length, quality,
+          audioMode, transition: { type: transitionType, duration: 0.5 },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error");
+      setFinalVideoUrl(data.videoUrl);
+      setStep("done");
+    } catch (err) {
+      setError(`Assembly: ${err}`);
+    }
+    setLoading(false);
+  };
+
+  const allImagesDone = segments.length > 0 && segments.every((s) => s.imageUrl && s.imageApproved);
+  const allClipsDone = segments.length > 0 && segments.every((s) => s.clipUrl && s.clipApproved);
+  const allAudioDone = segments.length > 0 && segments.every((s) => s.audioUrl && s.audioApproved);
+
+  return (
+    <div>
+      {/* Steps indicator */}
+      <div className="mb-6 flex items-center gap-2">
+        {STEPS.map((s, i) => (
+          <div key={s} className="flex items-center gap-2">
+            <div className="flex flex-col items-center">
+              <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                step === s ? "bg-purple-600 text-white" : stepIdx > i ? "bg-green-500 text-white" : "bg-malta-stone/50 text-foreground/30"
+              }`}>
+                {stepIdx > i ? "✓" : i + 1}
+              </div>
+              <span className="mt-1 text-[10px] text-foreground/40">{STEP_LABELS[i]}</span>
+            </div>
+            {i < STEPS.length - 1 && (
+              <div className={`h-0.5 w-6 ${stepIdx > i ? "bg-green-500" : "bg-malta-stone/50"}`} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {error && (
+        <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+          {error}
+          <button onClick={() => setError(null)} className="ml-2 font-bold">✕</button>
+        </div>
+      )}
+
+      {/* STEP: Topic */}
+      {step === "topic" && (
+        <div className="rounded-xl bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold">{t.veoTitle}</h2>
+          <p className="mt-1 text-sm text-foreground/50">{t.veoSubtitle}</p>
+          <input
+            type="text"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder={t.topicPlaceholder}
+            className="mt-4 w-full rounded-lg border border-malta-stone/50 px-4 py-3 text-lg focus:border-purple-600 focus:outline-none"
+            onKeyDown={(e) => e.key === "Enter" && generateScript()}
+          />
+          <div className="mt-3 flex flex-wrap gap-2">
+            {t.veoSuggestions.map((s) => (
+              <button key={s} onClick={() => setTopic(s)}
+                className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-700 transition-colors hover:bg-purple-200">
+                {s}
+              </button>
+            ))}
+          </div>
+
+          {/* Aspect Ratio */}
+          <div className="mt-6">
+            <h3 className="text-sm font-semibold text-foreground/70">{t.aspectRatio}</h3>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {(Object.keys(ASPECT_RATIOS) as AspectRatioKey[]).map((key) => {
+                const r = ASPECT_RATIOS[key];
+                const selected = aspectRatio === key;
+                return (
+                  <button key={key} onClick={() => setAspectRatio(key)}
+                    className={`flex flex-col items-center rounded-xl border-2 p-3 transition-all ${
+                      selected ? "border-purple-600 bg-purple-50 shadow-sm" : "border-malta-stone/30 hover:border-malta-stone/60"
+                    }`}>
+                    <div className="mb-2 flex items-center justify-center" style={{ width: 48, height: 48 }}>
+                      <div className={`rounded-sm ${selected ? "bg-purple-600" : "bg-malta-stone/50"}`}
+                        style={{
+                          width: key === '16:9' ? 48 : key === '1:1' ? 36 : key === '4:5' ? 30 : 27,
+                          height: key === '9:16' ? 48 : key === '1:1' ? 36 : key === '4:5' ? 38 : 27,
+                        }} />
+                    </div>
+                    <span className={`text-sm font-bold ${selected ? "text-purple-600" : "text-foreground/70"}`}>{key}</span>
+                    <span className="mt-0.5 text-center text-[10px] text-foreground/40">
+                      {lang === "en" ? r.labelEn : r.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <button onClick={generateScript} disabled={loading || !topic.trim()}
+            className="mt-6 rounded-lg bg-purple-600 px-6 py-3 font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-50">
+            {loading ? t.generating : t.generate}
+          </button>
+        </div>
+      )}
+
+      {/* STEP: Script Review */}
+      {step === "script" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t.reviewScript}</h2>
+                <p className="mt-1 text-sm text-foreground/50">{t.editPrompts} &quot;{topic}&quot;</p>
+              </div>
+              <button onClick={() => { setStep("topic"); setScript([]); setSegments([]); }}
+                className="text-sm text-foreground/40 hover:text-foreground/60">{t.back}</button>
+            </div>
+          </div>
+          {segments.map((seg, i) => (
+            <div key={i} className="rounded-xl bg-white p-5 shadow-sm">
+              <div className="mb-2 text-xs font-bold uppercase tracking-wider text-purple-600/60">Segment {i + 1}</div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-foreground/50">{t.narrationLabel}</label>
+                  <textarea value={seg.text} onChange={(e) => {
+                    updateSeg(i, { text: e.target.value });
+                    setScript((prev) => prev.map((s, j) => j === i ? { ...s, text: e.target.value } : s));
+                  }} rows={3} className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm focus:border-purple-600 focus:outline-none" />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-foreground/50">{t.visualLabel}</label>
+                  <textarea value={seg.visual_prompt} onChange={(e) => {
+                    updateSeg(i, { visual_prompt: e.target.value, animationPrompt: e.target.value });
+                    setScript((prev) => prev.map((s, j) => j === i ? { ...s, visual_prompt: e.target.value } : s));
+                  }} rows={3} className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm focus:border-purple-600 focus:outline-none" />
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="flex gap-3">
+            <button onClick={generateScript} disabled={loading}
+              className="rounded-lg border border-malta-stone/50 px-4 py-2 text-sm text-foreground/60 hover:bg-malta-stone/20">
+              {t.regenerate}
+            </button>
+            <button onClick={() => setStep("images")}
+              className="rounded-lg bg-purple-600 px-6 py-2 font-medium text-white hover:bg-purple-700">
+              {t.approveScript}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP: Images */}
+      {step === "images" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t.generateImages}</h2>
+                <p className="mt-1 text-sm text-foreground/50">{t.imagesSub}</p>
+              </div>
+              <button onClick={() => setStep("script")} className="text-sm text-foreground/40 hover:text-foreground/60">{t.back}</button>
+            </div>
+            <button onClick={generateAllImages}
+              className="mt-4 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700">
+              {t.generateAllImages}
+            </button>
+          </div>
+          {segments.map((seg, i) => (
+            <div key={i} className="rounded-xl bg-white p-5 shadow-sm">
+              <div className="mb-2 text-xs font-bold uppercase tracking-wider text-purple-600/60">Segment {i + 1}</div>
+              <p className="mb-3 text-xs text-foreground/40">{seg.visual_prompt.substring(0, 120)}...</p>
+              {seg.imageUrl ? (
+                <div className="space-y-2">
+                  <img src={seg.imageUrl} alt={`Segment ${i + 1}`} className="max-h-64 rounded-lg" />
+                  <div className="flex gap-2">
+                    {seg.imageApproved ? (
+                      <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">{t.approved}</span>
+                    ) : (
+                      <button onClick={() => updateSeg(i, { imageApproved: true })}
+                        className="rounded-full bg-green-500 px-3 py-1 text-xs font-medium text-white hover:bg-green-600">{t.approve}</button>
+                    )}
+                    <button onClick={() => generateImage(i)} disabled={seg.imageLoading}
+                      className="rounded-full border border-malta-stone/50 px-3 py-1 text-xs text-foreground/60 hover:bg-malta-stone/20">
+                      {seg.imageLoading ? t.generatingImage : t.regenerateImage}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={() => generateImage(i)} disabled={seg.imageLoading}
+                  className="rounded-lg bg-purple-100 px-4 py-2 text-sm text-purple-700 hover:bg-purple-200">
+                  {seg.imageLoading ? t.generatingImage : t.generateImage}
+                </button>
+              )}
+            </div>
+          ))}
+          {allImagesDone && (
+            <button onClick={() => setStep("animate")}
+              className="w-full rounded-lg bg-purple-600 py-3 font-medium text-white hover:bg-purple-700">
+              {t.allApprovedImages}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* STEP: Animate */}
+      {step === "animate" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t.veoAnimateTitle}</h2>
+                <p className="mt-1 text-sm text-foreground/50">{t.veoAnimateSub}</p>
+              </div>
+              <button onClick={() => setStep("images")} className="text-sm text-foreground/40 hover:text-foreground/60">{t.back}</button>
+            </div>
+
+            {/* Global controls */}
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-foreground/50">{t.veoPreset}</label>
+                <div className="flex flex-wrap gap-2">
+                  {(Object.keys(VEO_ANIMATION_PRESETS) as VeoAnimationPreset[]).map((key) => {
+                    const p = VEO_ANIMATION_PRESETS[key];
+                    return (
+                      <button key={key} onClick={() => setAnimationPreset(key)}
+                        className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                          animationPreset === key ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                        }`}>
+                        {p.icon} {lang === "en" ? p.labelEn : p.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-foreground/50">{t.veoDuration}</label>
+                <div className="flex gap-2">
+                  {VEO_DURATIONS.map((d) => (
+                    <button key={d.value} onClick={() => setClipDuration(d.value)}
+                      className={`rounded-lg px-4 py-1.5 text-sm font-medium transition-all ${
+                        clipDuration === d.value ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                      }`}>
+                      {d.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 flex items-center gap-2 text-xs font-medium text-foreground/50">
+                  <input type="checkbox" checked={generateNativeAudio} onChange={(e) => setGenerateNativeAudio(e.target.checked)}
+                    className="rounded" />
+                  {t.veoAudioNative}
+                </label>
+                <p className="text-[10px] text-foreground/30">{t.veoNativeAudioHint}</p>
+              </div>
+            </div>
+
+            <button onClick={generateAllClips}
+              className="mt-4 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700">
+              {t.veoGenerateAllClips}
+            </button>
+          </div>
+
+          {segments.map((seg, i) => (
+            <div key={i} className="rounded-xl bg-white p-5 shadow-sm">
+              <div className="mb-2 text-xs font-bold uppercase tracking-wider text-purple-600/60">Segment {i + 1}</div>
+              <div className="grid gap-4 md:grid-cols-2">
+                {/* Source image */}
+                <div>
+                  {seg.imageUrl && <img src={seg.imageUrl} alt={`Segment ${i + 1}`} className="max-h-48 rounded-lg" />}
+                </div>
+                {/* Animation prompt + clip */}
+                <div className="space-y-3">
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-foreground/50">Animation prompt</label>
+                    <textarea value={seg.animationPrompt} onChange={(e) => updateSeg(i, { animationPrompt: e.target.value })}
+                      rows={3} className="w-full rounded-lg border border-malta-stone/50 px-3 py-2 text-sm focus:border-purple-600 focus:outline-none" />
+                  </div>
+                  {seg.clipUrl ? (
+                    <div className="space-y-2">
+                      <video src={seg.clipUrl} controls className="max-h-48 rounded-lg" />
+                      <div className="flex gap-2">
+                        {seg.clipApproved ? (
+                          <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">{t.approved}</span>
+                        ) : (
+                          <button onClick={() => updateSeg(i, { clipApproved: true })}
+                            className="rounded-full bg-green-500 px-3 py-1 text-xs font-medium text-white hover:bg-green-600">{t.approve}</button>
+                        )}
+                        <button onClick={() => { updateSeg(i, { clipUrl: undefined, clipApproved: false }); generateClip(i); }}
+                          className="rounded-full border border-malta-stone/50 px-3 py-1 text-xs text-foreground/60 hover:bg-malta-stone/20">{t.redo}</button>
+                      </div>
+                    </div>
+                  ) : seg.clipPolling ? (
+                    <div className="flex items-center gap-2 rounded-lg bg-purple-50 px-4 py-3">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-purple-600 border-t-transparent" />
+                      <span className="text-sm text-purple-700">{t.veoPolling}</span>
+                    </div>
+                  ) : (
+                    <button onClick={() => generateClip(i)} disabled={seg.clipLoading || !seg.imageUrl}
+                      className="rounded-lg bg-purple-100 px-4 py-2 text-sm text-purple-700 hover:bg-purple-200 disabled:opacity-50">
+                      {seg.clipLoading ? t.veoPolling : t.veoGenerateClip}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {allClipsDone && (
+            <div className="flex gap-3">
+              <button onClick={() => setStep("audio")}
+                className="flex-1 rounded-lg bg-purple-600 py-3 font-medium text-white hover:bg-purple-700">
+                {t.generateAudio} →
+              </button>
+              <button onClick={() => setStep("assemble")}
+                className="rounded-lg border border-purple-600 px-6 py-3 text-sm font-medium text-purple-600 hover:bg-purple-50">
+                {t.veoSkipAudio}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* STEP: Audio (optional TTS) */}
+      {step === "audio" && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t.generateAudio}</h2>
+                <p className="mt-1 text-sm text-foreground/50">{t.generateAudioSub}</p>
+              </div>
+              <button onClick={() => setStep("animate")} className="text-sm text-foreground/40 hover:text-foreground/60">{t.back}</button>
+            </div>
+            <button onClick={generateAllAudio}
+              className="mt-4 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700">
+              {t.generateAllAudio}
+            </button>
+          </div>
+          {segments.map((seg, i) => (
+            <div key={i} className="rounded-xl bg-white p-5 shadow-sm">
+              <div className="mb-2 text-xs font-bold uppercase tracking-wider text-purple-600/60">Segment {i + 1}</div>
+              <p className="mb-2 text-xs text-foreground/40">{seg.text.substring(0, 100)}...</p>
+              {seg.audioUrl ? (
+                <div className="space-y-2">
+                  <audio src={seg.audioUrl} controls className="w-full" />
+                  <div className="flex gap-2">
+                    {seg.audioApproved ? (
+                      <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">{t.approved}</span>
+                    ) : (
+                      <button onClick={() => updateSeg(i, { audioApproved: true })}
+                        className="rounded-full bg-green-500 px-3 py-1 text-xs font-medium text-white hover:bg-green-600">{t.approve}</button>
+                    )}
+                    <button onClick={() => generateAudio(i)} disabled={seg.audioLoading}
+                      className="rounded-full border border-malta-stone/50 px-3 py-1 text-xs text-foreground/60 hover:bg-malta-stone/20">{t.redo}</button>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={() => generateAudio(i)} disabled={seg.audioLoading}
+                  className="rounded-lg bg-purple-100 px-4 py-2 text-sm text-purple-700 hover:bg-purple-200">
+                  {seg.audioLoading ? t.generatingAudio : t.generateAudio}
+                </button>
+              )}
+            </div>
+          ))}
+          {allAudioDone && (
+            <button onClick={() => setStep("assemble")}
+              className="w-full rounded-lg bg-purple-600 py-3 font-medium text-white hover:bg-purple-700">
+              {t.allApprovedAssemble}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* STEP: Assemble */}
+      {step === "assemble" && (
+        <div className="rounded-xl bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">{t.assemble}</h2>
+              <p className="mt-1 text-sm text-foreground/50">{segments.length} {t.segments}</p>
+            </div>
+            <button onClick={() => setStep(audioMode === "veo-native" ? "animate" : "audio")}
+              className="text-sm text-foreground/40 hover:text-foreground/60">{t.back}</button>
+          </div>
+
+          {/* Audio mode selector */}
+          <div className="mt-4">
+            <label className="mb-2 block text-sm font-medium text-foreground/70">{t.veoAudioMode}</label>
+            <div className="flex gap-2">
+              {([
+                { value: "veo-native" as VeoAudioMode, label: t.veoAudioNative },
+                { value: "elevenlabs" as VeoAudioMode, label: t.veoAudioTts },
+                { value: "both" as VeoAudioMode, label: t.veoAudioBoth },
+              ]).map((opt) => (
+                <button key={opt.value} onClick={() => setAudioMode(opt.value)}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                    audioMode === opt.value ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                  }`}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Transition selector */}
+          <div className="mt-4">
+            <label className="mb-2 block text-sm font-medium text-foreground/70">{t.veoTransition}</label>
+            <div className="flex gap-2">
+              <button onClick={() => setTransitionType("fade")}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                  transitionType === "fade" ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-700"
+                }`}>{t.veoTransitionFade}</button>
+              <button onClick={() => setTransitionType("none")}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                  transitionType === "none" ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-700"
+                }`}>{t.veoTransitionNone}</button>
+            </div>
+          </div>
+
+          {/* Quality selector */}
+          <div className="mt-4">
+            <label className="mb-2 block text-sm font-medium text-foreground/70">{lang === "en" ? "Quality" : "Jakość"}</label>
+            <div className="flex gap-2">
+              {(Object.keys(ENCODING_PRESETS) as QualityPreset[]).map((key) => {
+                const p = ENCODING_PRESETS[key];
+                return (
+                  <button key={key} onClick={() => setQuality(key)}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                      quality === key ? "bg-purple-600 text-white" : "bg-purple-50 text-purple-700"
+                    }`}>
+                    {lang === "en" ? p.labelEn : p.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Segment preview grid */}
+          <div className="mt-4 grid grid-cols-5 gap-2">
+            {segments.map((seg, i) => (
+              <div key={i} className="overflow-hidden rounded-lg">
+                {seg.clipUrl ? (
+                  <video src={seg.clipUrl} className="h-20 w-full object-cover" muted />
+                ) : seg.imageUrl ? (
+                  <img src={seg.imageUrl} alt={`Seg ${i + 1}`} className="h-20 w-full object-cover" />
+                ) : (
+                  <div className="flex h-20 items-center justify-center bg-malta-stone/20 text-xs text-foreground/30">{i + 1}</div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <button onClick={assembleVideo} disabled={loading}
+            className="mt-6 w-full rounded-lg bg-purple-600 py-3 font-medium text-white transition-colors hover:bg-purple-700 disabled:opacity-50">
+            {loading ? t.veoAssembling : t.veoAssembleBtn}
+          </button>
+        </div>
+      )}
+
+      {/* STEP: Done */}
+      {step === "done" && finalVideoUrl && (
+        <div className="rounded-xl bg-white p-6 text-center shadow-sm">
+          <h2 className="text-2xl font-bold text-green-600">{t.videoDone}</h2>
+          <video src={finalVideoUrl} controls className="mx-auto mt-4 max-h-[500px] rounded-lg" />
+          <div className="mt-4 flex justify-center gap-3">
+            <a href={finalVideoUrl} download className="rounded-lg bg-purple-600 px-6 py-3 font-medium text-white hover:bg-purple-700">
+              {t.download}
+            </a>
+            <button onClick={() => { setStep("topic"); setScript([]); setSegments([]); setFinalVideoUrl(null); }}
+              className="rounded-lg border border-malta-stone/50 px-6 py-3 text-sm text-foreground/60 hover:bg-malta-stone/20">
+              {t.createAnother}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -8,7 +8,7 @@ const BASE_URL = 'https://api.elevenlabs.io/v1';
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, sessionId, segmentIndex, voiceSettings, prefix } = await request.json();
+    const { text, sessionId, segmentIndex, voiceSettings, prefix, subDir: subDirOverride } = await request.json();
     const filePrefix = prefix || 'seg';
 
     if (!text || sessionId === undefined || segmentIndex === undefined) {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'ELEVENLABS_API_KEY not configured' }, { status: 500 });
     }
 
-    const subDir = (filePrefix === 'rank' || filePrefix === 'intro') ? 'topn' : 'asmr';
+    const subDir = subDirOverride || ((filePrefix === 'rank' || filePrefix === 'intro') ? 'topn' : 'asmr');
     const sessionDir = path.join(process.cwd(), 'public', 'videos', subDir, `session_${sessionId}`);
     fs.mkdirSync(sessionDir, { recursive: true });
 
