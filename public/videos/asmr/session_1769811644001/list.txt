@@ -1,0 +1,4 @@
+file '/Users/maciejpopiel/clawd/malta-portal/public/videos/asmr/session_1769811644001/seg_0.mp4'
+file '/Users/maciejpopiel/clawd/malta-portal/public/videos/asmr/session_1769811644001/seg_1.mp4'
+file '/Users/maciejpopiel/clawd/malta-portal/public/videos/asmr/session_1769811644001/seg_2.mp4'
+file '/Users/maciejpopiel/clawd/malta-portal/public/videos/asmr/session_1769811644001/seg_4.mp4'

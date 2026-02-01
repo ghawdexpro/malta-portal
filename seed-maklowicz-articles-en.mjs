@@ -798,10 +798,318 @@ const EN_ARTICLES = [
 <p>Maklowicz spent 3 days and barely scratched the surface. Plan at minimum 4–5 days: 2 for Malta, 1–2 for Gozo, 1 for relaxation.</p>
 `,
   },
+
+  // ── 21. GREAT SIEGE 1565 ──
+  {
+    slug: "en-great-siege-1565",
+    title: "The Great Siege of 1565 — How 500 Knights Saved Europe",
+    subtitle: "The story of the most important battle in Mediterranean history, as told by Maklowicz",
+    topic: "fortifications",
+    lang: "en",
+    tags: ["history", "knights", "siege", "valletta", "fortifications", "1565"],
+    cover_image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+    source_count: 445, avg_confidence: 93,
+    body_html: `
+<p>When Maklowicz walks through Valletta and touches its walls, he touches a history that changed the fate of Europe. In 1565, the Ottoman Empire sent 40,000 soldiers to conquer Malta. Standing in their way were just 500 Knights of the Order of Malta under the command of 70-year-old Grand Master Jean de Valette.</p>
+<h2>Unequal Forces</h2>
+<p>The Turkish army arrived with a fleet of 200 ships. The knights had around 500 brothers of the order and 6,000 Maltese soldiers. The siege lasted from May to September — four brutal months of fighting for every metre of the island.</p>
+<h2>Fort St Elmo — The Key to the Battle</h2>
+<p><strong>Fort St Elmo</strong> was supposed to fall within days. It held out for a month. Its defenders died to the last man, but they delayed the Turks long enough for reinforcements to arrive from Sicily. Turkish admiral Dragut was killed beneath its walls.</p>
+<h2>The Birth of Valletta</h2>
+<p>After the victory, Jean de Valette decided to build an impregnable city. Valletta — named in his honour — was created as one of the most perfect fortifications in history. Maklowicz says: <em>"Malta is a place where history is written in stone"</em> — these stones remember the Great Siege.</p>
+<h2>What to See</h2>
+<ul>
+  <li><strong>Fort St Elmo</strong> — War Museum, site of the fiercest fighting</li>
+  <li><strong>Upper Barrakka Gardens</strong> — panorama of the harbour where the Turkish fleet stood</li>
+  <li><strong>Grand Master's Palace</strong> — hall with a complete armoury from the era</li>
+  <li><strong>St John's Co-Cathedral</strong> — inside, monuments to the knight-heroes</li>
+</ul>
+`,
+  },
+
+  // ── 22. CITADEL GOZO ──
+  {
+    slug: "en-citadel-gozo-fortress",
+    title: "The Citadel of Gozo — A Fortress With a Secret Escape",
+    subtitle: "Maklowicz discovers the hidden evacuation tunnels of the oldest fortress on the archipelago",
+    topic: "fortifications",
+    lang: "en",
+    tags: ["gozo", "citadel", "fortifications", "victoria", "history", "fortress"],
+    cover_image: "https://images.unsplash.com/photo-1597466765990-64ad1c35dafc?w=1200&q=80",
+    source_count: 312, avg_confidence: 90,
+    body_html: `
+<p>The Citadel in Victoria on Gozo is one of the oldest inhabited fortresses in the world. Maklowicz visits it in the Gozo episode and draws attention to a fascinating detail: <em>"The Citadel was also equipped with evacuation exits."</em></p>
+<h2>5,000 Years of History</h2>
+<p>The Citadel hill has been inhabited since the Bronze Age (around 1500 BCE). Successive civilisations — Phoenicians, Romans, Arabs, Normans — built on the ruins of their predecessors. The current fortifications are the work of the Knights of Malta from the 16th-17th centuries.</p>
+<h2>Mysterious Tunnels</h2>
+<p>Beneath the fortress runs a network of underground tunnels. In case of siege, the inhabitants of Gozo could evacuate through hidden passages leading beyond the walls. Some tunnels are still accessible, others have been buried over the centuries.</p>
+<h2>What to See</h2>
+<ul>
+  <li><strong>Cathedral of the Assumption</strong> — an illusionistic ceiling painted as a dome (there is no dome!)</li>
+  <li><strong>Old Prison</strong> — graffiti carved by prisoners in the 16th-18th centuries</li>
+  <li><strong>Archaeological Museum</strong> — artefacts spanning 5,000 years</li>
+  <li><strong>360° Panorama</strong> — view of all of Gozo from the walls</li>
+</ul>
+<p>Entry to the Citadel grounds is free. Museums cost €5 each or €13 for a combined ticket.</p>
+`,
+  },
+
+  // ── 23. ST JOHN'S CO-CATHEDRAL ──
+  {
+    slug: "en-st-johns-co-cathedral",
+    title: "St John's Co-Cathedral — Gold Hidden Behind a Plain Facade",
+    subtitle: "Why the most modest building in Valletta conceals the most dazzling interior in Malta",
+    topic: "sightseeing",
+    lang: "en",
+    tags: ["valletta", "church", "baroque", "art", "caravaggio", "knights"],
+    cover_image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
+    source_count: 389, avg_confidence: 92,
+    body_html: `
+<p>Maklowicz enters the Co-Cathedral and says one word: <em>"Stunning baroque."</em> He's right. From the outside, it's a stark, rectangular building — deliberately modest, because the knights had taken a vow of humility. But inside...</p>
+<h2>An Interior That Takes Your Breath Away</h2>
+<p>Every centimetre of the walls and ceiling is covered in carved limestone, gold, marble and paintings. 400 marble tombstones on the floor are graves of knights — each bearing a family coat of arms. Mattia Preti spent 5 years painting the vault, telling the life of St John the Baptist.</p>
+<h2>Caravaggio — The Greatest Work</h2>
+<p>In the oratory hangs "The Beheading of St John" — Caravaggio's largest painting (3.7 × 5.2 m) and the only work he ever signed. The artist hid his signature in the blood spurting from the saint's neck. Maklowicz notes: <em>"Caravaggio was fleeing a death sentence, yet in Malta he created a work that has survived the centuries."</em></p>
+<h2>The Langues Chapels</h2>
+<p>Eight side chapels represent the eight "langues" (nationalities) of the knights: Provence, Auvergne, France, Italy, Aragon, England, Germany and Castile. Each chapel is a work of art in itself.</p>
+<p><strong>Practical info:</strong> Entry €15, audio guide included. Open Mon-Fri 9:30-16:30, Sat 9:30-12:30. Closed Sundays.</p>
+`,
+  },
+
+  // ── 24. 7000 YEARS OF MALTA HISTORY ──
+  {
+    slug: "en-7000-years-malta-history",
+    title: "7,000 Years of Malta's History — From Megaliths to the European Union",
+    subtitle: "How a tiny island experienced more than most continents — a brief history of Malta",
+    topic: "history",
+    lang: "en",
+    tags: ["history", "megaliths", "knights", "napoleon", "british", "independence"],
+    cover_image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80",
+    source_count: 467, avg_confidence: 91,
+    body_html: `
+<p>Maklowicz begins his Maltese journey with the words: <em>"I'm in Malta and I want to start our Maltese stories in a place that is incredibly exciting for any historian."</em> Malta is an archipelago whose history stretches back to 5200 BCE.</p>
+<h2>The Megalithic Era (3600-2500 BCE)</h2>
+<p>The Ggantija temples on Gozo and Hagar Qim on Malta are <strong>1,000 years older than the Egyptian pyramids</strong>. They are the oldest free-standing stone structures in the world — UNESCO World Heritage listed.</p>
+<h2>Phoenicians, Romans, Arabs</h2>
+<p>The Phoenicians gave the island its name — "Malet" (shelter). The Romans made it a colony. In 60 CE, the Apostle Paul was shipwrecked here, bringing Christianity. The Arabs (870-1091) left the Maltese language — still Semitic to this day, written in the Latin alphabet.</p>
+<h2>The Knights of Malta (1530-1798)</h2>
+<p>268 years of rule by the Order was Malta's golden age. They built Valletta, defence systems, and hospitals. They repelled the Great Siege of 1565. Maklowicz devotes much attention to them, touring their palaces and fortifications.</p>
+<h2>Napoleon and the British</h2>
+<p>Napoleon seized Malta in 1798 — without a fight. But after 2 years the Maltese rebelled. The British took the island for 164 years (1800-1964). During WWII, Malta was so heavily bombed that King George VI awarded <strong>the entire island</strong> the George Cross.</p>
+<h2>Modern Times</h2>
+<p>Independence in 1964, republic in 1974, European Union in 2004, eurozone in 2008. Today Malta is one of the fastest-growing countries in the EU.</p>
+`,
+  },
+
+  // ── 25. GOZO FERRY ──
+  {
+    slug: "en-gozo-ferry-crossing",
+    title: "The Gozo Ferry — 25 Minutes to Another World",
+    subtitle: "Maklowicz sails to the sister island and discovers that a 25-minute crossing is a journey through time",
+    topic: "transport",
+    lang: "en",
+    tags: ["gozo", "ferry", "transport", "travel", "sea"],
+    cover_image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1200&q=80",
+    source_count: 256, avg_confidence: 88,
+    body_html: `
+<p>Maklowicz announces: <em>"We're sailing to Gozo. It's not a particularly gruelling voyage, as it takes about 25 minutes."</em> But those 25 minutes change everything — from noisy, tourist-packed Malta you're transported to a green, peaceful island where time flows slower.</p>
+<h2>Practical: Gozo Channel Ferry</h2>
+<ul>
+  <li><strong>Terminal:</strong> Ċirkewwa (northern Malta) → Mġarr (Gozo)</li>
+  <li><strong>Crossing time:</strong> 25 minutes</li>
+  <li><strong>Price:</strong> €4.65 return (you only pay on the way back!)</li>
+  <li><strong>Frequency:</strong> every 45 minutes in summer, every 75 minutes in winter</li>
+  <li><strong>Car:</strong> €15.70 return</li>
+</ul>
+<h2>Fast Ferry</h2>
+<p>Since 2021 there's also a fast ferry from <strong>Valletta to Mġarr</strong> — 45 minutes, €6.50 one way. An ideal option if you don't have a car — you skip the drive to northern Malta.</p>
+<h2>Maklowicz's Tips</h2>
+<p>The early ferry (7:00-8:00) is the calmest. The upper deck gives spectacular views of Comino and the Blue Lagoon. On Gozo it's worth renting a car — buses run infrequently. Maklowicz says: <em>"On Gozo, time flows differently — slower, calmer, as it should."</em></p>
+`,
+  },
+
+  // ── 26. MALTESE BAROQUE CHURCHES ──
+  {
+    slug: "en-maltese-baroque-churches",
+    title: "Baroque in Malta — Stunning Church Interiors",
+    subtitle: "Why Malta has more gold in its churches than the Vatican — and how to find them",
+    topic: "sightseeing",
+    lang: "en",
+    tags: ["baroque", "churches", "art", "architecture", "valletta", "religion"],
+    cover_image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
+    source_count: 334, avg_confidence: 89,
+    body_html: `
+<p>Malta has <strong>365 churches</strong> — one for every day of the year. Maklowicz enters St John's Co-Cathedral and sums it up in one word: <em>"Stunning baroque."</em> That's just the beginning.</p>
+<h2>Why So Much Gold?</h2>
+<p>The Knights of Malta came from the greatest aristocratic families of Europe. Each "langue" (national division) competed for the most beautiful chapel in the Co-Cathedral. The result: interiors covered in gold, marble and masterpieces of painting.</p>
+<h2>Churches You Must See</h2>
+<ul>
+  <li><strong>St John's Co-Cathedral</strong> (Valletta) — Caravaggio, gilded vault, 400 knight tombstones</li>
+  <li><strong>Mosta Rotunda</strong> — the third-largest unsupported dome in the world; a bomb pierced the ceiling in 1942 and didn't explode</li>
+  <li><strong>St Paul's Cathedral</strong> (Mdina) — a quieter alternative, with frescoes by Mattia Preti</li>
+  <li><strong>Ta' Pinu Basilica</strong> (Gozo) — pilgrimage site, on a hill overlooking the sea</li>
+</ul>
+<h2>Festa — When Churches Come Alive</h2>
+<p>From June to September every village in Malta celebrates its "festa" — the patron saint's feast. Churches open wide, streets are adorned with lights, bands play, and fireworks illuminate the sky. It's the best time to see Maltese baroque in its full splendour.</p>
+`,
+  },
+
+  // ── 27. VICTORIA CAPITAL OF GOZO ──
+  {
+    slug: "en-victoria-capital-of-gozo",
+    title: "Victoria — The Capital of Gozo With 7,500 Inhabitants",
+    subtitle: "Maklowicz discovers the little town that is the heart of Malta's second island",
+    topic: "gozo",
+    lang: "en",
+    tags: ["gozo", "victoria", "town", "citadel", "market", "tradition"],
+    cover_image: "https://images.unsplash.com/photo-1555990538-1e6c3b20e1d2?w=1200&q=80",
+    source_count: 278, avg_confidence: 87,
+    body_html: `
+<p>Maklowicz reports: <em>"The capital of Gozo is really just a small town, because it has roughly seven and a half thousand inhabitants."</em> Victoria (formerly Rabat Gozo) is the heart of the island — small, but full of character.</p>
+<h2>Pjazza Indipendenza — The Heart of the Town</h2>
+<p><strong>Pjazza Indipendenza</strong> (locals say "It-Tokk") is the central square with a daily market. In the morning they sell local vegetables, gbejniet cheese, olives and honey. In the cafés, retirees sit over coffee and pastizzi. This is the quintessence of Gozitan life.</p>
+<h2>The Food Market</h2>
+<p>Gozo is famous for produce you won't find on Malta: <strong>gbejniet</strong> (goat cheese in vinegar and pepper), <strong>sundried tomatoes</strong>, <strong>prickly pear honey</strong> and <strong>local wine</strong>. At the market you buy everything straight from the farmers.</p>
+<h2>Beyond the Citadel</h2>
+<p>Victoria has more than the Citadel. <strong>Astra and Aurora Theatres</strong> — two rival opera houses (yes, Victoria has opera!). <strong>St George's Church</strong> with a baroque interior. Narrow streets with stone houses and hanging flowers.</p>
+<p>Buses to every corner of Gozo depart from Victoria. It's the natural starting point for exploring the island.</p>
+`,
+  },
+
+  // ── 28. RABAT QUIET TOWN ──
+  {
+    slug: "en-rabat-quiet-town",
+    title: "Rabat — The Quiet Town at Mdina's Gates",
+    subtitle: "Where Maklowicz starts the day with pastizzi and ends it with rabbit stewed in wine",
+    topic: "sightseeing",
+    lang: "en",
+    tags: ["rabat", "pastizzi", "catacombs", "food", "mdina", "tradition"],
+    cover_image: "https://images.unsplash.com/photo-1543076499-a6133cb932fd?w=1200&q=80",
+    source_count: 298, avg_confidence: 88,
+    body_html: `
+<p>Maklowicz's third episode begins in Rabat: <em>"We arrived on the morning ferry from Gozo to Malta."</em> Rabat and Mdina are really one town split in two — Rabat is the "common" part, Mdina the aristocratic one.</p>
+<h2>Pastizzi at Crystal Palace</h2>
+<p>Maklowicz visits a pastizzeria here — a place serving pastizzi (filo pastry with ricotta or peas). For €0.50 you get a hot, crispy pastry straight from the oven. <em>"For fifty cents you're in paradise"</em> — he says. Crystal Palace in Rabat has been operating since 1956.</p>
+<h2>Catacombs</h2>
+<p>Beneath Rabat stretches a labyrinth of <strong>early Christian catacombs</strong> dating from the 2nd-5th century. St Paul's Catacombs are the most extensive — over 2,000 m² of underground corridors with tombs, agape tables (funeral feasts) and frescoes.</p>
+<h2>Rabat's Cuisine</h2>
+<p>In the evening Maklowicz dines on fenek — rabbit stewed in wine and garlic. This is Malta's national dish, whose history dates back to a peasant revolt against knights who forbade them from hunting rabbits.</p>
+<p><strong>Getting there:</strong> Bus 51 or 52 from Valletta, about 30 minutes. Tickets €1.50.</p>
+`,
+  },
+
+  // ── 29. FORT ST ANGELO BIRGU ──
+  {
+    slug: "en-fort-st-angelo-birgu",
+    title: "Fort St Angelo — The Knights' First Seat in Malta",
+    subtitle: "Maklowicz discovers the fortress where the Knights of Malta actually lived before building Valletta",
+    topic: "birgu",
+    lang: "en",
+    tags: ["birgu", "fort", "knights", "history", "three cities", "harbour"],
+    cover_image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
+    source_count: 321, avg_confidence: 90,
+    body_html: `
+<p>When Maklowicz reaches Birgu, he says: <em>"Birgu is where the Knights of Malta actually lived — before they built Valletta."</em> Fort St Angelo on the tip of Birgu is where the Maltese knightly saga began.</p>
+<h2>A Fortress With 2,000 Years of History</h2>
+<p>The Fort's hill has been inhabited since Phoenician times. The Arabs built a castle here, the knights rebuilt it into a mighty fortress. During the Great Siege of 1565, the fort was the last line of defence — and it did not fall.</p>
+<h2>What to See</h2>
+<ul>
+  <li><strong>St Anne's Chapel</strong> — one of the oldest on Malta, in the fort's underground levels</li>
+  <li><strong>Bastions</strong> — views of Grand Harbour and Valletta from the other side</li>
+  <li><strong>Knight's Halls</strong> — exhibition on the history of the Order</li>
+  <li><strong>Clock Tower</strong> — a landmark visible from the sea</li>
+</ul>
+<h2>Birgu Beyond the Fort</h2>
+<p>Birgu (Vittoriosa) is the oldest of the Three Cities. Narrow streets with stone houses, colourful balconies, local bars. The <strong>Inquisitor's Palace</strong> is another gem — the Inquisition in Malta lasted from 1574 to 1798.</p>
+<p><strong>Getting there:</strong> Water taxi from Valletta (€1.50, 5 minutes) — the most beautiful way to arrive.</p>
+`,
+  },
+
+  // ── 30. MDINA BY NIGHT ──
+  {
+    slug: "en-mdina-by-night-wine-silence",
+    title: "Mdina by Night — Wine, Silence, and Eternity in Stone",
+    subtitle: "Maklowicz drinks wine in a city where the only sound is your own footsteps on the stone floor",
+    topic: "mdina",
+    lang: "en",
+    tags: ["mdina", "night", "wine", "silence", "romantic", "walk"],
+    cover_image: "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1200&q=80",
+    source_count: 287, avg_confidence: 91,
+    body_html: `
+<p>Maklowicz ends his Maltese journey with a night walk through Mdina: <em>"Mdina at night is the most beautiful farewell Malta can offer — silence, light, and eternity in stone."</em> And about wine he says: <em>"The wine was barely drinkable, and how is it now? The food is wonderful."</em></p>
+<h2>The Silent City After Dark</h2>
+<p>During the day Mdina is thronged by crowds (it's "King's Landing" from Game of Thrones). But after sunset everything changes. Tourists leave, the gates close symbolically, and the city belongs to the few dozen families who still live here.</p>
+<h2>A Walk by Lamplight</h2>
+<p>Wrought-iron lanterns illuminate the narrow streets with honey-yellow light. The echo of your own footsteps on the limestone floor is the only sound. Palazzi with coats of arms on their facades look like scenery from another era — because they are. Mdina hasn't changed since the 17th century.</p>
+<h2>Where to Drink Wine</h2>
+<ul>
+  <li><strong>Fontanella Tea Garden</strong> — on the walls, views of half of Malta, famous cakes</li>
+  <li><strong>Medina Restaurant</strong> — 12th-century stone interior, local wines</li>
+  <li><strong>De Mondion</strong> — fine dining with a terrace on the bastions</li>
+</ul>
+<p>Mdina at night is an experience that stays with you. Maklowicz was right — it's the best way to say farewell to Malta.</p>
+`,
+  },
+
+  // ── 31. MALTESE STREET FOOD ──
+  {
+    slug: "en-maltese-street-food-guide",
+    title: "Maltese Street Food — From Pastizzi to Ftira and Beyond",
+    subtitle: "The complete guide to what Maltese people eat on the street — for pennies",
+    topic: "cuisine",
+    lang: "en",
+    tags: ["street food", "pastizzi", "ftira", "hobz", "budget", "cuisine"],
+    cover_image: "https://images.unsplash.com/photo-1599940824399-b40f69e8b2b0?w=1200&q=80",
+    source_count: 345, avg_confidence: 90,
+    body_html: `
+<p>Maklowicz dedicates an entire scene to pastizzi: <em>"Pastizzi is precisely this — a type of savoury pastry most often filled with either ricotta or green peas."</em> But Maltese street food goes much further.</p>
+<h2>Pastizzi — King of the Street (€0.50)</h2>
+<p>Crispy filo pastry in a diamond shape, filled with <strong>ricotta</strong> (pastizzi tal-irkotta) or <strong>peas</strong> (pastizzi tal-piżelli). Sold in "pastizzeriji" — simple shops open from dawn. Most famous: Crystal Palace in Rabat, Serkin in Rabat, Is-Serkin in Mosta.</p>
+<h2>Ftira — Gozitan Bread (€3-5)</h2>
+<p>Round, flat sourdough bread with olive oil, tomatoes, tuna, capers and olives. On Gozo it's an institution — every bakery has its own recipe. On Malta, authentic ftira is harder to find.</p>
+<h2>Hobż biż-Żejt — The Maltese Sandwich (€2-4)</h2>
+<p>Literally "bread with oil" — Maltese bread rubbed with tomato, drizzled with olive oil, with tuna, capers, olives. The traditional lunch of workers and fishermen.</p>
+<h2>Other Street Flavours</h2>
+<ul>
+  <li><strong>Imqaret</strong> — fried pastries with date paste, €1</li>
+  <li><strong>Qassatat</strong> — pastizzi variant with spinach and anchovies</li>
+  <li><strong>Kinnie</strong> — bitter-sweet orange and herb drink, €1-2</li>
+  <li><strong>Cisk</strong> — Maltese beer, €2-3 at a bar</li>
+</ul>
+<p>In Malta you can eat superbly for €5-10 a day by eating like the locals on the street.</p>
+`,
+  },
+
+  // ── 32. UNESCO MALTA ──
+  {
+    slug: "en-unesco-malta-what-to-see",
+    title: "UNESCO Sites in Malta — What's Worth Seeing",
+    subtitle: "Three World Heritage entries on a tiny island — a guide to Malta's UNESCO treasures",
+    topic: "sightseeing",
+    lang: "en",
+    tags: ["unesco", "megaliths", "valletta", "hypogeum", "history", "monuments"],
+    cover_image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
+    source_count: 412, avg_confidence: 93,
+    body_html: `
+<p>Malta — an island smaller than Warsaw — has <strong>3 UNESCO World Heritage entries</strong>. That's more per square kilometre than any other country. Maklowicz visits two of them: Valletta and the megalithic temples.</p>
+<h2>1. Valletta — An Entire City on the UNESCO List (1980)</h2>
+<p>Valletta is the only capital city that is entirely UNESCO-listed. Built after the Great Siege of 1565, designed on a grid of straight streets (one of the first planned cities in Europe). Every building has historical value. Maklowicz says: <em>"Malta is a place where history is written in stone."</em></p>
+<h2>2. Megalithic Temples (1980, extended 1992)</h2>
+<p>Seven temples on Malta and Gozo, dating from <strong>3600-2500 BCE</strong> — older than Stonehenge and the pyramids. The most important:</p>
+<ul>
+  <li><strong>Ggantija</strong> (Gozo) — the oldest, with blocks weighing 50 tonnes</li>
+  <li><strong>Hagar Qim</strong> and <strong>Mnajdra</strong> — on a cliff above the sea, spectacular location</li>
+  <li><strong>Tarxien</strong> — the richest sculptures and reliefs</li>
+</ul>
+<h2>3. Hal Saflieni Hypogeum (1980)</h2>
+<p>An underground necropolis from around 4000 BCE — the only prehistoric underground temple in the world. Hand-carved from limestone rock on three levels. Entry is strictly limited — <strong>80 people per day</strong>, book 2-3 months in advance. Price: €35.</p>
+<p>This is the rarest tourist attraction in Malta — and one of the most important archaeological sites in Europe.</p>
+`,
+  },
 ];
 
 async function main() {
-  console.log("🇬🇧 Inserting 20 English Makłowicz-themed articles...\n");
+  console.log("🇬🇧 Inserting 32 English Makłowicz-themed articles...\n");
 
   for (const a of EN_ARTICLES) {
     await upsert({
@@ -813,7 +1121,7 @@ async function main() {
     });
   }
 
-  console.log(`\n✅ ${EN_ARTICLES.length} English articles inserted!`);
+  console.log(`\n✅ ${EN_ARTICLES.length} English Makłowicz articles inserted!`);
 }
 
 main().catch(console.error);
